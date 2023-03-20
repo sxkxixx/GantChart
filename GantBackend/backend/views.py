@@ -19,28 +19,28 @@ class TaskAPIView(APIView):
         return Response({'tasks': output})
 
     def post(self, request):
-        return Response({"succues": True})
-        # try:
-        #     if isinstance(request.data, list):
-        #         tasks = []
-        #         for task in request.data:
-        #             new_task = Task.objects.create(
-        #                 task_name=task.get('task_name'),
-        #                 task_description=task.get('task_description', None),
-        #                 start_date=task.get('start_date'),
-        #                 deadline=task.get('deadline'),
-        #                 status=task.get('status')
-        #             )
-        #             tasks.append(model_to_dict(task))
-        #         return Response({'status': 'Success', 'tasks': tasks})
-        #     else:
-        #         task = Task.objects.create(
-        #             task_name=request.data.get('task_name'),
-        #             task_description=request.data.get('task_description', None),
-        #             start_date=request.data.get('start_date'),
-        #             deadline=request.data.get('deadline'),
-        #             status=request.data.get('status')
-        #         )
-        #         return Response({'status': 'Success', 'task': model_to_dict(task)})
-        # except:
-        #     return Response({'status': 'Failed'})
+        try:
+            if isinstance(request.data, list):
+                tasks = []
+                for task in request.data:
+                    new_task = Task.objects.create(
+                        task_name=task.get('task_name'),
+                        task_description=task.get('task_description', None),
+                        start_date=task.get('start_date'),
+                        deadline=task.get('deadline'),
+                        status=task.get('status')
+                    )
+                    tasks.append(model_to_dict(new_task))
+                return Response({'status': 'Success', 'tasks': tasks})
+            else:
+                task = Task.objects.create(
+                    task_name=request.data.get('task_name'),
+                    task_description=request.data.get('task_description', None),
+                    start_date=request.data.get('start_date'),
+                    deadline=request.data.get('deadline'),
+                    status=request.data.get('status')
+                )
+                return Response({'status': 'Success', 'task': model_to_dict(task)})
+        except:
+            return Response({'status': 'Failed'})
+
