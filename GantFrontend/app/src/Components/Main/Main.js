@@ -16,9 +16,6 @@ const data = {
 const Main = () => {
     return (
         <div className={s.container}>
-            <div className={s.title}>
-                <h1>Список Задач:</h1>
-            </div>
             <div className={s.gant}>
                 {/*<Gantt/>*/}
                 <Gantt tasks={data}/>

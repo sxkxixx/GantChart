@@ -1,40 +1,103 @@
 .container{
     display: flex;
     flex-direction: row;
-    align-items: center;
+    justify-content: space-around;
     width: 100%;
     height: 60px;
-    background: #303030;
-    text-transform: uppercase;
+    background: var(--elementsBackground);
 }
 
 .left{
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
+    margin-left: 204px;
+    gap: 40px;
     align-items: center;
     width: 50%;
     height: 100%;
-    margin-left: 10px;
+}
+
+.logo{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    font-size: 24px;
+    gap: 9px;
+    line-height: 28px;
+}
+
+.profile{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+}
+
+.category{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 16px;
+}
+
+.category button{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+}
+
+.activeCategory{
+    background: var(--primaryButtonHover);
+    color: white;
+}
+
+.disableCategory{
+    background: transparent;
+    color: black;
 }
 
 .right{
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
+    margin-right: 216px;
+    gap: 49px;
     align-items: center;
     width: 50%;
     height: 100%;
-    padding-right: 10px;
-    gap: 40px;
 }
 
-.elements{
+.time{
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: center;
-    gap: 5px;
-    cursor: pointer;
+    gap: 16px;
 }
 
+.time span{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 5px;
+}
+
+.timeButton{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.timeButton button{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background: var(--primaryButton);
+}
+
+.exit{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
