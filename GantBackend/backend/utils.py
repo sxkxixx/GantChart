@@ -15,14 +15,14 @@ def get_task_stages(task_id):
     return stages
 
 
-def many_requests_db_tasks(parent_id, dct: list = []):
+def many_requests_db_tasks(parent_id, task_list: list):
     tasks = Task.objects.filter(parent_id=parent_id).values('id', 'name', 'description')
     if not tasks:
         return []
-    dct += tasks
+    task_list += tasks
     for task in tasks:
         task['child_task'] = many_requests_db_tasks(task['id'], task.get('child_task', []))
-    return dct
+    return task_list
 
 
 

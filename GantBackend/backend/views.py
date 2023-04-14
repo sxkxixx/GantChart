@@ -8,8 +8,7 @@ from .utils import get_task_comments, get_task_stages, many_requests_db_tasks
 
 @api_view(['GET'])
 def get_all_tasks(request: Request):
-    tasks = many_requests_db_tasks(None)
-    print(tasks)
+    tasks = many_requests_db_tasks(None, [])
     return Response(tasks)
 
 
