@@ -33,18 +33,19 @@ class Status(models.Model):
 
 class Task(models.Model):
     id = models.BigAutoField(verbose_name='ID задачи', primary_key=True, auto_created=True)
-    parent_id = models.ForeignKey('self', verbose_name='Ссылка на родительскую задачу', on_delete=models.PROTECT, to_field='id')
+    parent_id = models.ForeignKey('self', null=True, blank=True, verbose_name='Ссылка на родительскую задачу', on_delete=models.PROTECT,
+                                  to_field='id')
     project_id = models.ForeignKey(Project, on_delete=models.PROTECT, to_field='id')
     team_id = models.ForeignKey(Team, on_delete=models.PROTECT, to_field='id')
-    name = models.CharField(verbose_name='Название задачи', max_length=30, null=False)
-    description = models.CharField(verbose_name='Описание задачи', null=True, max_length=255)
-    is_on_kanban = models.BooleanField(verbose_name='Отображение на канбане')
-    is_completed = models.BooleanField(verbose_name='Готовность задачи')
+    name = models.CharField(verbose_name='Название задачи', max_length=100, null=False)
+    description = models.CharField(verbose_name='Описание задачи', null=True, blank=True, max_length=255)
+    is_on_kanban = models.BooleanField(verbose_name='Отображение на канбане', default=True)
+    is_completed = models.BooleanField(verbose_name='Готовность задачи', default=False)
     status_id = models.ForeignKey(Status, to_field='id', on_delete=models.PROTECT)
     planned_start_date = models.DateField(verbose_name='Время начала задачи')
     planned_finish_date = models.DateField(verbose_name='Время окончания задачи')
     deadline = models.DateField(verbose_name='Жесткий дедлайн')
-    completed_at = models.DateField(verbose_name='Время завершения', null=True)
+    completed_at = models.DateField(verbose_name='Время завершения', null=True, blank=True)
     created_at = models.DateTimeField(verbose_name='Время создания', auto_now_add=True)
     updated_at = models.DateTimeField(verbose_name='Время обновления', auto_now=True)
 
@@ -63,7 +64,7 @@ class TaskStage(models.Model):
     id = models.BigAutoField(verbose_name='ID подэтапа', primary_key=True, auto_created=True)
     task_id = models.ForeignKey(Task, null=False, on_delete=models.PROTECT)
     description = models.CharField(verbose_name='Описание этапа', max_length=255)
-    is_ready = models.BooleanField(verbose_name='Статус подэтапа')
+    is_ready = models.BooleanField(verbose_name='Подэтап выполнен')
     created_at = models.DateTimeField(verbose_name='Время создания', auto_now_add=True)
     updated_at = models.DateTimeField(verbose_name='Время обновления', auto_now=True)
 

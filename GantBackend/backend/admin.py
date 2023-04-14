@@ -2,14 +2,6 @@ from django.contrib import admin
 from .models import *
 
 
-# Register your models here.
-#
-# @admin.register(Task)
-# class TaskAdmin(admin.ModelAdmin):
-#     list_display = ('id', 'task_name', 'status')
-#     list_filter = ('id', 'task_name')
-#     search_fields = ('id', 'task_name')
-
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
     list_display = ('id', 'title')

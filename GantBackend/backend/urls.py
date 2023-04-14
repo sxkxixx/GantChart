@@ -3,7 +3,6 @@ from .views import *
 
 
 urlpatterns = [
-    path('tasks', ...),
-    path('tasks/all', ...),
-    path('task/edit/<str:id>', ...)
+    path('tasks', get_all_tasks),
+    path('task/<int:id>', get_task_by_id),
 ]
