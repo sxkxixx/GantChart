@@ -21,7 +21,7 @@ def many_requests_db_tasks(parent_id, task_list: list):
         return []
     task_list += tasks
     for task in tasks:
-        task['child_task'] = many_requests_db_tasks(task['id'], task.get('child_task', []))
+        task['children'] = many_requests_db_tasks(task['id'], task.get('children', []))
     return task_list
 
 
