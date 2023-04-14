@@ -3,12 +3,14 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework.request import Request
 from .models import *
-from .utils import get_task_comments, get_task_stages
+from .utils import get_task_comments, get_task_stages, many_requests_db_tasks
 
 
 @api_view(['GET'])
 def get_all_tasks(request: Request):
-    pass
+    tasks = many_requests_db_tasks(None)
+    print(tasks)
+    return Response(tasks)
 
 
 @api_view(['GET'])
@@ -35,18 +37,3 @@ def create_task():
 def delete_task():
     pass
 
-
-# utils.py
-#
-# def get_task_comments(task_id):
-#     comments = Comment.objects.filter(task_id=task_id).values('id', 'content', 'user_id')
-#     for comment in comments:
-#         comment['user'] = User.objects.filter(id=comment['user_id']).values('name', 'surname').get()
-#         comment['user']['user_id'] = comment['user_id']
-#         comment.pop('user_id')
-#     return comments
-#
-#
-# def get_task_stages(task_id):
-#     stages = TaskStage.objects.filter(task_id=task_id).values('id', 'description', 'is_ready')
-#     return stages
