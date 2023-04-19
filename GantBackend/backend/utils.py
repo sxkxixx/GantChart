@@ -19,7 +19,14 @@ def get_task_stages(task_id):
 
 
 def many_requests_db_tasks(parent_id, task_list: list):
-    tasks = Task.objects.filter(parent_id=parent_id).values('id', 'name', 'description')
+    tasks = Task.objects.filter(parent_id=parent_id).values('id',
+                                                            'name',
+                                                            'description',
+                                                            'is_on_kanban',
+                                                            'is_completed',
+                                                            'planned_start_date',
+                                                            'planned_finish_date',
+                                                            'deadline')
     if not tasks:
         return []
     task_list += tasks
