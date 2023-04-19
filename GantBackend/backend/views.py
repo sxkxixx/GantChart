@@ -23,7 +23,15 @@ def get_task_by_id(request, id):
 
 
 @api_view(['POST'])
-def edit_dates():
+def edit_dates(request: Request, id):
+    """
+    {
+        "planned_start_date":"str",
+        "planned_start_date":"str",
+        "deadline":""
+    }
+    """
+    data = request.data
     pass
 
 
@@ -59,4 +67,3 @@ def create_task(request: Request):
 @api_view(['DELETE'])
 def delete_task():
     pass
-
