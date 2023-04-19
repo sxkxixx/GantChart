@@ -19,14 +19,9 @@ def get_task_stages(task_id):
 
 
 def many_requests_db_tasks(parent_id, task_list: list):
-    tasks = Task.objects.filter(parent_id=parent_id).values('id',
-                                                            'name',
-                                                            'description',
-                                                            'is_on_kanban',
-                                                            'is_completed',
-                                                            'planned_start_date',
-                                                            'planned_finish_date',
-                                                            'deadline')
+    tasks = Task.objects.filter(parent_id=parent_id).values('id', 'name', 'description', 'is_on_kanban',
+                                                            'is_completed', 'planned_start_date',
+                                                            'planned_finish_date', 'deadline')
     if not tasks:
         return []
     task_list += tasks
@@ -37,18 +32,15 @@ def many_requests_db_tasks(parent_id, task_list: list):
 
 def validate_dates(*dates):
     for date in dates:
-        try:
-            datetime.strptime(date, DATE_FORMAT)
-        except:
-            raise ValueError(f'{date} must be a "{DATE_FORMAT}" format')
+        if date:
+            try:
+                datetime.strptime(date, DATE_FORMAT)
+            except:
+                raise ValueError(f'{date} must be a "{DATE_FORMAT}" format')
 
 
 def validate_date_term(start_date, finish_date, deadline):
     start_date, finish_date, deadline = datetime.strptime(start_date, DATE_FORMAT), datetime.strptime(
         finish_date, DATE_FORMAT), datetime.strptime(deadline, DATE_FORMAT)
-    if start_date > finish_date:
-        raise ValueError(f'"start_date" could not be greater than "finish_date"')
-    if finish_date > deadline:
-        raise ValueError(f'"finish_date" could not be greater than "deadline"')
-    if start_date > deadline:
-        raise ValueError(f'"start_date" could not be greater than "deadline"')
+    if not (start_date < finish_date <= deadline):
+        raise ValueError('Must be start_date < finish_date <= deadline')
