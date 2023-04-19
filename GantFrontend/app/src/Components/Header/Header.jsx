@@ -18,18 +18,13 @@ const Header = () => {
                 <button className={s.profile}><Profile/> Личный кабинет</button>
                 <div className={s.category}>
                     <button className={s.disableCategory}><Canban/>Канбан</button>
-                    <button className={s.activeCategory}><Gantt/>Гант</button>
+                    <button className={s.disableCategory}><Gantt/>Гант</button>
                 </div>
             </div>
             <div className={s.right}>
                 <div className={s.time}>
                     <span>Название задачи</span>
                     <span><Clock/><p>00:00</p></span>
-                    <span><Play/></span>
-                    <div className={s.timeButton}>
-                        <button>Сохранить</button>
-                        <button><Trash/></button>
-                    </div>
                 </div>
                 <button className={s.exit}><Exit/>Выход</button>
             </div>

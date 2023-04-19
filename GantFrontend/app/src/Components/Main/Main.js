@@ -2,23 +2,34 @@ import React from 'react'
 import s from './Main.module.css'
 import Gantt from '../Gantt/Gantt'
 
-const data = {
-    data: [
-        { id: 1, text: 'Task #1', start_date: '2019-04-15', duration: 3, progress: 0.6 },
-        { id: 2, text: 'Task #2', start_date: '2019-04-18', duration: 3, progress: 0.4 }
-    ],
-    links: [
-        { id: 1, source: 1, target: 2, type: '0' }
-    ]
-};
-
-// потом убрать tasks из Gantt
 const Main = () => {
     return (
         <div className={s.container}>
+            <div className={s.elements}>
+                <div>
+                    <select name="cars" id="cars">
+                        <option value="volvo">Мои Задачи</option>
+                        <option value="saab">Saab</option>
+                        <option value="opel">Opel</option>
+                        <option value="audi">Audi</option>
+                    </select>
+                    <select name="cars" id="cars">
+                        <option value="volvo">Проект 123</option>
+                        <option value="saab">Saab</option>
+                        <option value="opel">Opel</option>
+                        <option value="audi">Audi</option>
+                    </select>
+                    <select name="cars" id="cars">
+                        <option value="volvo">Команда</option>
+                        <option value="saab">Saab</option>
+                        <option value="opel">Opel</option>
+                        <option value="audi">Audi</option>
+                    </select>
+                </div>
+                <button>Создать Задачу</button>
+            </div>
             <div className={s.gant}>
-                {/*<Gantt/>*/}
-                <Gantt tasks={data}/>
+                <Gantt/>
             </div>
         </div>
     )
