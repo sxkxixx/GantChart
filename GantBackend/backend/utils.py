@@ -1,4 +1,7 @@
 from .models import Comment, User, TaskStage, Task
+from datetime import datetime
+
+DATE_FORMAT = "%Y-%m-%d"
 
 
 def get_task_comments(task_id):
@@ -25,5 +28,20 @@ def many_requests_db_tasks(parent_id, task_list: list):
     return task_list
 
 
+def validate_dates(*dates):
+    for date in dates:
+        try:
+            datetime.strptime(date, DATE_FORMAT)
+        except:
+            raise ValueError(f'{date} must be a "{DATE_FORMAT}" format')
 
 
+def validate_date_term(start_date, finish_date, deadline):
+    start_date, finish_date, deadline = datetime.strptime(start_date, DATE_FORMAT), datetime.strptime(
+        finish_date, DATE_FORMAT), datetime.strptime(deadline, DATE_FORMAT)
+    if start_date > finish_date:
+        raise ValueError(f'"start_date" could not be greater than "finish_date"')
+    if finish_date > deadline:
+        raise ValueError(f'"finish_date" could not be greater than "deadline"')
+    if start_date > deadline:
+        raise ValueError(f'"start_date" could not be greater than "deadline"')
