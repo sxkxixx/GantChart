@@ -6,10 +6,48 @@
     background-color: #FAB44C;
 }
 
-.grandchild-task .gantt_task_content {
-    background-color: #EB5757;
+.gantt_grid_head_cell[data-column-id='add'] {
+    display: none;
 }
 
-.gantt_add {
-
+.gantt_grid_head_cell[data-column-id='text'] {
+    font-size: 18px;
+    display: flex;
+    align-items: flex-start;
+    padding-left: 16px;
+    font-family: 'Roboto', sans-serif;
 }
+
+.gantt_tree_content{
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    color: #31393C;
+}
+
+/*.gantt_add{*/
+/*    background-image: url("../../Assets/img/add.svg");*/
+/*}*/
+
+/*.gantt_task_line{*/
+/*    border-radius: 4px;*/
+/*}*/
+
+/*.gantt_close{*/
+/*    background-image: url("../../Assets/img/close.png");*/
+/*}*/
+
+/*.gantt_open{*/
+/*    background-image: url("../../Assets/img/open.svg");*/
+/*}*/
+
+/*.gantt_scale_cell{*/
+/*    color: black;*/
+/*}*/
+
+/*.gantt_task_progress_drag{*/
+/*    display: none;*/
+/*}*/
+
+/*.gantt_link_point{*/
+/*    display: none;*/
+/*}*/

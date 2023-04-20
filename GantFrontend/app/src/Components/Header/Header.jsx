@@ -22,7 +22,7 @@ const Header = () => {
             <div className={s.right}>
                 <div className={s.time}>
                     <span>Название задачи</span>
-                    <span><Clock/><p>00:00</p></span>
+                    <span><Clock/><p>00:00:00</p></span>
                 </div>
                 <button className={s.exit}><Exit/>Выход</button>
             </div>

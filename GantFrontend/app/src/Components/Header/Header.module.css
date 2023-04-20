@@ -5,13 +5,13 @@
     width: 100%;
     height: 60px;
     background: var(--elementsBackground);
+    padding: 0px 100px;
 }
 
 .left{
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
-    margin-left: 204px;
     gap: 40px;
     align-items: center;
     width: 50%;
@@ -38,7 +38,8 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 16px;
+    margin-left: 60px;
+    gap: 47px;
 }
 
 .category button{
@@ -62,7 +63,6 @@
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
-    margin-right: 216px;
     gap: 49px;
     align-items: center;
     width: 50%;
@@ -73,14 +73,14 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 16px;
+    gap: 33px;
 }
 
 .time span{
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 5px;
+    gap: 8px;
 }
 
 .timeButton{
@@ -100,4 +100,5 @@
     display: flex;
     flex-direction: row;
     align-items: center;
+    gap: 8px;
 }

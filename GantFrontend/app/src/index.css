@@ -1,5 +1,5 @@
 @import url('./Styles/style.css');
-
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 
 /* Reset and base styles  */
 * {
@@ -104,7 +104,11 @@ legend {
   display: block;
 }
 
-body{
+html,body{
   background: var(--background);
   font-size: var(--fontSizeBody);
+  font-family: 'Roboto', sans-serif;
+  font-style: normal;
+  font-weight: 400;
 }
+
