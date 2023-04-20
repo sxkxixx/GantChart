@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework.request import Request
 from .models import *
-from .utils import get_task_comments, get_task_stages, many_requests_db_tasks, validate_dates, validate_date_term
+from .utils import get_task_comments, get_task_stages, many_requests_db_tasks, validate_dates, validate_date_term, is_valid_task_term
 
 
 @api_view(['GET'])
@@ -78,7 +78,7 @@ def create_task(request: Request):
 
     validate_dates(data['planned_start_date'], data['planned_finish_date'], data['deadline'])
     validate_date_term(data['planned_start_date'], data['planned_finish_date'], data['deadline'])
-    task = Task.objects.create(
+    task = Task(
         parent_id=parent_task,
         project_id=Project.objects.get(id=data['project_id']),
         team_id=Team.objects.get(id=data['team_id']),
@@ -89,6 +89,9 @@ def create_task(request: Request):
         planned_finish_date=data['planned_finish_date'],
         deadline=data['deadline']
     )
+    if not is_valid_task_term(task, parent_task):
+        return Response({"msg": "Enter the correct data."}, status=404)
+    task.save()
     return Response(model_to_dict(task))
 
 

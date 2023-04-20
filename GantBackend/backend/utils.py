@@ -40,7 +40,12 @@ def validate_dates(*dates):
 
 
 def validate_date_term(start_date, finish_date, deadline):
-    start_date, finish_date, deadline = datetime.strptime(start_date, DATE_FORMAT), datetime.strptime(
-        finish_date, DATE_FORMAT), datetime.strptime(deadline, DATE_FORMAT)
-    if not (start_date < finish_date <= deadline):
+    if not (datetime.strptime(start_date, DATE_FORMAT) < datetime.strptime(finish_date, DATE_FORMAT) <= datetime.strptime(deadline, DATE_FORMAT)):
         raise ValueError('Must be start_date < finish_date <= deadline')
+
+
+def is_valid_task_term(task: Task, parent_task: Task):
+    if not parent_task:
+        return True
+    s_t, f_t, t_d = datetime.strptime(task.planned_start_date, DATE_FORMAT).date(), datetime.strptime(task.planned_finish_date, DATE_FORMAT).date(), datetime.strptime(task.deadline, DATE_FORMAT).date()
+    return parent_task.planned_start_date <= s_t <= parent_task.planned_finish_date and parent_task.planned_start_date <= f_t <= parent_task.planned_finish_date and t_d <= parent_task.deadline
