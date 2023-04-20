@@ -6,13 +6,6 @@ import axios from "axios";
 
 function App() {
 
-    // useEffect(()=>{
-    //     axios
-    //         .get('http://localhost:8000/api/v1/gant/tasks')
-    //         .then( res => {
-    //             console.log(res)
-    //         })
-    // })
 
   return (
       <div className={s.container}>

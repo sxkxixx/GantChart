@@ -1,0 +1,15 @@
+.parent-task .gantt_task_content {
+    background-color: #4F89FF;
+}
+
+.child-task .gantt_task_content {
+    background-color: #FAB44C;
+}
+
+.grandchild-task .gantt_task_content {
+    background-color: #EB5757;
+}
+
+.gantt_add {
+
+}

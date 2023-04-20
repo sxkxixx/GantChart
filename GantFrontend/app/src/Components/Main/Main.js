@@ -6,27 +6,20 @@ const Main = () => {
     return (
         <div className={s.container}>
             <div className={s.elements}>
-                <div>
-                    <select name="cars" id="cars">
-                        <option value="volvo">Мои Задачи</option>
-                        <option value="saab">Saab</option>
-                        <option value="opel">Opel</option>
-                        <option value="audi">Audi</option>
+                <div className={s.dropdown}>
+                    <select name="tasks" id="tasks">
+                        <option>Мои Задачи</option>
                     </select>
-                    <select name="cars" id="cars">
-                        <option value="volvo">Проект 123</option>
-                        <option value="saab">Saab</option>
-                        <option value="opel">Opel</option>
-                        <option value="audi">Audi</option>
+                    <select name="projects" id="projects">
+                        <option>Проект 123</option>
                     </select>
-                    <select name="cars" id="cars">
-                        <option value="volvo">Команда</option>
-                        <option value="saab">Saab</option>
-                        <option value="opel">Opel</option>
-                        <option value="audi">Audi</option>
+                    <select name="teams" id="teams">
+                        <option>Команда</option>
                     </select>
                 </div>
-                <button>Создать Задачу</button>
+                <div className={s.button}>
+                    <button>Создать Задачу</button>
+                </div>
             </div>
             <div className={s.gant}>
                 <Gantt/>

@@ -5,8 +5,6 @@ import {ReactComponent as Profile} from "../../Assets/img/profile.svg"
 import {ReactComponent as Canban} from "../../Assets/img/canban.svg"
 import {ReactComponent as Gantt} from "../../Assets/img/gantt.svg"
 import {ReactComponent as Clock} from "../../Assets/img/clock.svg"
-import {ReactComponent as Play} from "../../Assets/img/play.svg"
-import {ReactComponent as Trash} from "../../Assets/img/trash.svg"
 import {ReactComponent as Exit} from "../../Assets/img/exit.svg"
 
 

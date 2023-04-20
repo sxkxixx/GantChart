@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import './Gantt.css'
 import { gantt } from 'dhtmlx-gantt';
 import 'dhtmlx-gantt/codebase/dhtmlxgantt.css';
+
+
 
 export default class Gantt extends Component {
     constructor(props) {
@@ -13,11 +16,39 @@ export default class Gantt extends Component {
 
     componentDidMount() {
         gantt.config.date_format = "%Y-%m-%d %H:%i";
+        gantt.config.scales = [
+            {unit: "month", step: 1, format: "%F, %Y"},
+            {unit: "day", step: 1, format: "%j, %D"}
+        ];
+        gantt.config.scale_height = 80;
         gantt.init(this.ganttContainer);
         gantt.config.columns = [
-            {name:"text", label:"Задачи", width:"*", tree:true},
-            {name:"add", label:"", width:44}
+            {name: "text", label: "Задачи", width: "*", tree: true},
+            {name: "add", label: "", width: "44"},
         ];
+        gantt.config.lightbox.sections = [
+            { name: "text", height: 22, map_to: "text", type: "textarea", focus: true },
+            { name: "description", height: 70, map_to: "description", type: "textarea" },
+            { name: "time", height: 72, type: "time", map_to: "auto" },
+        ];
+
+        gantt.templates.task_class = function(start, end, task) {
+            if (task.$level === 0) {
+                return "parent-task";
+            } else if (task.$level === 1) {
+                return "child-task";
+            } else {
+                return "grandchild-task"
+            }
+        }
+
+        gantt.templates.grid_header_class = function(column) {
+            if (column.name === "add") {
+                return "hidden";
+            } else {
+                return "";
+            }
+        };
 
         axios.get('http://localhost:8000/api/v1/gant/tasks')
             .then(response => {
@@ -28,54 +59,6 @@ export default class Gantt extends Component {
                 console.error(error);
             });
     }
-
-
-    // transformData(data) {
-    //     const transformedData = {
-    //         data: [],
-    //     };
-    //
-    //     const taskMap = new Map();
-    //
-    //     // Map through the top level tasks
-    //     data.forEach((task) => {
-    //         const taskId = task.id;
-    //
-    //         // Add the task to the task map with its children
-    //         taskMap.set(taskId, {
-    //             id: taskId,
-    //             text: task.name,
-    //             start_date: task.planned_start_date,
-    //             end_date: task.planned_finish_date,
-    //             progress: 0,
-    //             open: true,
-    //             parent: 0, // set parent as 0 for top-level tasks
-    //         });
-    //
-    //         // Map through the children tasks
-    //         task.children.forEach((child) => {
-    //             const childId = child.id;
-    //
-    //             // Add the child task to the task map
-    //             taskMap.set(childId, {
-    //                 id: childId,
-    //                 text: child.name,
-    //                 start_date: child.planned_start_date,
-    //                 end_date: child.planned_finish_date,
-    //                 progress: 0,
-    //                 open: true,
-    //                 parent: taskId, // set the parent as the current top-level task
-    //             });
-    //         });
-    //     });
-    //
-    //     // Add all the tasks from the task map to the transformed data array
-    //     taskMap.forEach((task) => {
-    //         transformedData.data.push(task);
-    //     });
-    //
-    //     return transformedData;
-    // }
 
     transformData(data) {
         const taskMap = new Map();
@@ -91,6 +74,7 @@ export default class Gantt extends Component {
                 progress: 0,
                 open: true,
                 parent: parentId,
+                description: task.description,
             });
 
             if (task.children) {
@@ -116,7 +100,7 @@ export default class Gantt extends Component {
         return (
             <div
                 ref={(input) => { this.ganttContainer = input }}
-                style={{ width: '80%', height: '600px' }}
+                style={{ width: '1720px', height: '90%' }}
             ></div>
         );
     }
