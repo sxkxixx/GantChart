@@ -1,22 +1,19 @@
 .container{
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
     width: 100%;
     height: 100%;
 }
 
-.title{
+.elements{
+    width: 100%;
+    height: 130px;
+}
+
+.gant{
     display: flex;
     align-items: center;
     justify-content: center;
     width: 100%;
-    height: 30%;
-    color: black;
-}
-
-.gant{
-    width: 100%;
-    height: 70%;
+    height: 100%;
 }
