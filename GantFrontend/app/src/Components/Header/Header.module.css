@@ -25,6 +25,7 @@
     font-size: 24px;
     gap: 9px;
     line-height: 28px;
+    cursor: pointer;
 }
 
 .profile{
@@ -32,6 +33,7 @@
     flex-direction: row;
     align-items: center;
     gap: 8px;
+    color: #0340BB;
 }
 
 .category{
@@ -52,11 +54,13 @@
 .activeCategory{
     background: var(--primaryButtonHover);
     color: white;
+    border-radius: 5px;
+    padding: 8px 16px;
 }
 
 .disableCategory{
     background: transparent;
-    color: black;
+    color: #0340BB;
 }
 
 .right{
@@ -70,6 +74,7 @@
 }
 
 .time{
+    position: relative;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -101,4 +106,85 @@
     flex-direction: row;
     align-items: center;
     gap: 8px;
+}
+
+.taskInfo {
+    display: flex;
+    flex-direction: row;
+    position: absolute;
+    width: 482px;
+    height: 100px;
+    left: -60px;
+    top: 46px;
+    background: #FFFFFF;
+    border-radius: 5px;
+    padding: 10px;
+    box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.1);
+    z-index: 2;
+}
+
+.taskInfo_left{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 16px;
+    width: 241px;
+}
+
+.taskInfo_left span{
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 20px;
+}
+
+.taskInfo_left button{
+    width: 201px;
+    height: 32px;
+    background: #AFBAC3;
+    border-radius: 5px;
+    color: white;
+    font-size: 16px;
+    line-height: 32px;
+    padding: 0px 16px;
+}
+
+.taskInfo_right{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 16px;
+    width: 241px;
+}
+
+.taskInfo_time{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+
+.save{
+    width: 113px;
+    height: 32px;
+    background: #004CE3;
+    border-radius: 5px;
+    color: white;
+}
+
+.play{
+    width: 32px;
+    height: 32px;
+    background: #004CE3;
+    border-radius: 5px;
+}
+
+.trash{
+    width: 32px;
+    height: 32px;
+    background: #004CE3;
+    border-radius: 5px;
 }

@@ -25,6 +25,7 @@ export default class Gantt extends Component {
 
         gantt.init(this.ganttContainer);
 
+
         gantt.config.columns = [
             {name: "text", label: "ЗАДАЧИ", width: "*", tree: true},
             {name:"checked", label:"",width: "20", template:function(task) {
