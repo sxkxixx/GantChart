@@ -3,6 +3,7 @@ import axios from 'axios';
 import './Gantt.css'
 import {gantt} from 'dhtmlx-gantt';
 import 'dhtmlx-gantt/codebase/dhtmlxgantt.css';
+import s from "../Main/Main.module.css";
 
 
 export default class Gantt extends Component {
@@ -14,7 +15,7 @@ export default class Gantt extends Component {
     }
 
     componentDidMount() {
-        gantt.config.date_format = "%Y-%m-%d %H:%i";
+        gantt.config.date_format = "%Y-%m-%d";
 
         gantt.config.scales = [
             {unit: "month", step: 1, format: "%F, %Y"},
@@ -79,15 +80,44 @@ export default class Gantt extends Component {
                 (item.$open ? "close" : "open") + "'></div>";
         };
 
+
         axios.get('http://localhost:8000/api/v1/gant/tasks')
             .then(response => {
                 const transformedData = this.transformData(response.data);
                 gantt.parse(transformedData);
+
             })
             .catch(error => {
                 console.error(error);
             });
+
     }
+
+    addTask() {
+        gantt.createTask(() => {
+            const newTask = {
+                name: "Новая задача",
+                planned_start_date: gantt.getState().min_date,
+                planned_finish_date: gantt.getState().max_date,
+                description: "",
+                is_on_kanban: false,
+                parent_id: null,
+                checked: false,
+                children: 0
+            };
+
+            axios.post('http://localhost:8000/api/v1/gant/task/create', newTask)
+                .then((response) => {
+                    newTask.id = response.data.id;
+                    gantt.addTask(newTask, 0);
+                    gantt.showLightbox(newTask.id);
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+        });
+    }
+
 
 
     transformData(data) {
@@ -101,7 +131,6 @@ export default class Gantt extends Component {
                 text: task.name,
                 start_date: task.planned_start_date,
                 end_date: task.planned_finish_date,
-                progress: 0,
                 open: true,
                 parent: parentId,
                 description: task.description,
@@ -131,12 +160,30 @@ export default class Gantt extends Component {
 
     render() {
         return (
-            <div
-                ref={(input) => {
-                    this.ganttContainer = input
-                }}
-                style={{width: '90%', height: '90%'}}
-            ></div>
+            <>
+                <div className={s.elements}>
+                    <div className={s.dropdown}>
+                        <select name="tasks" id="tasks">
+                            <option>Мои Задачи</option>
+                        </select>
+                        <select name="projects" id="projects">
+                            <option>Проект 123</option>
+                        </select>
+                        <select name="teams" id="teams">
+                            <option>Команда</option>
+                        </select>
+                    </div>
+                    <div className={s.button}>
+                        <button onClick={() => this.addTask()}>Создать Задачу</button>
+                    </div>
+                </div>
+                <div
+                    ref={(input) => {
+                        this.ganttContainer = input
+                    }}
+                    style={{width: '90%', height: '90%'}}
+                ></div>
+            </>
         );
     }
 }
