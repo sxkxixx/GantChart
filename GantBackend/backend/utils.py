@@ -1,5 +1,4 @@
 from .models import Comment, User, TaskStage, Task
-from datetime import datetime
 
 DATE_FORMAT = "%Y-%m-%d"
 
@@ -30,22 +29,13 @@ def many_requests_db_tasks(parent_id, task_list: list):
     return task_list
 
 
-def validate_dates(*dates):
-    for date in dates:
-        if date:
-            try:
-                datetime.strptime(date, DATE_FORMAT)
-            except:
-                raise ValueError(f'{date} must be a "{DATE_FORMAT}" format')
+def is_valid_date_term(start_date, finish_date, deadline):
+    return start_date < finish_date <= deadline
 
 
-def validate_date_term(start_date, finish_date, deadline):
-    if not (datetime.strptime(start_date, DATE_FORMAT) < datetime.strptime(finish_date, DATE_FORMAT) <= datetime.strptime(deadline, DATE_FORMAT)):
-        raise ValueError('Must be start_date < finish_date <= deadline')
-
-
-def is_valid_task_term(task: Task, parent_task: Task):
-    if not parent_task:
+def is_in_parent_terms(parent: Task, task: Task):
+    if parent is None:
         return True
-    s_t, f_t, t_d = datetime.strptime(task.planned_start_date, DATE_FORMAT).date(), datetime.strptime(task.planned_finish_date, DATE_FORMAT).date(), datetime.strptime(task.deadline, DATE_FORMAT).date()
-    return parent_task.planned_start_date <= s_t <= parent_task.planned_finish_date and parent_task.planned_start_date <= f_t <= parent_task.planned_finish_date and t_d <= parent_task.deadline
+    return parent.planned_start_date <= task.planned_start_date \
+        and task.planned_finish_date <= parent.planned_finish_date\
+        and task.deadline <= parent.planned_finish_date
