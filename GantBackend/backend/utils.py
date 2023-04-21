@@ -38,4 +38,4 @@ def is_in_parent_terms(parent: Task, task: Task):
         return True
     return parent.planned_start_date <= task.planned_start_date \
         and task.planned_finish_date <= parent.planned_finish_date\
-        and task.planned_finish_date <= parent.deadline
+        and task.deadline <= parent.planned_finish_date

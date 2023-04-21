@@ -42,7 +42,7 @@ def edit_dates(request: Request, id):
         task = Task.objects.get(id=id)
     except:
         return Response({"msg": "Enter the correct data."}, status=404)
-    data = request.data
+    data: dict = request.data
     try:
         start_date = datetime.strptime(data.get('planned_start_date'), DATE_FORMAT)
         finish_date = datetime.strptime(data.get('planned_finish_date'), DATE_FORMAT)
@@ -75,9 +75,9 @@ def create_task(request: Request):
         parent_task = None
 
     try:
-        start_date = datetime.strptime(data.get('planned_start_date'), DATE_FORMAT)
-        finish_date = datetime.strptime(data.get('planned_finish_date'), DATE_FORMAT)
-        deadline = datetime.strptime(data.get('deadline'), DATE_FORMAT)
+        start_date = datetime.strptime(data.get('planned_start_date'), DATE_FORMAT).date()
+        finish_date = datetime.strptime(data.get('planned_finish_date'), DATE_FORMAT).date()
+        deadline = datetime.strptime(data.get('deadline'), DATE_FORMAT).date()
     except:
         raise ValueError(f'Incorrect date format. Must be a "{DATE_FORMAT}" format')
 
