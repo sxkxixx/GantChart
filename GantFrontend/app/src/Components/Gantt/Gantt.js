@@ -19,7 +19,7 @@ export default class Gantt extends Component {
 
         gantt.config.scales = [
             {unit: "month", step: 1, format: "%F, %Y"},
-            {unit: "day", step: 1, format: "%j, %D"}
+            {unit: "day", step: 1, format: "%j"}
         ];
 
         gantt.config.scale_height = 80;
@@ -39,7 +39,7 @@ export default class Gantt extends Component {
         ];
 
         gantt.config.lightbox.sections = [
-            {name: "text", height: 22, map_to: "text", type: "textarea", focus: true},
+            {name: "name", height: 22, map_to: "text", type: "textarea", focus: true},
             {name: "description", height: 70, map_to: "description", type: "textarea"},
             {name: "time", height: 72, type: "time", map_to: "auto"},
         ];
@@ -75,10 +75,18 @@ export default class Gantt extends Component {
             }
         }
 
-        gantt.templates.grid_open = function(item) {
-            return "<div class='gantt_tree_icon gantt_" +
-                (item.$open ? "close" : "open") + "'></div>";
-        };
+        gantt.templates.grid_open_custom = function(item){
+            if (gantt.hasChild(item.id)) {
+                return "<div class='gantt_tree gant_" +
+                    (item.$open ? "close" : "open") + " '></div>";
+            } else {
+                return "";
+            }
+        }
+
+        gantt.templates.grid_close_custom = function(item){
+            return "";
+        }
 
 
         axios.get('http://localhost:8000/api/v1/gant/tasks')
@@ -93,30 +101,42 @@ export default class Gantt extends Component {
 
     }
 
-    addTask() {
-        gantt.createTask(() => {
-            const newTask = {
-                name: "Новая задача",
-                planned_start_date: gantt.getState().min_date,
-                planned_finish_date: gantt.getState().max_date,
-                description: "",
-                is_on_kanban: false,
-                parent_id: null,
-                checked: false,
-                children: 0
-            };
+    // addTask() {
+    //     gantt.createTask(() => {
+    //         const newTask = {
+    //             name: "Новая задача",
+    //             planned_start_date: gantt.getState().min_date,
+    //             planned_finish_date: gantt.getState().max_date,
+    //             description: "",
+    //             is_on_kanban: false,
+    //             parent_id: null,
+    //             checked: false,
+    //             children: 0
+    //         };
+    //
+    //         axios.post('http://localhost:8000/api/v1/gant/task/create', newTask)
+    //             .then((response) => {
+    //                 newTask.id = response.data.id;
+    //                 gantt.addTask(newTask, 0);
+    //                 gantt.showLightbox(newTask.id);
+    //             })
+    //             .catch((error) => {
+    //                 console.error(error);
+    //             });
+    //     });
+    // }
 
-            axios.post('http://localhost:8000/api/v1/gant/task/create', newTask)
-                .then((response) => {
-                    newTask.id = response.data.id;
-                    gantt.addTask(newTask, 0);
-                    gantt.showLightbox(newTask.id);
-                })
-                .catch((error) => {
-                    console.error(error);
-                });
-        });
-    }
+    createTask = (task) => {
+        axios.post('/api/v1/gant/task/create', task)
+            .then(response => {
+                console.log('Task created:', response.data);
+                gantt.addTask(task);
+                gantt.hideLightbox();
+            })
+            .catch(error => {
+                console.error('Failed to create task:', error);
+            });
+    };
 
 
 
@@ -174,7 +194,7 @@ export default class Gantt extends Component {
                         </select>
                     </div>
                     <div className={s.button}>
-                        <button onClick={() => this.addTask()}>Создать Задачу</button>
+                        <button onClick={() => gantt.createTask(this.createTask)}>Создать Задачу</button>
                     </div>
                 </div>
                 <div

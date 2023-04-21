@@ -24,31 +24,40 @@
     color: #31393C;
 }
 
+.gantt_add{
+    background-image: url("../../Assets/img/add.svg");
+}
 
-/*.gantt_add{*/
-/*    background-image: url("../../Assets/img/add.svg");*/
-/*}*/
+.gantt_task_line{
+    border-radius: 16px;
+}
 
-/*.gantt_task_line{*/
-/*    border-radius: 4px;*/
-/*}*/
+.gantt_tree{
+    height: 100%;
+    background-repeat: no-repeat;
+    background-position: 50%;
+}
 
-/*.gantt_close{*/
-/*    background-image: url("../../Assets/img/close.png");*/
-/*}*/
+.gant_close{
+    background-image: url("../../Assets/img/close.png");
+    width: 18px;
+    cursor: pointer;
+}
 
-/*.gantt_open{*/
-/*    background-image: url("../../Assets/img/open.svg");*/
-/*}*/
+.gant_open{
+    background-image: url("../../Assets/img/open.svg");
+    width: 18px;
+    cursor: pointer;
+}
 
-/*.gantt_scale_cell{*/
-/*    color: black;*/
-/*}*/
+.gantt_scale_cell{
+    color: black;
+}
 
-/*.gantt_task_progress_drag{*/
-/*    display: none;*/
-/*}*/
+.gantt_task_progress_drag{
+    display: none;
+}
 
-/*.gantt_link_point{*/
-/*    display: none;*/
-/*}*/
+.gantt_link_point{
+    display: none;
+}
