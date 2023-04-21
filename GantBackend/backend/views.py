@@ -3,7 +3,9 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework.request import Request
 from .models import *
-from .utils import get_task_comments, get_task_stages, many_requests_db_tasks, validate_dates, validate_date_term, is_valid_task_term
+from .utils import get_task_comments, get_task_stages, many_requests_db_tasks, is_valid_date_term, DATE_FORMAT, \
+    is_in_parent_terms
+from datetime import datetime
 
 
 @api_view(['GET'])
@@ -41,43 +43,47 @@ def edit_dates(request: Request, id):
     except:
         return Response({"msg": "Enter the correct data."}, status=404)
     data = request.data
-    validate_dates(
-        data.get('planned_start_date', None),
-        data.get('planned_finish_date', None),
-        data.get('deadline', None)
-    )
-    validate_date_term(
-        data.get('planned_start_date', task.planned_start_date),
-        data.get('planned_finish_date', task.planned_finish_date),
-        data.get('deadline', task.deadline)
-    )
-    task.planned_start_date = data.get('planned_start_date', task.planned_start_date)
-    task.planned_finish_date = data.get('planned_finish_date', task.planned_finish_date)
-    task.deadline = data.get('deadline', task.deadline)
-    task.save()
-    return Response(request.data)
+    try:
+        start_date = datetime.strptime(data.get('planned_start_date'), DATE_FORMAT)
+        finish_date = datetime.strptime(data.get('planned_finish_date'), DATE_FORMAT)
+        deadline = datetime.strptime(data.get('deadline'), DATE_FORMAT)
+    except:
+        raise ValueError(f'Incorrect date format. Must be a "{DATE_FORMAT}" format')
+    if not is_valid_date_term(start_date, finish_date, deadline):
+        raise ValueError('Must be "start_date < finish_date <= deadline"')
+    parent = task.parent_id
+
+    task.planned_start_date = start_date.date()
+    task.planned_finish_date = finish_date.date()
+    task.deadline = deadline.date()
+    if is_in_parent_terms(parent, task):
+        task.save()
+        return Response(request.data)
+    return Response({"msg": "Enter the correct data."}, status=404)
 
 
 @api_view(['POST'])
 def create_task(request: Request):
     """Создать задачу:
-    {"parent_id":0,
-    "project_id":0,
-    "team_id":0,
-    "name":"string",
-    "description":"string",
-    "planned_start_date":"%Y-%m-%d",
-    "planned_finish_date":"%Y-%m-%d",
-    "deadline":"%Y-%m-%d"}
+    {"parent_id":0, "project_id":0, "team_id":0, "name":"string", "description":"string",
+    "planned_start_date":"%Y-%m-%d", "planned_finish_date":"%Y-%m-%d", "deadline":"%Y-%m-%d"}
     """
-    data = request.data
+    data: dict = request.data
     try:
         parent_task = Task.objects.get(id=data['parent_id'])
     except:
         parent_task = None
 
-    validate_dates(data['planned_start_date'], data['planned_finish_date'], data['deadline'])
-    validate_date_term(data['planned_start_date'], data['planned_finish_date'], data['deadline'])
+    try:
+        start_date = datetime.strptime(data.get('planned_start_date'), DATE_FORMAT)
+        finish_date = datetime.strptime(data.get('planned_finish_date'), DATE_FORMAT)
+        deadline = datetime.strptime(data.get('deadline'), DATE_FORMAT)
+    except:
+        raise ValueError(f'Incorrect date format. Must be a "{DATE_FORMAT}" format')
+
+    if not is_valid_date_term(start_date, finish_date, deadline):
+        raise ValueError('Must be "start_date < finish_date <= deadline"')
+
     task = Task(
         parent_id=parent_task,
         project_id=Project.objects.get(id=data['project_id']),
@@ -85,14 +91,14 @@ def create_task(request: Request):
         name=data['name'],
         description=data.get('description', None),
         status_id=Status.objects.get(name='В работу'),
-        planned_start_date=data['planned_start_date'],
-        planned_finish_date=data['planned_finish_date'],
-        deadline=data['deadline']
+        planned_start_date=start_date,
+        planned_finish_date=finish_date,
+        deadline=deadline
     )
-    if not is_valid_task_term(task, parent_task):
-        return Response({"msg": "Enter the correct data."}, status=404)
-    task.save()
-    return Response(model_to_dict(task))
+    if is_in_parent_terms(parent_task, task):
+        task.save()
+        return Response(model_to_dict(task))
+    return Response({"msg": "Enter the correct data."}, status=404)
 
 
 @api_view(['DELETE'])
