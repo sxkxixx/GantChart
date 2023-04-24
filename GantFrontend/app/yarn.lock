@@ -3660,6 +3660,11 @@ dhtmlx-gantt@^8.0.1:
   resolved "https://registry.yarnpkg.com/dhtmlx-gantt/-/dhtmlx-gantt-8.0.1.tgz#3d45d9444aaae6a9b4a3985a70a7e975ff6c01b1"
   integrity sha512-LBdqSJBmjURB1MLBKCFuajQAfJXjc344YKJIQ2WzMPkJJZkrKj6HvzMJFyNYq537IvqWZ+WFAE63an0i7GP84Q==
 
+dhtmlx-suite@^5.0.1:
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/dhtmlx-suite/-/dhtmlx-suite-5.0.1.tgz#63903347b219918e83392b05c6bb29e1a5f1e726"
+  integrity sha512-q7zHk6WS/W0L7nqrKHhjnOhWhkMgXbn58LjcuG9/apq1iVSzNcZOQXCtnTkjQgwpqrjZoRrB9LZNx2MqhFT3Ig==
+
 didyoumean@^1.2.2:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/didyoumean/-/didyoumean-1.2.2.tgz#989346ffe9e839b4555ecf5666edea0d3e8ad037"
