@@ -4,7 +4,7 @@ import './Gantt.css'
 import {gantt} from 'dhtmlx-gantt';
 import 'dhtmlx-gantt/codebase/dhtmlxgantt.css';
 import s from "../Main/Main.module.css";
-import Exit from "../../Assets/img/exitmodal.svg"
+import {ReactComponent as Exit} from "../../Assets/img/exitmodal.svg"
 
 
 let taskId = null;
