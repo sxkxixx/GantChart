@@ -73,6 +73,9 @@ def create_task(request: Request):
         parent_task = Task.objects.get(id=data['parent_id'])
     except:
         parent_task = None
+    if parent_task:
+        parent_task.is_on_kanban = False
+        parent_task.save()
 
     try:
         start_date = datetime.strptime(data.get('planned_start_date'), DATE_FORMAT).date()
@@ -99,6 +102,23 @@ def create_task(request: Request):
         task.save()
         return Response(model_to_dict(task))
     return Response({"msg": "Enter the correct data."}, status=404)
+
+
+@api_view(['POST'])
+def change_kanban_view(request: Request, id: int):
+    try:
+        task = Task.objects.get(id=id)
+    except:
+        return Response({"msg": "Enter the correct data."}, status=404)
+    parent_tasks = Task.objects.filter(parent_id=id)
+    if parent_tasks:
+        task.is_on_kanban = False
+        task.save()
+        return Response({'task': {'id': id, 'is_on_kanban': False}})
+    flag = task.is_on_kanban
+    task.is_on_kanban = not flag
+    task.save()
+    return Response({'task': {'id': id, 'is_on_kanban': task.is_on_kanban}})
 
 
 @api_view(['DELETE'])
