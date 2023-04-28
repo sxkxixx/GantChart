@@ -73,10 +73,6 @@ def create_task(request: Request):
         parent_task = Task.objects.get(id=data['parent_id'])
     except:
         parent_task = None
-    if parent_task:
-        parent_task.is_on_kanban = False
-        parent_task.save()
-
     try:
         start_date = datetime.strptime(data.get('planned_start_date'), DATE_FORMAT).date()
         finish_date = datetime.strptime(data.get('planned_finish_date'), DATE_FORMAT).date()
@@ -99,6 +95,9 @@ def create_task(request: Request):
         deadline=deadline
     )
     if is_in_parent_terms(parent_task, task):
+        if parent_task:
+            parent_task.is_on_kanban = False
+            parent_task.save()
         task.save()
         return Response(model_to_dict(task))
     return Response({"msg": "Enter the correct data."}, status=404)
