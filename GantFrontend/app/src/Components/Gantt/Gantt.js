@@ -44,6 +44,11 @@ export default class Gantt extends Component {
                     return "<div onclick='custom_add("+task.id+")';>&nbsp;&nbsp;&nbsp;+&nbsp;&nbsp;</div>"}}
         ];
 
+        // gantt.templates.grid_open = function(item) {
+        //     return "<div class='gantt_tree_icon" +
+        //         (item.$open ? "gant_close" : "gant_open") + "'></div>";
+        // };
+
         function custom_add(id){
             gantt.hideLightbox();
             toggle = true;
