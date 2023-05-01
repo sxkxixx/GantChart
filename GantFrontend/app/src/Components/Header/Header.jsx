@@ -19,7 +19,7 @@ const Header = () => {
     return (
         <div className={s.container}>
             <div className={s.left}>
-                <p className={s.logo}><Logo/><h1>Л.К. Стажера</h1></p>
+                <p className={s.logo}><Logo/><h1 style={{fontSize: '24px'}}>Л.К. Стажера</h1></p>
                 <button className={s.profile}><Profile/> Личный кабинет</button>
                 <div className={s.category}>
                     <button className={s.disableCategory}><Canban/>Канбан</button>

@@ -20,18 +20,17 @@ export default class Gantt extends Component {
 
     componentDidMount() {
         gantt.config.date_format = "%Y-%m-%d";
+        gantt.init(this.ganttContainer);
+        gantt.i18n.setLocale("ru"); // Руссификация
 
-        gantt.i18n.setLocale("ru");
-
+        // Календарь
+        gantt.config.scale_height = 80;
         gantt.config.scales = [
             {unit: "month", step: 1, format: "%F, %Y"},
             {unit: "day", step: 1, format: "%j"}
         ];
 
-        gantt.config.scale_height = 80;
-
-        gantt.init(this.ganttContainer);
-
+        // Колоны
         gantt.config.columns = [
             {name: "text", label: "ЗАДАЧИ", width: "*", tree: true},
             {name:"checked", label:"",width: "20", template:function(task) {
@@ -44,11 +43,7 @@ export default class Gantt extends Component {
                     return "<div onclick='custom_add("+task.id+")';>&nbsp;&nbsp;&nbsp;+&nbsp;&nbsp;</div>"}}
         ];
 
-        // gantt.templates.grid_open = function(item) {
-        //     return "<div class='gantt_tree_icon" +
-        //         (item.$open ? "gant_close" : "gant_open") + "'></div>";
-        // };
-
+        // Кастомная форма
         function custom_add(id){
             gantt.hideLightbox();
             toggle = true;
@@ -62,21 +57,41 @@ export default class Gantt extends Component {
             const task = gantt.getTask(id);
 
             let form = getForm();
+
             //вывод данных
             let text = form.querySelector("[name='text']");
             let description = form.querySelector("[name='description']");
+            let deadline = form.querySelector("[name='deadline']");
+            let startDate = form.querySelector("[name='start_date']");
+            let endDate = form.querySelector("[name='end_date']");
+
+            description.focus();
             text.focus();
-            description.focus()
-            text.value = task.text;
-            description.value = task.description
+            deadline.focus();
+            startDate.focus();
+            endDate.focus();
+
+            if (task.parent) {
+                const parentTask = gantt.getTask(task.parent);
+                form.querySelector("#parent_task").innerHTML = "Базовая задача: " + parentTask.text;
+            } else {
+                form.querySelector("#parent_task").innerHTML = "";
+            }
+
+            description.value = task.description || "Введите описание задачи... ";
+            text.value = task.text || "Название задачи";
+            deadline.value = task.deadline ? task.deadline : new Date();
+            startDate.value = task.start_date ? new Date(task.start_date).toISOString().substr(0, 10) : new Date().toISOString().substr(0, 10);
+            endDate.value = task.end_date ? new Date(task.end_date).toISOString().substr(0, 10) : new Date().toISOString().substr(0, 10);
 
             form.style.display = "flex";
 
             form.querySelector("[name='save']").onclick = save;
             form.querySelector("[name='close']").onclick = cancel;
-            // form.querySelector("[name='delete']").onclick = remove;
+            form.querySelector("[name='delete']").onclick = remove;
             form.querySelector('button[type="closemodal"]').onclick = cancel;
         };
+
 
         gantt.hideLightbox = function(){
             getForm().style.display = "none";
@@ -84,6 +99,8 @@ export default class Gantt extends Component {
         }
 
         gantt.config.open_tree_initially = true;
+
+        // Изменение отображения элементов на Диаграмме
 
         gantt.templates.grid_file = function(obj){
             if(obj.$level === 0)
@@ -116,6 +133,8 @@ export default class Gantt extends Component {
             }
         }
 
+
+        // Get запрос задач
         axios.get('http://localhost:8000/api/v1/gant/tasks')
             .then(response => {
                 const transformedData = this.transformData(response.data);
@@ -131,19 +150,49 @@ export default class Gantt extends Component {
         }
 
         function save() {
-            let task = gantt.getTask(taskId);
+            const task = gantt.getTask(taskId);
+            const form = getForm();
 
-            task.text = getForm().querySelector("[name='description']").value;
+            task.text = form.querySelector("[name='text']").value;
+            task.description = form.querySelector("[name='description']").value;
+            task.deadline = form.querySelector("[name='deadline']").value;
+            task.start_date = form.querySelector("[name='start_date']").value;
+            task.end_date = form.querySelector("[name='end_date']").value;
 
-            if(task.$new){
-                delete task.$new;
-                gantt.addTask(task,task.parent);
-            }else{
-                gantt.updateTask(task.id);
-            }
+            const createTaskUrl = '/api/v1/gant/task/create';
+            const requestBody = {
+                parent_id: task.parent,
+                project_id: 0,
+                team_id: 0,
+                name: task.text,
+                description: task.description,
+                planned_start_date: task.start_date,
+                planned_finish_date: task.end_date,
+                deadline: task.deadline
+            };
 
-            gantt.hideLightbox();
+            axios.post(createTaskUrl, requestBody)
+                .then(response => {
+                    const newTaskId = response.data.id;
+                    task.id = newTaskId;
+
+                    if (task.$new) {
+                        delete task.$new;
+                        gantt.addTask(task, task.parent);
+                    } else {
+                        gantt.updateTask(task.id);
+                    }
+
+                    gantt.hideLightbox();
+                })
+                .catch(error => {
+                    console.error(error);
+                });
         }
+
+
+
+
 
         function cancel() {
             let task = gantt.getTask(taskId);
@@ -197,7 +246,6 @@ export default class Gantt extends Component {
             }
         }
 
-
         data.forEach((task) => {
             transformTask(task);
         });
@@ -237,11 +285,11 @@ export default class Gantt extends Component {
                                     type="text"
                                     name="text"
                                 />
-                                <span>Базовая задача: Название задачи родителя</span>
+                                <p id='parent_task'></p>
                             </div>
                             <div className="project">
                                 <span>Проект</span>
-                                <input type="date"/>
+                                <input type="text"/>
                             </div>
                             <div className='elements'>
                                 <div className="element">
@@ -254,9 +302,8 @@ export default class Gantt extends Component {
                                 </div>
                                 <div className="date">
                                     <span>Планируемые сроки выполнения</span>
-                                    {/*<input type="date"/>*/}
                                     <div className='dateList'>
-                                        <p><input type="date"/> - <input type="date"/></p>
+                                        <p><input type="date" name='start_date'/> - <input type="date" name='end_date'/></p>
                                     </div>
                                 </div>
                             </div>
@@ -295,7 +342,7 @@ export default class Gantt extends Component {
                             <div className='buttons'>
                                 <input className='save' type="button" name="save" value="Сохранить"/>
                                 <input className='cancel' type="button" name="close" value="Отменить"/>
-                                {/*<input className='cancel' type="button" name="delete" value="Delete"/>*/}
+                                <input className='cancel' type="button" name="delete" value="Удалить"/>
                             </div>
                         </div>
                         <div className='closeButton'>
