@@ -242,7 +242,17 @@ export default class Gantt extends Component {
                 // Скрываем форму
                 form.style.display = "none";
                 // Обновляем Gantt Chart с новыми данными
-                gantt.parse(response.data);
+                console.log(response.data);
+                toast.success("Задача создана",{
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                });
             }).catch(error => {
                 console.error(error);
             });
