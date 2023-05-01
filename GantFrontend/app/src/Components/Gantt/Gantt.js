@@ -149,6 +149,24 @@ export default class Gantt extends Component {
                 console.error(error);
             });
 
+        gantt.config.drag_move = true;
+
+        gantt.attachEvent("onBeforeTaskDrag", function(id, mode, e){
+            return true;
+        });
+
+        gantt.attachEvent("onAfterTaskDrag", function(id, mode, e){
+            let task = gantt.getTask(id);
+
+            axios.post(`http://localhost:8000/api/v1/gant/task/${id}/edit_dates`, { planned_start_date: new Date(task.start_date).toISOString().slice(0, 10), planned_finish_date: new Date(task.end_date).toISOString().slice(0, 10), deadline: task.deadline })
+                .then(response => {
+                    console.log(response.data);
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+        });
+
         function getForm() {
             return document.getElementById("my-form");
         }
@@ -239,6 +257,14 @@ export default class Gantt extends Component {
         }
 
         function remove() {
+            let task = gantt.getTask(taskId);
+            axios.delete(`http://localhost:8000/api/v1/gant/task/${task.id}/del`)
+                .then(response => {
+                    console.log(response.data);
+                })
+                .catch(error => {
+                    console.error(error);
+                });
             gantt.deleteTask(taskId);
             gantt.hideLightbox();
         }
