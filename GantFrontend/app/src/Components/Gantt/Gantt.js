@@ -7,8 +7,10 @@ import s from "../Main/Main.module.css";
 import {ReactComponent as Exit} from "../../Assets/img/exitmodal.svg"
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { onKanbanViewChange } from './onJanban';
 
 
+window.onKanbanViewChange = onKanbanViewChange;
 let taskId = null;
 
 export default class Gantt extends Component {
@@ -37,25 +39,16 @@ export default class Gantt extends Component {
             {
                 name: "checked", label: "", width: "20", template: function (task) {
                     if (task.children === 0) {
-                        return "<input type='checkbox' name='test' id='test' checked={task.is_on_kanban} value='1'>";
+                        return `<input type='checkbox' ${task.is_on_kanban ? "checked" : ""} onchange='onKanbanViewChange(${task.id}, !${task.is_on_kanban})'>`;
                     }
                 }
             },
             {
                 name: "add", label: "", width: 44, template: function (task) {
-                    return "<div onclick='custom_add(" + task.id + ")';>&nbsp;&nbsp;&nbsp;+&nbsp;&nbsp;</div>"
+                    return "<div onclick='(" + task.id + ")';>&nbsp;&nbsp;&nbsp;+&nbsp;&nbsp;</div>"
                 }
             }
         ];
-
-        // Кастомная форма
-        // function custom_add(id) {
-        //     gantt.hideLightbox();
-        //     toggle = true;
-        //     let new_id = +new Date()
-        //     gantt.createTask({id: new_id, start_date: gantt.getState().min_date}, id, 1);
-        //
-        // }
 
         gantt.showLightbox = function (id) {
             taskId = id;
@@ -151,7 +144,6 @@ export default class Gantt extends Component {
             .then(response => {
                 const transformedData = this.transformData(response.data);
                 gantt.parse(transformedData);
-
             })
             .catch(error => {
                 console.error(error);
