@@ -18,7 +18,7 @@ def get_all_tasks(request: Request):
 @api_view(['GET'])
 def get_task_by_id(request, id):
     """
-    Выдает полная информацию по задаче. Если задачи с таким id нет, возвращается ошибка с 404-статус кодом.
+    Выдает полную информацию по задаче. Если задачи с таким id нет, возвращается ошибка с 404-статус кодом.
     """
     try:
         task = model_to_dict(Task.objects.get(id=id))
@@ -44,18 +44,18 @@ def edit_dates(request: Request, id):
         return Response({"msg": "Enter the correct data."}, status=404)
     data: dict = request.data
     try:
-        start_date = datetime.strptime(data.get('planned_start_date'), DATE_FORMAT)
-        finish_date = datetime.strptime(data.get('planned_finish_date'), DATE_FORMAT)
-        deadline = datetime.strptime(data.get('deadline'), DATE_FORMAT)
+        start_date = datetime.strptime(data.get('planned_start_date'), DATE_FORMAT).date()
+        finish_date = datetime.strptime(data.get('planned_finish_date'), DATE_FORMAT).date()
+        deadline = datetime.strptime(data.get('deadline'), DATE_FORMAT).date()
     except:
         raise ValueError(f'Incorrect date format. Must be a "{DATE_FORMAT}" format')
     if not is_valid_date_term(start_date, finish_date, deadline):
         raise ValueError('Must be "start_date < finish_date <= deadline"')
     parent = task.parent_id
 
-    task.planned_start_date = start_date.date()
-    task.planned_finish_date = finish_date.date()
-    task.deadline = deadline.date()
+    task.planned_start_date = start_date
+    task.planned_finish_date = finish_date
+    task.deadline = deadline
     if is_in_parent_terms(parent, task):
         task.save()
         return Response(request.data)
