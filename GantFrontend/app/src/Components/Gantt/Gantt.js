@@ -5,10 +5,11 @@ import {gantt} from 'dhtmlx-gantt';
 import 'dhtmlx-gantt/codebase/dhtmlxgantt.css';
 import s from "../Main/Main.module.css";
 import {ReactComponent as Exit} from "../../Assets/img/exitmodal.svg"
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 let taskId = null;
-let toggle = false;
 
 export default class Gantt extends Component {
     constructor(props) {
@@ -33,32 +34,37 @@ export default class Gantt extends Component {
         // Колоны
         gantt.config.columns = [
             {name: "text", label: "ЗАДАЧИ", width: "*", tree: true},
-            {name:"checked", label:"",width: "20", template:function(task) {
+            {
+                name: "checked", label: "", width: "20", template: function (task) {
                     if (task.children === 0) {
                         return "<input type='checkbox' name='test' id='test' checked={task.is_on_kanban} value='1'>";
                     }
                 }
             },
-            {name:"add", label:"", width:44,template: function (task){
-                    return "<div onclick='custom_add("+task.id+")';>&nbsp;&nbsp;&nbsp;+&nbsp;&nbsp;</div>"}}
+            {
+                name: "add", label: "", width: 44, template: function (task) {
+                    return "<div onclick='custom_add(" + task.id + ")';>&nbsp;&nbsp;&nbsp;+&nbsp;&nbsp;</div>"
+                }
+            }
         ];
 
         // Кастомная форма
-        function custom_add(id){
-            gantt.hideLightbox();
-            toggle = true;
-            let new_id = +new Date()
-            gantt.createTask({id: new_id, start_date:gantt.getState().min_date},id,1);
+        // function custom_add(id) {
+        //     gantt.hideLightbox();
+        //     toggle = true;
+        //     let new_id = +new Date()
+        //     gantt.createTask({id: new_id, start_date: gantt.getState().min_date}, id, 1);
+        //
+        // }
 
-        }
-
-        gantt.showLightbox = function(id) {
+        gantt.showLightbox = function (id) {
             taskId = id;
             const task = gantt.getTask(id);
 
             let form = getForm();
 
-            //вывод данных
+            // вывод данных
+            form.querySelector("[id='parent_task']").value = task.parent || '';
             let text = form.querySelector("[name='text']");
             let description = form.querySelector("[name='description']");
             let deadline = form.querySelector("[name='deadline']");
@@ -78,11 +84,18 @@ export default class Gantt extends Component {
                 form.querySelector("#parent_task").innerHTML = "";
             }
 
-            description.value = task.description || "Введите описание задачи... ";
-            text.value = task.text || "Название задачи";
-            deadline.value = task.deadline ? task.deadline : new Date();
-            startDate.value = task.start_date ? new Date(task.start_date).toISOString().substr(0, 10) : new Date().toISOString().substr(0, 10);
-            endDate.value = task.end_date ? new Date(task.end_date).toISOString().substr(0, 10) : new Date().toISOString().substr(0, 10);
+            description.value = task.description || "";
+            text.value = task.text || "";
+            deadline.value = task.deadline ? new Date(task.deadline).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10);
+            startDate.value = task.start_date ? new Date(task.start_date).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10);
+            endDate.value = task.end_date ? new Date(task.end_date).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10);
+
+            if (task.$new) {
+                // Добавляем стартовые значения для дедлайна, начальной и конечной дат
+                deadline.value = "";
+                startDate.value = "";
+                endDate.value = "";
+            }
 
             form.style.display = "flex";
 
@@ -92,8 +105,7 @@ export default class Gantt extends Component {
             form.querySelector('button[type="closemodal"]').onclick = cancel;
         };
 
-
-        gantt.hideLightbox = function(){
+        gantt.hideLightbox = function () {
             getForm().style.display = "none";
             taskId = null;
         }
@@ -102,8 +114,8 @@ export default class Gantt extends Component {
 
         // Изменение отображения элементов на Диаграмме
 
-        gantt.templates.grid_file = function(obj){
-            if(obj.$level === 0)
+        gantt.templates.grid_file = function (obj) {
+            if (obj.$level === 0)
                 return "<div class='gantt_tree_icon gantt_first'><i class='fas fa-plus'></i></div>";
             else
                 return "<div class='gantt_tree_icon'></div>";
@@ -119,14 +131,14 @@ export default class Gantt extends Component {
    </div>`;
         };
 
-        gantt.templates.task_text=function(start, end, task){
-            if (task.text){
-             return ''
+        gantt.templates.task_text = function (start, end, task) {
+            if (task.text) {
+                return ''
             }
         };
 
         gantt.templates.task_class = function (start, end, task) {
-            if (task.$level === 0 || task.$level === 1 ) {
+            if (task.$level === 0 || task.$level === 1) {
                 return "parent-task";
             } else {
                 return "child-task";
@@ -150,54 +162,86 @@ export default class Gantt extends Component {
         }
 
         function save() {
-            const task = gantt.getTask(taskId);
             const form = getForm();
 
-            task.text = form.querySelector("[name='text']").value;
-            task.description = form.querySelector("[name='description']").value;
-            task.deadline = form.querySelector("[name='deadline']").value;
-            task.start_date = form.querySelector("[name='start_date']").value;
-            task.end_date = form.querySelector("[name='end_date']").value;
+            // Получаем значения полей формы
+            const parentId = form.querySelector("[id='parent_task']").value
+            const text = form.querySelector("[name='text']").value.trim();
+            const description = form.querySelector("[name='description']").value.trim();
+            const deadline = form.querySelector("[name='deadline']").value;
+            const start_date = form.querySelector("[name='start_date']").value;
+            const end_date = form.querySelector("[name='end_date']").value;
 
-            const createTaskUrl = '/api/v1/gant/task/create';
-            const requestBody = {
-                parent_id: task.parent,
-                project_id: 0,
-                team_id: 0,
-                name: task.text,
-                description: task.description,
-                planned_start_date: task.start_date,
-                planned_finish_date: task.end_date,
-                deadline: task.deadline
-            };
+            // Валидация полей формы
+            if (!text) {
+                toast.success("Введите название задачи",{
+                                position: "top-right",
+                                autoClose: 5000,
+                                hideProgressBar: false,
+                                closeOnClick: true,
+                                pauseOnHover: true,
+                                draggable: true,
+                                progress: undefined,
+                                theme: "light",
+                            })
+            }
 
-            axios.post(createTaskUrl, requestBody)
-                .then(response => {
-                    const newTaskId = response.data.id;
-                    task.id = newTaskId;
+            if (!start_date || !end_date) {
+                toast.success("Введите даты начала и конца задачи",{
+                                position: "top-right",
+                                autoClose: 5000,
+                                hideProgressBar: false,
+                                closeOnClick: true,
+                                pauseOnHover: true,
+                                draggable: true,
+                                progress: undefined,
+                                theme: "light",
+                            });
+            }
 
-                    if (task.$new) {
-                        delete task.$new;
-                        gantt.addTask(task, task.parent);
-                    } else {
-                        gantt.updateTask(task.id);
-                    }
+            if (new Date(start_date).getTime() > new Date(end_date).getTime()) {
+                toast.success("Дата начала не может быть позже даты окончания задачии",{
+                                position: "top-right",
+                                autoClose: 5000,
+                                hideProgressBar: false,
+                                closeOnClick: true,
+                                pauseOnHover: true,
+                                draggable: true,
+                                progress: undefined,
+                                theme: "light",
+                            });
+            }
 
-                    gantt.hideLightbox();
-                })
-                .catch(error => {
-                    console.error(error);
-                });
+            // Форматируем даты в формат "%Y-%m-%d"
+            const formatter = gantt.date.date_to_str("%Y-%m-%d");
+            const start_date_formatted = formatter(new Date(start_date));
+            const end_date_formatted = formatter(new Date(end_date));
+
+
+            // Отправляем POST запрос на сервер для создания новой задачи
+            axios.post('http://127.0.0.1:8000/api/v1/gant/task/create', {
+                parent_id: parentId ? parentId : null,
+                project_id: 1,
+                team_id: 1,
+                name: text,
+                description: description,
+                deadline: deadline ? formatter(new Date(deadline)) : null,
+                planned_start_date: start_date_formatted,
+                planned_finish_date: end_date_formatted,
+            }).then(response => {
+                // Скрываем форму
+                form.style.display = "none";
+                // Обновляем Gantt Chart с новыми данными
+                gantt.parse(response.data);
+            }).catch(error => {
+                console.error(error);
+            });
         }
-
-
-
-
 
         function cancel() {
             let task = gantt.getTask(taskId);
 
-            if(task.$new)
+            if (task.$new)
                 gantt.deleteTask(task.id);
             gantt.hideLightbox();
         }
@@ -208,17 +252,6 @@ export default class Gantt extends Component {
         }
     }
 
-    createTask = (task) => {
-        axios.post('/api/v1/gant/task/create', task)
-            .then(response => {
-                console.log('Task created:', response.data);
-                gantt.addTask(task);
-                gantt.hideLightbox();
-            })
-            .catch(error => {
-                console.error('Failed to create task:', error);
-            });
-    };
     transformData(data) {
         const taskMap = new Map();
 
@@ -278,10 +311,11 @@ export default class Gantt extends Component {
                 </div>
                 {/*==================================================*/}
                 <div id="my-form" className="modal" style={{display: "none"}}>
-                    <div className="my-form" >
+                    <div className="my-form">
                         <div className='main'>
                             <div className="title">
                                 <input
+                                    placeholder='Введите название'
                                     type="text"
                                     name="text"
                                 />
@@ -289,7 +323,7 @@ export default class Gantt extends Component {
                             </div>
                             <div className="project">
                                 <span>Проект</span>
-                                <input type="text"/>
+                                <input type="text" placeholder='Название проекта'/>
                             </div>
                             <div className='elements'>
                                 <div className="element">
@@ -298,42 +332,34 @@ export default class Gantt extends Component {
                                 </div>
                                 <div className="element">
                                     <span>Тег команды</span>
-                                    <input type="text"/>
+                                    <input type="text" placeholder='Тег'/>
                                 </div>
                                 <div className="date">
                                     <span>Планируемые сроки выполнения</span>
                                     <div className='dateList'>
-                                        <p><input type="date" name='start_date'/> - <input type="date" name='end_date'/></p>
+                                        <input type="date" name='start_date'/> - <input type="date" name='end_date'/>
                                     </div>
                                 </div>
                             </div>
                             <div className="description">
-                                <p><textarea name="description"></textarea></p>
+                                <p><textarea name="description" placeholder='Введите описание задачи...'></textarea></p>
                             </div>
                             <div className="name">
                                 <div className='nameList'>
                                     <span>Постановщик</span>
-                                    <input type="text"/>
+                                    <input type="text" placeholder='ФИО'/>
                                 </div>
                                 <div className='nameList'>
                                     <span>Ответственный</span>
-                                    <input type="text"/>
+                                    <input type="text" placeholder='ФИО'/>
                                 </div>
                             </div>
                             <div className='performers'>
                                 <span>Исполнители</span>
-                                <input type="text"/>
+                                <input type="text" placeholder='ФИО'/>
                             </div>
                             <div className='check_list'>
                                 <span>Чек-лист</span>
-                                <div className='check_list_elements'>
-                                    <input type="checkbox"/>
-                                    <input type="text" className='check_list_text'/>
-                                </div>
-                                <div className='check_list_elements'>
-                                    <input type="checkbox"/>
-                                    <input type="text" className='check_list_text'/>
-                                </div>
                                 <div className='check_list_elements'>
                                     <input type="checkbox"/>
                                     <input type="text" className='check_list_text'/>
@@ -346,7 +372,7 @@ export default class Gantt extends Component {
                             </div>
                         </div>
                         <div className='closeButton'>
-                            <button type='closemodal'><Exit/></button>
+                            <button type='closemodal' className='closemodal'><Exit/></button>
                         </div>
                     </div>
                 </div>
