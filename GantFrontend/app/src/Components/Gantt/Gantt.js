@@ -28,10 +28,14 @@ export default class Gantt extends Component {
 
         // Календарь
         gantt.config.scale_height = 80;
+        gantt.config.show_tasks_outside_timescale = true;
         gantt.config.scales = [
             {unit: "month", step: 1, format: "%F, %Y"},
             {unit: "day", step: 1, format: "%j"}
         ];
+
+        gantt.config.grid_resize = true;
+
 
         // Колоны
         gantt.config.columns = [
