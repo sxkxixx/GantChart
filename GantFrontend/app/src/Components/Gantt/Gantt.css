@@ -60,10 +60,9 @@
 .my-form{
     display: flex;
     flex-direction: row;
-    padding: 24px 24px 32px;
+    padding: 15px 0 15px 30px;
     background: #F5F7F9;
     border-radius: 5px;
-    gap: 16px;
     z-index: 4;
     width: 710px;
     height: 815px;
@@ -73,17 +72,19 @@
     display: flex;
     flex-direction: column;
     gap: 20px;
-    width: 606px;
-    height: 759px;
+    width: 100%;
+    height: 100%;
+    padding: 10px 0;
 }
 
 .closeButton{
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    width: 100%;
+    width: 10%;
     height: 100%;
-    padding-top: 2px;
+    padding-top: 10px;
+    padding-right: 10px;
 }
 
 #parent_task{
@@ -93,8 +94,8 @@
 }
 
 .closemodal{
-    width: 100%;
-    height: 5%;
+    width: 32px;
+    height: 32px;
 }
 
 .title{
@@ -123,18 +124,19 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    padding: 0px;
     gap: 4px;
-    width: 184px;
+    width: 50%;
     height: 20%;
 }
 .project select{
     display: flex;
     flex-direction: row;
+    text-align: center;
+    color: #2870FF;
     align-items: center;
-    padding: 0px 8px;
+    padding: 0 8px;
 
-    width: 184px;
+    width: 220px;
     height: 32px;
 
     background: url(../../Assets/img/gantt.svg) no-repeat center left #FFFFFF;
@@ -144,6 +146,7 @@
     border: 1px solid #AFBAC3;
     border-radius: 5px;
 }
+
 
 .elements{
     display: flex;
@@ -163,15 +166,18 @@
     gap: 4px;
     width: 184px;
     height: 52px;
-    font-size: 14px;
+    font-size: 15px;
 }
 
 .element select{
     display: flex;
     flex-direction: row;
     align-items: center;
+    text-align: center;
+    color: #EE7900;
+    font-size: 16px;
     justify-content: center;
-    padding: 0px 8px;
+    padding: 0 8px;
 
     width: 100%;
     height: 32px;
@@ -194,7 +200,7 @@
     width: 100%;
     height: 32px;
 
-    font-size: 15px;
+    font-size: 16px;
     background: url(../../Assets/img/clock.svg) no-repeat center left #FFFFFF;
     background-size: 15px;
     background-position-x: 10px;
@@ -219,6 +225,7 @@
     flex-direction: row;
     align-items: center;
     padding: 0px 8px;
+    font-size: 14px;
 
     width: 215px;
     height: 32px;
@@ -529,8 +536,7 @@
 .nested_task .gantt_add{
     background-image: url('../../Assets/img/add.svg');
     background-size: 20px;
-    width: 32px;
-    height: 32px;
     background-repeat: no-repeat;
     background-position: center;
 }
+

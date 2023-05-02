@@ -25,13 +25,10 @@ export default class Gantt extends Component {
         };
     }
 
-
-
     componentDidMount() {
         gantt.config.date_format = "%Y-%m-%d";
         gantt.init(this.ganttContainer);
         gantt.i18n.setLocale("ru"); // Руссификация
-        gantt.render();
 
         // Календарь
         gantt.config.scale_height = 80;
@@ -42,9 +39,6 @@ export default class Gantt extends Component {
         ];
 
         // Dropdown
-        gantt.templates.grid_indent=function(task){
-            return "<div style='width:10px; float:left; height:100%'></div>"
-        };
         gantt.templates.grid_open = function(item) {
             if (item.$open) {
                 return "<div class='my_open_icon'></div>";
@@ -153,7 +147,6 @@ export default class Gantt extends Component {
         gantt.config.open_tree_initially = true;
 
         // Изменение отображения элементов на Диаграмме
-
         gantt.templates.grid_file = function (obj) {
             if (obj.$level === 0)
                 return "<div class='gantt_tree_icon gantt_first'><i class='fas fa-plus'></i></div>";
@@ -185,7 +178,6 @@ export default class Gantt extends Component {
             }
         }
 
-
         // Get запрос задач
         axios.get('http://localhost:8000/api/v1/gant/tasks')
             .then(response => {
@@ -211,13 +203,31 @@ export default class Gantt extends Component {
             })
                 .then(response => {
                     console.log(response.data);
-                    window.location.reload();
+                    toast.success('Дата успешно изменена', {
+                        position: "top-right",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "light",
+                    });
                 })
                 .catch(error => {
                     console.error(error);
+                    toast.warn("Дата конца не может быть позже даты дедлайна задачи", {
+                        position: "top-right",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "light",
+                    });
                 });
         });
-
 
         function save() {
             const form = getForm();
@@ -232,7 +242,7 @@ export default class Gantt extends Component {
 
             // Валидация полей формы
             if (!text) {
-                toast.success("Введите название задачи", {
+                toast.warn("Введите название задачи", {
                     position: "top-right",
                     autoClose: 5000,
                     hideProgressBar: false,
@@ -244,10 +254,23 @@ export default class Gantt extends Component {
                 })
             }
 
-            if (!start_date || !end_date) {
-                toast.success("Введите даты начала и конца задачи", {
+            if (!deadline) {
+                toast.warn("Выберите дедлайн задачи", {
                     position: "top-right",
-                    autoClose: 5000,
+                    autoClose: 6000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                })
+            }
+
+            if (!start_date || !end_date) {
+                toast.warn("Введите даты начала и конца задачи", {
+                    position: "top-right",
+                    autoClose: 6000,
                     hideProgressBar: false,
                     closeOnClick: true,
                     pauseOnHover: true,
@@ -258,7 +281,20 @@ export default class Gantt extends Component {
             }
 
             if (new Date(start_date).getTime() > new Date(end_date).getTime()) {
-                toast.success("Дата начала не может быть позже даты окончания задачии", {
+                toast.warn("Дата начала не может быть позже даты окончания задачи", {
+                    position: "top-right",
+                    autoClose: 6000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                });
+            }
+
+            if (new Date(end_date).getTime() > new Date(deadline).getTime()) {
+                toast.warn("Дата конца не может быть позже даты дедлайна задачи", {
                     position: "top-right",
                     autoClose: 5000,
                     hideProgressBar: false,
@@ -291,10 +327,10 @@ export default class Gantt extends Component {
                 form.style.display = "none";
                 // Обновляем Gantt Chart с новыми данными
                 console.log(response.data);
-                window.location.reload();
+                // window.location.reload();
                 toast.success("Задача создана", {
                     position: "top-right",
-                    autoClose: 4000,
+                    autoClose: 1000,
                     hideProgressBar: false,
                     closeOnClick: true,
                     pauseOnHover: true,
@@ -302,6 +338,9 @@ export default class Gantt extends Component {
                     progress: undefined,
                     theme: "light",
                 });
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1200);
             }).catch(error => {
                 console.error(error);
             });
@@ -320,10 +359,10 @@ export default class Gantt extends Component {
             axios.delete(`http://localhost:8000/api/v1/gant/task/${task.id}/del`)
                 .then(response => {
                     console.log(response.data);
-                    window.location.reload();
+                    // window.location.reload();
                     toast.success("Задача удалена", {
                         position: "top-right",
-                        autoClose: 5000,
+                        autoClose: 1200,
                         hideProgressBar: false,
                         closeOnClick: true,
                         pauseOnHover: true,
@@ -338,6 +377,8 @@ export default class Gantt extends Component {
             gantt.deleteTask(taskId);
             gantt.hideLightbox();
         }
+
+        gantt.render();
     }
 
     transformData(data) {
@@ -378,8 +419,6 @@ export default class Gantt extends Component {
         return transformedData;
     };
 
-
-
     render() {
 
         return (
@@ -414,7 +453,11 @@ export default class Gantt extends Component {
                             </div>
                             <div className="project">
                                 <span>Проект</span>
-                                <select placeholder='Название проекта'/>
+                                <select>
+                                    <option>Название проекта</option>
+                                    <option>ЛК Гант</option>
+                                    <option>ЛК Канбан</option>
+                                </select>
                             </div>
                             <div className='elements'>
                                 <div className="element">
@@ -423,7 +466,11 @@ export default class Gantt extends Component {
                                 </div>
                                 <div className="element">
                                     <span>Тег команды</span>
-                                    <select placeholder='Тег'/>
+                                    <select>
+                                        <option>#Тег_команды</option>
+                                        <option>#Гант</option>
+                                        <option>#Канбан</option>
+                                    </select>
                                 </div>
                                 <div className="date">
                                     <span>Планируемые сроки выполнения</span>
@@ -440,11 +487,18 @@ export default class Gantt extends Component {
                             <div className="name">
                                 <div className='nameList'>
                                     <span>Постановщик</span>
-                                    <input type="text" placeholder='ФИО'/>
+                                    <input type="text" placeholder='Введите Имя'/>
                                 </div>
                                 <div className='nameList'>
                                     <span>Ответственный</span>
-                                    <select placeholder='ФИО'/>
+                                    <select>
+                                        <option>Выберите</option>
+                                        <option>Игорь</option>
+                                        <option>Саша</option>
+                                        <option>Вера</option>
+                                        <option>Юля</option>
+                                        <option>Артем</option>
+                                    </select>
                                 </div>
                             </div>
                             <div className='performers'>
@@ -453,7 +507,14 @@ export default class Gantt extends Component {
                                     <button><Add/></button>
                                 </div>
                                 <div>
-                                    <select value='ФИО'/>
+                                    <select>
+                                        <option>Выберите</option>
+                                        <option>Игорь</option>
+                                        <option>Саша</option>
+                                        <option>Вера</option>
+                                        <option>Юля</option>
+                                        <option>Артем</option>
+                                    </select>
                                     <button><Del/></button>
                                 </div>
                             </div>
