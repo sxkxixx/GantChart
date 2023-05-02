@@ -178,6 +178,7 @@ export default class Gantt extends Component {
             axios.post(`http://localhost:8000/api/v1/gant/task/${id}/edit_dates`, { planned_start_date: new Date(task.start_date).toISOString().slice(0, 10), planned_finish_date: new Date(task.end_date).toISOString().slice(0, 10), deadline: task.deadline })
                 .then(response => {
                     console.log(response.data);
+                    window.location.reload();
                 })
                 .catch(error => {
                     console.error(error);
@@ -257,6 +258,7 @@ export default class Gantt extends Component {
                 form.style.display = "none";
                 // Обновляем Gantt Chart с новыми данными
                 console.log(response.data);
+                window.location.reload();
                 toast.success("Задача создана",{
                     position: "top-right",
                     autoClose: 4000,
@@ -285,6 +287,7 @@ export default class Gantt extends Component {
             axios.delete(`http://localhost:8000/api/v1/gant/task/${task.id}/del`)
                 .then(response => {
                     console.log(response.data);
+                    window.location.reload();
                     toast.success("Задача удалена",{
                         position: "top-right",
                         autoClose: 5000,
@@ -459,6 +462,7 @@ export default class Gantt extends Component {
                             <div className='buttons'>
                                 <input className='save' type="button" name="save" value="Сохранить"/>
                                 <input className='cancel' type="button" name="close" value="Отменить"/>
+                                <input className='cancel' type="button" name="delete" value="Удалить"/>
                             </div>
                         </div>
                         <div className='closeButton'>
@@ -528,9 +532,9 @@ export default class Gantt extends Component {
                 {/*                    <div className='timer_top_elements'>*/}
                 {/*                        <span>100:60:60</span>*/}
                 {/*                        <div className='timer_button'>*/}
-                {/*                            <input className='play_time' type="button" name="play"><Play/></input>*/}
-                {/*                            <input className='save_time' type="button" name="save_time">Сохранить</input>*/}
-                {/*                            <input className='remove_time' type="button" name="remove_time"><Trash/></input>*/}
+                {/*                            <button className='play_time' name="play"><Play/></button>*/}
+                {/*                            <button className='save_time' name="save_time">Сохранить</button>*/}
+                {/*                            <button className='remove_time' name="remove_time"><Trash/></button>*/}
                 {/*                        </div>*/}
                 {/*                    </div>*/}
                 {/*                </div>*/}
