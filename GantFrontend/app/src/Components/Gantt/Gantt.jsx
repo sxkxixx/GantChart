@@ -9,9 +9,9 @@ import {ReactComponent as Play} from "../../Assets/img/playWhite.svg"
 import {ReactComponent as Trash} from "../../Assets/img/trash.svg"
 import {ReactComponent as Add} from "../../Assets/img/addButton.svg"
 import {ReactComponent as Del} from "../../Assets/img/deleteButton.svg"
-import { toast } from 'react-toastify';
+import {toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { onKanbanViewChange } from './onJanban';
+import {onKanbanViewChange} from './onJanban';
 
 
 window.onKanbanViewChange = onKanbanViewChange;
@@ -24,6 +24,8 @@ export default class Gantt extends Component {
             data: []
         };
     }
+
+
 
     componentDidMount() {
         gantt.config.date_format = "%Y-%m-%d";
@@ -39,22 +41,49 @@ export default class Gantt extends Component {
             {unit: "day", step: 1, format: "%j"}
         ];
 
+        // Dropdown
+        gantt.templates.grid_indent=function(task){
+            return "<div style='width:10px; float:left; height:100%'></div>"
+        };
+        gantt.templates.grid_open = function(item) {
+            if (item.$open) {
+                return "<div class='my_open_icon'></div>";
+            } else {
+                return "<div class='my_close_icon'></div>";
+            }
+        };
+        gantt.attachEvent("onTaskClick", function(id, e) {
+            let target = e.target || e.srcElement;
+            if (target.classList.contains("my_open_icon")) {
+                gantt.close(id);
+            } else if (target.classList.contains("my_close_icon")) {
+                gantt.open(id);
+            }
+            return true;
+        });
+
+        // Add
+        gantt.templates.grid_row_class = function( start, end, task ){
+            if ( task.$level >= 0){
+                return "nested_task"
+            }
+            return "";
+        };
+
         // Колоны
         gantt.config.columns = [
             {name: "text", label: "ЗАДАЧИ", width: "*", tree: true},
             {
-                name: "checked", label: "", width: "22", template: function (task) {
+                name: "checked", label: "", width: "24", template: function (task) {
                     if (task.children === 0) {
                         return `<input type='checkbox' ${task.is_on_kanban ? "checked" : ""} onchange='onKanbanViewChange(${task.id}, !${task.is_on_kanban})'>`;
                     }
                 }
             },
             {
-                name: "add", label: "", width: 44, template: function (task) {
-                    return "<div onclick='(" + task.id + ")';>&nbsp;&nbsp;&nbsp;+&nbsp;&nbsp;</div>"
-                }
+                name: "add", label: "", width: 44
             }
-        ];
+        ]
 
         // function getForm(task) {
         //     if (task.$new) {
@@ -169,13 +198,17 @@ export default class Gantt extends Component {
 
         gantt.config.drag_move = true;
 
-        gantt.attachEvent("onBeforeTaskDrag", function(id, mode, e){
+        gantt.attachEvent("onBeforeTaskDrag", function (id, mode, e) {
             return true;
         });
 
-        gantt.attachEvent("onAfterTaskDrag", function(id, mode, e){
+        gantt.attachEvent("onAfterTaskDrag", function (id, mode, e) {
             let task = gantt.getTask(id);
-            axios.post(`http://localhost:8000/api/v1/gant/task/${id}/edit_dates`, { planned_start_date: new Date(task.start_date).toISOString().slice(0, 10), planned_finish_date: new Date(task.end_date).toISOString().slice(0, 10), deadline: task.deadline })
+            axios.post(`http://localhost:8000/api/v1/gant/task/${id}/edit_dates`, {
+                planned_start_date: new Date(task.start_date).toISOString().slice(0, 10),
+                planned_finish_date: new Date(task.end_date).toISOString().slice(0, 10),
+                deadline: task.deadline
+            })
                 .then(response => {
                     console.log(response.data);
                     window.location.reload();
@@ -199,42 +232,42 @@ export default class Gantt extends Component {
 
             // Валидация полей формы
             if (!text) {
-                toast.success("Введите название задачи",{
-                                position: "top-right",
-                                autoClose: 5000,
-                                hideProgressBar: false,
-                                closeOnClick: true,
-                                pauseOnHover: true,
-                                draggable: true,
-                                progress: undefined,
-                                theme: "light",
-                            })
+                toast.success("Введите название задачи", {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                })
             }
 
             if (!start_date || !end_date) {
-                toast.success("Введите даты начала и конца задачи",{
-                                position: "top-right",
-                                autoClose: 5000,
-                                hideProgressBar: false,
-                                closeOnClick: true,
-                                pauseOnHover: true,
-                                draggable: true,
-                                progress: undefined,
-                                theme: "light",
-                            });
+                toast.success("Введите даты начала и конца задачи", {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                });
             }
 
             if (new Date(start_date).getTime() > new Date(end_date).getTime()) {
-                toast.success("Дата начала не может быть позже даты окончания задачии",{
-                                position: "top-right",
-                                autoClose: 5000,
-                                hideProgressBar: false,
-                                closeOnClick: true,
-                                pauseOnHover: true,
-                                draggable: true,
-                                progress: undefined,
-                                theme: "light",
-                            });
+                toast.success("Дата начала не может быть позже даты окончания задачии", {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                });
             }
 
             // Форматируем даты в формат "%Y-%m-%d"
@@ -259,7 +292,7 @@ export default class Gantt extends Component {
                 // Обновляем Gantt Chart с новыми данными
                 console.log(response.data);
                 window.location.reload();
-                toast.success("Задача создана",{
+                toast.success("Задача создана", {
                     position: "top-right",
                     autoClose: 4000,
                     hideProgressBar: false,
@@ -288,7 +321,7 @@ export default class Gantt extends Component {
                 .then(response => {
                     console.log(response.data);
                     window.location.reload();
-                    toast.success("Задача удалена",{
+                    toast.success("Задача удалена", {
                         position: "top-right",
                         autoClose: 5000,
                         hideProgressBar: false,
@@ -345,7 +378,10 @@ export default class Gantt extends Component {
         return transformedData;
     };
 
+
+
     render() {
+
         return (
             <>
                 <div className={s.elements}>
@@ -429,32 +465,32 @@ export default class Gantt extends Component {
                                 <div className='list'>
                                     <div className='check_list_elements'>
                                         <input type="checkbox"/>
-                                        <input type="text" className='check_list_text'/>
+                                        <input type="text" className='check_list_text' value='Пункт 1'/>
                                         <button><Del/></button>
                                     </div>
                                     <div className='check_list_elements'>
                                         <input type="checkbox"/>
-                                        <input type="text" className='check_list_text'/>
+                                        <input type="text" className='check_list_text' value='Пункт 2'/>
                                         <button><Del/></button>
                                     </div>
                                     <div className='check_list_elements'>
                                         <input type="checkbox"/>
-                                        <input type="text" className='check_list_text'/>
+                                        <input type="text" className='check_list_text' value='Пункт 3'/>
                                         <button><Del/></button>
                                     </div>
                                     <div className='check_list_elements'>
                                         <input type="checkbox"/>
-                                        <input type="text" className='check_list_text'/>
+                                        <input type="text" className='check_list_text' value='Пункт 4'/>
                                         <button><Del/></button>
                                     </div>
                                     <div className='check_list_elements'>
                                         <input type="checkbox"/>
-                                        <input type="text" className='check_list_text'/>
+                                        <input type="text" className='check_list_text' value='Пункт 5'/>
                                         <button><Del/></button>
                                     </div>
                                     <div className='check_list_elements'>
                                         <input type="checkbox"/>
-                                        <input type="text" className='check_list_text'/>
+                                        <input type="text" className='check_list_text' value='Пункт 6'/>
                                         <button><Del/></button>
                                     </div>
                                 </div>

@@ -388,8 +388,8 @@
     padding: 0px;
     gap: 8px;
 
-    width: 40%;
-    height: 21px;
+    width: 90%;
+    height: 60px;
 }
 
 .check_list_title{
@@ -406,8 +406,8 @@
     padding: 0px 4px;
     gap: 10px;
 
-    width: 120px;
-    height: 21px;
+    width: 80%;
+    height: 30px;
 
     background: #FFFFFF;
     /* Basic/Grey */
@@ -508,4 +508,29 @@
 .comments_input{
     display: flex;
     flex-direction: column;
+}
+
+.my_open_icon {
+    background-image: url('../../Assets/img/close.svg');
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 32px;
+    height: 32px;
+}
+
+.my_close_icon {
+    background-image: url('../../Assets/img/open.svg');
+    width: 32px;
+    height: 32px;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.nested_task .gantt_add{
+    background-image: url('../../Assets/img/add.svg');
+    background-size: 20px;
+    width: 32px;
+    height: 32px;
+    background-repeat: no-repeat;
+    background-position: center;
 }
