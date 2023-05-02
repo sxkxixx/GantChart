@@ -155,6 +155,15 @@ export default class Gantt extends Component {
             return true;
         });
 
+        gantt.attachEvent("onBeforeTaskChanged", function(id, mode, task){
+            if (mode === gantt.config.drag_move){
+                const start_date = gantt.getTask(id).start_date;
+                const new_start_date = gantt.date.add(start_date, -1, "day");
+                gantt.getTask(id).start_date = new_start_date;
+            }
+            return true;
+        });
+
         gantt.attachEvent("onAfterTaskDrag", function(id, mode, e){
             let task = gantt.getTask(id);
 
