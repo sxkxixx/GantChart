@@ -112,3 +112,20 @@ html,body{
   font-weight: 400;
 }
 
+input[type=checkbox]{
+  width: 16px;
+  height: 16px;
+  border: 2px solid #AFBAC3;
+  border-radius: 5px;
+}
+
+input:checked{
+  color: #56C568;
+}
+
+span{
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 16px;
+}
+

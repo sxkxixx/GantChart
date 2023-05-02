@@ -61,18 +61,20 @@
     display: flex;
     flex-direction: row;
     padding: 24px 24px 32px;
-    width: 710px;
-    height: 743px;
     background: #F5F7F9;
     border-radius: 5px;
     gap: 16px;
     z-index: 4;
+    width: 710px;
+    height: 815px;
 }
 
 .main{
     display: flex;
     flex-direction: column;
     gap: 20px;
+    width: 606px;
+    height: 759px;
 }
 
 .closeButton{
@@ -87,6 +89,7 @@
 #parent_task{
     padding-top: 3px;
     padding-left: 5px;
+
 }
 
 .closemodal{
@@ -112,6 +115,8 @@
     border-radius: 5px;
     font-size: 20px;
     padding: 8px 10px 8px 8px;
+    font-weight: 500;
+    line-height: 20px;
 }
 
 .project{
@@ -123,7 +128,7 @@
     width: 184px;
     height: 20%;
 }
-.project input{
+.project select{
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -132,8 +137,9 @@
     width: 184px;
     height: 32px;
 
-    background: #FFFFFF;
-    /* Basic/Grey */
+    background: url(../../Assets/img/gantt.svg) no-repeat center left #FFFFFF;
+    background-size: 16px;
+    background-position-x: 10px;
 
     border: 1px solid #AFBAC3;
     border-radius: 5px;
@@ -160,17 +166,38 @@
     font-size: 14px;
 }
 
+.element select{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding: 0px 8px;
+
+    width: 100%;
+    height: 32px;
+
+    background: url(../../Assets/img/flag.svg) no-repeat center left #FFFFFF;
+    background-size: 14px;
+    background-position-x: 10px;
+
+    border: 1px solid #AFBAC3;
+    border-radius: 5px;
+}
+
 .element input{
     display: flex;
     flex-direction: row;
     align-items: center;
+    justify-content: flex-end;
     padding: 0px 8px;
 
-    width: 184px;
+    width: 100%;
     height: 32px;
 
-    background: #FFFFFF;
-    /* Basic/Grey */
+    font-size: 15px;
+    background: url(../../Assets/img/clock.svg) no-repeat center left #FFFFFF;
+    background-size: 15px;
+    background-position-x: 10px;
 
     border: 1px solid #AFBAC3;
     border-radius: 5px;
@@ -197,7 +224,9 @@
     height: 32px;
 
     background: #FFFFFF;
-    /* Basic/Grey */
+    /*background: url(../../Assets/img/gantt.svg) no-repeat center left;*/
+    /*background-size: 18px;*/
+    /*background-position-x: 10px;*/
 
     border: 1px solid #AFBAC3;
     border-radius: 5px;
@@ -259,12 +288,57 @@
 
 }
 
-.performers{
-    width: 200px;
-    height: 20%;
+.nameList select{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0px 8px;
+    gap: 4px;
+
+    width: 192px;
+    height: 32px;
+
+    background: #FFFFFF;
+    /* Basic/Grey */
+
+    border: 1px solid #AFBAC3;
+    border-radius: 5px;
+
 }
 
-.performers input{
+.performers{
+    display: flex;
+    flex-direction: column;
+    width: 200px;
+    height: 20%;
+    gap: 8px;
+}
+
+.performers div{
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+}
+.performers button{
+    font-size: 20px;
+    width: 10%;
+}
+.performers span{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 5px;
+    font-size: 14px;
+}
+.performers_title{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 5px;
+    font-size: 14px;
+}
+
+.performers select{
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -285,10 +359,26 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    padding: 0px;
-    gap: 8px;
-    width: 107px;
+    gap: 10px;
+    width: 100%;
     height: 20%;
+}
+
+.list{
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+    padding: 0px;
+    gap: 10px;
+    width: 100%;
+    height: 100%;
+}
+
+.check_list_title span{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 5px;
 }
 
 .check_list_elements{
@@ -298,8 +388,15 @@
     padding: 0px;
     gap: 8px;
 
-    width: 107px;
+    width: 40%;
     height: 21px;
+}
+
+.check_list_title{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
 }
 
 .check_list_text{
@@ -309,7 +406,7 @@
     padding: 0px 4px;
     gap: 10px;
 
-    width: 59px;
+    width: 120px;
     height: 21px;
 
     background: #FFFFFF;
@@ -372,3 +469,43 @@
 }
 
 .close{}
+
+.timer{
+    display: flex;
+    flex-direction: column;
+}
+
+.timer_top{
+    display: flex;
+    flex-direction: column;
+}
+
+.timer_top_elements{
+    display: flex;
+    flex-direction: row;
+}
+
+.timer_button{
+    display: flex;
+    flex-direction: row;
+}
+
+.timer_bottom{
+    display: flex;
+    flex-direction: column;
+}
+
+.timer_bottom_elements{
+    display: flex;
+    flex-direction: row;
+}
+
+.comments{
+    display: flex;
+    flex-direction: column;
+}
+
+.comments_input{
+    display: flex;
+    flex-direction: column;
+}

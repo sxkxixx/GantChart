@@ -5,6 +5,10 @@ import {gantt} from 'dhtmlx-gantt';
 import 'dhtmlx-gantt/codebase/dhtmlxgantt.css';
 import s from "../Main/Main.module.css";
 import {ReactComponent as Exit} from "../../Assets/img/exitmodal.svg"
+import {ReactComponent as Play} from "../../Assets/img/playWhite.svg"
+import {ReactComponent as Trash} from "../../Assets/img/trash.svg"
+import {ReactComponent as Add} from "../../Assets/img/addButton.svg"
+import {ReactComponent as Del} from "../../Assets/img/deleteButton.svg"
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { onKanbanViewChange } from './onJanban';
@@ -25,6 +29,7 @@ export default class Gantt extends Component {
         gantt.config.date_format = "%Y-%m-%d";
         gantt.init(this.ganttContainer);
         gantt.i18n.setLocale("ru"); // Руссификация
+        gantt.render();
 
         // Календарь
         gantt.config.scale_height = 80;
@@ -34,14 +39,11 @@ export default class Gantt extends Component {
             {unit: "day", step: 1, format: "%j"}
         ];
 
-        gantt.config.grid_resize = true;
-
-
         // Колоны
         gantt.config.columns = [
             {name: "text", label: "ЗАДАЧИ", width: "*", tree: true},
             {
-                name: "checked", label: "", width: "20", template: function (task) {
+                name: "checked", label: "", width: "22", template: function (task) {
                     if (task.children === 0) {
                         return `<input type='checkbox' ${task.is_on_kanban ? "checked" : ""} onchange='onKanbanViewChange(${task.id}, !${task.is_on_kanban})'>`;
                     }
@@ -53,6 +55,18 @@ export default class Gantt extends Component {
                 }
             }
         ];
+
+        // function getForm(task) {
+        //     if (task.$new) {
+        //         return document.getElementById("create_task");
+        //     } else {
+        //         return document.getElementById("view_task");
+        //     }
+        // }
+
+        function getForm() {
+            return document.getElementById("create_task");
+        }
 
         gantt.showLightbox = function (id) {
             taskId = id;
@@ -76,7 +90,7 @@ export default class Gantt extends Component {
 
             if (task.parent) {
                 const parentTask = gantt.getTask(task.parent);
-                form.querySelector("#parent_task").innerHTML = "Базовая задача: " + parentTask.text;
+                form.querySelector("#parent_task").innerHTML = "Базовая задача: <span style='text-decoration: underline;'>" + parentTask.text + "</span>";
             } else {
                 form.querySelector("#parent_task").innerHTML = "";
             }
@@ -96,10 +110,10 @@ export default class Gantt extends Component {
 
             form.style.display = "flex";
 
+            form.querySelector('button[type="closemodal"]').onclick = cancel;
             form.querySelector("[name='save']").onclick = save;
             form.querySelector("[name='close']").onclick = cancel;
             form.querySelector("[name='delete']").onclick = remove;
-            form.querySelector('button[type="closemodal"]').onclick = cancel;
         };
 
         gantt.hideLightbox = function () {
@@ -159,18 +173,8 @@ export default class Gantt extends Component {
             return true;
         });
 
-        gantt.attachEvent("onBeforeTaskChanged", function(id, mode, task){
-            if (mode === gantt.config.drag_move){
-                const start_date = gantt.getTask(id).start_date;
-                const new_start_date = gantt.date.add(start_date, -1, "day");
-                gantt.getTask(id).start_date = new_start_date;
-            }
-            return true;
-        });
-
         gantt.attachEvent("onAfterTaskDrag", function(id, mode, e){
             let task = gantt.getTask(id);
-
             axios.post(`http://localhost:8000/api/v1/gant/task/${id}/edit_dates`, { planned_start_date: new Date(task.start_date).toISOString().slice(0, 10), planned_finish_date: new Date(task.end_date).toISOString().slice(0, 10), deadline: task.deadline })
                 .then(response => {
                     console.log(response.data);
@@ -180,9 +184,6 @@ export default class Gantt extends Component {
                 });
         });
 
-        function getForm() {
-            return document.getElementById("my-form");
-        }
 
         function save() {
             const form = getForm();
@@ -258,7 +259,7 @@ export default class Gantt extends Component {
                 console.log(response.data);
                 toast.success("Задача создана",{
                     position: "top-right",
-                    autoClose: 5000,
+                    autoClose: 4000,
                     hideProgressBar: false,
                     closeOnClick: true,
                     pauseOnHover: true,
@@ -284,6 +285,16 @@ export default class Gantt extends Component {
             axios.delete(`http://localhost:8000/api/v1/gant/task/${task.id}/del`)
                 .then(response => {
                     console.log(response.data);
+                    toast.success("Задача удалена",{
+                        position: "top-right",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "light",
+                    });
                 })
                 .catch(error => {
                     console.error(error);
@@ -350,8 +361,8 @@ export default class Gantt extends Component {
                         <button onClick={() => gantt.createTask(this.createTask)}>Создать Задачу</button>
                     </div>
                 </div>
-                {/*==================================================*/}
-                <div id="my-form" className="modal" style={{display: "none"}}>
+                {/*===================Форма при создании задачи===============================*/}
+                <div id="create_task" className="modal" style={{display: "none"}}>
                     <div className="my-form">
                         <div className='main'>
                             <div className="title">
@@ -364,7 +375,7 @@ export default class Gantt extends Component {
                             </div>
                             <div className="project">
                                 <span>Проект</span>
-                                <input type="text" placeholder='Название проекта'/>
+                                <select placeholder='Название проекта'/>
                             </div>
                             <div className='elements'>
                                 <div className="element">
@@ -373,12 +384,14 @@ export default class Gantt extends Component {
                                 </div>
                                 <div className="element">
                                     <span>Тег команды</span>
-                                    <input type="text" placeholder='Тег'/>
+                                    <select placeholder='Тег'/>
                                 </div>
                                 <div className="date">
                                     <span>Планируемые сроки выполнения</span>
                                     <div className='dateList'>
-                                        <input type="date" name='start_date'/> - <input type="date" name='end_date'/>
+                                        <input type="date" name='start_date'/>
+                                        -
+                                        <input type="date" name='end_date'/>
                                     </div>
                                 </div>
                             </div>
@@ -392,24 +405,60 @@ export default class Gantt extends Component {
                                 </div>
                                 <div className='nameList'>
                                     <span>Ответственный</span>
-                                    <input type="text" placeholder='ФИО'/>
+                                    <select placeholder='ФИО'/>
                                 </div>
                             </div>
                             <div className='performers'>
-                                <span>Исполнители</span>
-                                <input type="text" placeholder='ФИО'/>
+                                <div className='performers_title'>
+                                    <span>Исполнители</span>
+                                    <button><Add/></button>
+                                </div>
+                                <div>
+                                    <select value='ФИО'/>
+                                    <button><Del/></button>
+                                </div>
                             </div>
                             <div className='check_list'>
-                                <span>Чек-лист</span>
-                                <div className='check_list_elements'>
-                                    <input type="checkbox"/>
-                                    <input type="text" className='check_list_text'/>
+                                <div className='check_list_title'>
+                                    <span>Чек-лист</span>
+                                    <button><Add/></button>
+                                </div>
+                                <div className='list'>
+                                    <div className='check_list_elements'>
+                                        <input type="checkbox"/>
+                                        <input type="text" className='check_list_text'/>
+                                        <button><Del/></button>
+                                    </div>
+                                    <div className='check_list_elements'>
+                                        <input type="checkbox"/>
+                                        <input type="text" className='check_list_text'/>
+                                        <button><Del/></button>
+                                    </div>
+                                    <div className='check_list_elements'>
+                                        <input type="checkbox"/>
+                                        <input type="text" className='check_list_text'/>
+                                        <button><Del/></button>
+                                    </div>
+                                    <div className='check_list_elements'>
+                                        <input type="checkbox"/>
+                                        <input type="text" className='check_list_text'/>
+                                        <button><Del/></button>
+                                    </div>
+                                    <div className='check_list_elements'>
+                                        <input type="checkbox"/>
+                                        <input type="text" className='check_list_text'/>
+                                        <button><Del/></button>
+                                    </div>
+                                    <div className='check_list_elements'>
+                                        <input type="checkbox"/>
+                                        <input type="text" className='check_list_text'/>
+                                        <button><Del/></button>
+                                    </div>
                                 </div>
                             </div>
                             <div className='buttons'>
                                 <input className='save' type="button" name="save" value="Сохранить"/>
                                 <input className='cancel' type="button" name="close" value="Отменить"/>
-                                <input className='cancel' type="button" name="delete" value="Удалить"/>
                             </div>
                         </div>
                         <div className='closeButton'>
@@ -417,7 +466,101 @@ export default class Gantt extends Component {
                         </div>
                     </div>
                 </div>
-                {/*===================================================*/}
+                {/*===================Форма при просмотре задачи==============================*/}
+                {/*<div id="view_task" className="modal" style={{display: "none"}}>*/}
+                {/*    <div className="my-form">*/}
+                {/*        <div className='main'>*/}
+                {/*            <div className="title">*/}
+                {/*                <input*/}
+                {/*                    placeholder='Введите название'*/}
+                {/*                    type="text"*/}
+                {/*                    name="text"*/}
+                {/*                />*/}
+                {/*                <p id='parent_task'></p>*/}
+                {/*            </div>*/}
+                {/*            <div className="project">*/}
+                {/*                <span>Проект</span>*/}
+                {/*                <input type="text" placeholder='Название проекта'/>*/}
+                {/*            </div>*/}
+                {/*            <div className='elements'>*/}
+                {/*                <div className="element">*/}
+                {/*                    <span>Дедлайн</span>*/}
+                {/*                    <input type="date" name='deadline'/>*/}
+                {/*                </div>*/}
+                {/*                <div className="element">*/}
+                {/*                    <span>Тег команды</span>*/}
+                {/*                    <input type="text" placeholder='Тег'/>*/}
+                {/*                </div>*/}
+                {/*                <div className="date">*/}
+                {/*                    <span>Планируемые сроки выполнения</span>*/}
+                {/*                    <div className='dateList'>*/}
+                {/*                        <input type="date" name='start_date'/> - <input type="date" name='end_date'/>*/}
+                {/*                    </div>*/}
+                {/*                </div>*/}
+                {/*            </div>*/}
+                {/*            <div className="description">*/}
+                {/*                <p><textarea name="description" placeholder='Введите описание задачи...'></textarea></p>*/}
+                {/*            </div>*/}
+                {/*            <div className="name">*/}
+                {/*                <div className='nameList'>*/}
+                {/*                    <span>Постановщик</span>*/}
+                {/*                    <input type="text" placeholder='ФИО'/>*/}
+                {/*                </div>*/}
+                {/*                <div className='nameList'>*/}
+                {/*                    <span>Ответственный</span>*/}
+                {/*                    <input type="text" placeholder='ФИО'/>*/}
+                {/*                </div>*/}
+                {/*            </div>*/}
+                {/*            <div className='performers'>*/}
+                {/*                <span>Исполнители</span>*/}
+                {/*                <input type="text" placeholder='ФИО'/>*/}
+                {/*            </div>*/}
+                {/*            <div className='check_list'>*/}
+                {/*                <span>Чек-лист</span>*/}
+                {/*                <div className='check_list_elements'>*/}
+                {/*                    <input type="checkbox"/>*/}
+                {/*                    <input type="text" className='check_list_text'/>*/}
+                {/*                </div>*/}
+                {/*            </div>*/}
+                {/*            <div className='timer'>*/}
+                {/*                <div className='timer_top'>*/}
+                {/*                    <span>Таймер</span>*/}
+                {/*                    <div className='timer_top_elements'>*/}
+                {/*                        <span>100:60:60</span>*/}
+                {/*                        <div className='timer_button'>*/}
+                {/*                            <input className='play_time' type="button" name="play"><Play/></input>*/}
+                {/*                            <input className='save_time' type="button" name="save_time">Сохранить</input>*/}
+                {/*                            <input className='remove_time' type="button" name="remove_time"><Trash/></input>*/}
+                {/*                        </div>*/}
+                {/*                    </div>*/}
+                {/*                </div>*/}
+                {/*                <div className='timer_bottom'>*/}
+                {/*                    <span>Затраченное время</span>*/}
+                {/*                    <div className='timer_bottom_elements'>*/}
+                {/*                        <span>10:12:56</span>*/}
+                {/*                        <input type="text" placeholder='ФИО'/>*/}
+                {/*                    </div>*/}
+                {/*                </div>*/}
+                {/*            </div>*/}
+                {/*            <div className='buttons'>*/}
+                {/*                <input className='edit' type="button" name="edit" value="Редактировать"/>*/}
+                {/*                <input className='cancel' type="button" name="create" value="Создать подзадачу"/>*/}
+                {/*                <input className='cancel' type="button" name="delete" value="Удалить задачу"/>*/}
+                {/*            </div>*/}
+                {/*            <div className='comments'>*/}
+                {/*                <div className='comments_input'>*/}
+                {/*                    <span>Комментарии</span>*/}
+                {/*                    <input type="text" placeholder='Введите комментарий...'/>*/}
+                {/*                </div>*/}
+                {/*            </div>*/}
+                {/*        </div>*/}
+                {/*        <div className='closeButton'>*/}
+                {/*            <button type='closemodal' className='closemodal'><Exit/></button>*/}
+                {/*        </div>*/}
+                {/*    </div>*/}
+                {/*</div>*/}
+                {/*===================Редактирование задачи===================================*/}
+                {/*===========================================================================*/}
                 <div
                     ref={(input) => {
                         this.ganttContainer = input
