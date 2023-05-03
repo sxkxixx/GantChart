@@ -41,14 +41,14 @@ export default class Gantt extends Component {
         ];
 
         // Dropdown
-        gantt.templates.grid_open = function(item) {
+        gantt.templates.grid_open = function (item) {
             if (item.$open) {
                 return "<div class='my_open_icon'></div>";
             } else {
                 return "<div class='my_close_icon'></div>";
             }
         };
-        gantt.attachEvent("onTaskClick", function(id, e) {
+        gantt.attachEvent("onTaskClick", function (id, e) {
             let target = e.target || e.srcElement;
             if (target.classList.contains("my_open_icon")) {
                 gantt.close(id);
@@ -59,8 +59,8 @@ export default class Gantt extends Component {
         });
 
         // Add
-        gantt.templates.grid_row_class = function( start, end, task ){
-            if ( task.$level >= 0){
+        gantt.templates.grid_row_class = function (start, end, task) {
+            if (task.$level >= 0) {
                 return "nested_task"
             }
             return "";
@@ -165,11 +165,13 @@ export default class Gantt extends Component {
 
                 //name="create_task"
                 form.querySelector('button[type="closemodal1"]').onclick = cancel;
-                form.querySelector("[name='create_task']").onclick = function() {
-                        taskId = id;
-                        reCreate();
+                form.querySelector("[name='create_task']").onclick = function () {
+                    taskId = id;
+                    let displayForm = getForm("display_task");
+                    displayForm.style.display = "none";
+                    let parentTaskId = gantt.getSelectedId();
+                    gantt.createTask(this.createTask, parentTaskId);
                 }
-
                 form.querySelector("[name='delete']").onclick = remove;
             }
         };
@@ -412,28 +414,6 @@ export default class Gantt extends Component {
             gantt.deleteTask(taskId);
             gantt.hideLightbox();
         }
-
-        // function reCreate() {
-        //     let task = gantt.getTask(taskId);
-        //     let form = getForm("create_task");
-        //     let parentTask = "";
-        //
-        //     if (task.parent) {
-        //         parentTask = "Базовая задача: <span style='text-decoration: underline;'>" + gantt.getTask(task.parent).text + "</span>";
-        //     }
-        //
-        //     form.querySelector("#parent_task").value = task.parent || '';
-        //     form.querySelector("#parent_task").innerHTML = parentTask;
-        //
-        //     form.querySelector('button[type="closemodal"]').onclick = cancel;
-        //     form.querySelector("[name='save']").onclick = save;
-        //     form.querySelector("[name='close']").onclick = cancel;
-        //
-        //     let displayForm = getForm("display_task");
-        //     displayForm.style.display = "none";
-        //     form.style.display = "flex";
-        // }
-
         function reCreate() {
             let task = gantt.getTask(taskId);
             let form = getForm("create_task");
@@ -699,7 +679,8 @@ export default class Gantt extends Component {
                                 </div>
                             </div>
                             <div className="description">
-                                <p><textarea name="description1" placeholder='Введите описание задачи...'></textarea></p>
+                                <p><textarea name="description1" placeholder='Введите описание задачи...'></textarea>
+                                </p>
                             </div>
                             <div className="name">
                                 <div className='nameList'>
@@ -770,7 +751,8 @@ export default class Gantt extends Component {
                             </div>
                             <div className='buttons'>
                                 <input className='edit_view' type="button" name="edit" value="Редактировать"/>
-                                <input className='create_view' type="button" name="create_task" value="Создать подзадачу"/>
+                                <input className='create_view' type="button" name="create_task"
+                                       value="Создать подзадачу"/>
                                 <input className='remove_view' type="button" name="delete" value="Удалить задачу"/>
                             </div>
                             <div className='comments'>
@@ -783,7 +765,9 @@ export default class Gantt extends Component {
                                         <p className='comments_output_name'>Иванов Иван Иванович</p>
                                         <p className='comments_output_time'>12:47</p>
                                     </div>
-                                    <p className='comments_output_text'>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation</p>
+                                    <p className='comments_output_text'>Lorem ipsum dolor sit amet, consectetur
+                                        adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
+                                        aliqua. Ut enim ad minim veniam, quis nostrud exercitation</p>
                                 </div>
                             </div>
                         </div>
