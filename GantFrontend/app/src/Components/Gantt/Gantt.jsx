@@ -163,7 +163,13 @@ export default class Gantt extends Component {
 
                 form.style.display = "flex";
 
+                //name="create_task"
                 form.querySelector('button[type="closemodal1"]').onclick = cancel;
+                form.querySelector("[name='create_task']").onclick = function() {
+                        taskId = id;
+                        reCreate();
+                }
+
                 form.querySelector("[name='delete']").onclick = remove;
             }
         };
@@ -405,6 +411,58 @@ export default class Gantt extends Component {
                 });
             gantt.deleteTask(taskId);
             gantt.hideLightbox();
+        }
+
+        // function reCreate() {
+        //     let task = gantt.getTask(taskId);
+        //     let form = getForm("create_task");
+        //     let parentTask = "";
+        //
+        //     if (task.parent) {
+        //         parentTask = "Базовая задача: <span style='text-decoration: underline;'>" + gantt.getTask(task.parent).text + "</span>";
+        //     }
+        //
+        //     form.querySelector("#parent_task").value = task.parent || '';
+        //     form.querySelector("#parent_task").innerHTML = parentTask;
+        //
+        //     form.querySelector('button[type="closemodal"]').onclick = cancel;
+        //     form.querySelector("[name='save']").onclick = save;
+        //     form.querySelector("[name='close']").onclick = cancel;
+        //
+        //     let displayForm = getForm("display_task");
+        //     displayForm.style.display = "none";
+        //     form.style.display = "flex";
+        // }
+
+        function reCreate() {
+            let task = gantt.getTask(taskId);
+            let form = getForm("create_task");
+            let parentTask = "";
+
+            if (task.parent) {
+                parentTask =
+                    "Базовая задача: <span style='text-decoration: underline;'>" +
+                    gantt.getTask(task.parent).text +
+                    "</span>";
+            }
+
+            form.querySelector("#parent_task").value = task.parent || "";
+            form.querySelector("#parent_task").innerHTML = parentTask;
+
+            form.querySelector('button[type="closemodal"]').onclick = cancel;
+            form.querySelector("[name='save']").onclick = function () {
+                let taskName = form.querySelector("[name='task_name']").value;
+                let newTask = gantt.createTask({
+                    text: taskName,
+                    parentId: task.id,
+                });
+                gantt.render();
+            };
+            form.querySelector("[name='close']").onclick = cancel;
+
+            let displayForm = getForm("display_task");
+            displayForm.style.display = "none";
+            form.style.display = "flex";
         }
 
         gantt.render();
@@ -712,7 +770,7 @@ export default class Gantt extends Component {
                             </div>
                             <div className='buttons'>
                                 <input className='edit_view' type="button" name="edit" value="Редактировать"/>
-                                <input className='create_view' type="button" name="create1" value="Создать подзадачу"/>
+                                <input className='create_view' type="button" name="create_task" value="Создать подзадачу"/>
                                 <input className='remove_view' type="button" name="delete" value="Удалить задачу"/>
                             </div>
                             <div className='comments'>
