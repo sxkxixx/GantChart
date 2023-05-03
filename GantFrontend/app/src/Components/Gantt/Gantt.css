@@ -57,7 +57,18 @@
     z-index: 4;
 }
 
-.my-form{
+.create-form{
+    display: flex;
+    flex-direction: row;
+    padding: 15px 0 15px 30px;
+    background: #F5F7F9;
+    border-radius: 5px;
+    z-index: 4;
+    width: 710px;
+    height: 815px;
+}
+
+.view-form{
     display: flex;
     flex-direction: row;
     padding: 15px 0 15px 30px;
@@ -80,23 +91,28 @@
 .main_view{
     display: flex;
     flex-direction: column;
-    gap: 20px;
     width: 100%;
     height: 100%;
-    padding: 10px 0;
+    padding: 10px 0; /* скрываем полосу прокрутки */
+}
+
+.main_view_list{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
     overflow: auto; /* скрываем полосу прокрутки */
 }
 
-.main_view::-webkit-scrollbar {
+.main_view_list::-webkit-scrollbar {
     width: 10px; /* задаем ширину полосы прокрутки */
 }
 
-.main_view::-webkit-scrollbar-thumb {
+.main_view_list::-webkit-scrollbar-thumb {
     background-color: transparent; /* цвет полосы прокрутки */
     border-radius: 5px; /* задаем скругление углов полосы прокрутки */
 }
 
-.main_view::-webkit-scrollbar-track {
+.main_view_list::-webkit-scrollbar-track {
     background-color: transparent; /* цвет фона полосы прокрутки */
 }
 
@@ -141,7 +157,8 @@
     align-items: flex-start;
     width: 606px;
     height: 20%;
-    gap: 4px;
+    padding: 0;
+    gap: 2px;
 }
 
 .create_title{
@@ -176,7 +193,8 @@
     display: flex;
     flex-direction: row;
     text-align: center;
-    color: #2870FF;
+    /*color: #2870FF;*/
+    font-size: 14px;
     align-items: center;
     padding: 0 8px;
 
@@ -218,8 +236,8 @@
     flex-direction: row;
     align-items: center;
     text-align: center;
-    color: #EE7900;
-    font-size: 16px;
+    /*color: #EE7900;*/
+    font-size: 14px;
     justify-content: center;
     padding: 0 8px;
 
@@ -244,7 +262,7 @@
     width: 100%;
     height: 32px;
 
-    font-size: 16px;
+    font-size: 14px;
     background: url(../../Assets/img/clock.svg) no-repeat center left #FFFFFF;
     background-size: 15px;
     background-position-x: 10px;
