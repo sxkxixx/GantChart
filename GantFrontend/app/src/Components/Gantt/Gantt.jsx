@@ -30,6 +30,41 @@ export default class Gantt extends Component {
         gantt.init(this.ganttContainer);
         gantt.i18n.setLocale("ru"); // Руссификация
 
+        // //toolTip
+        // gantt.plugins({
+        //     tooltip: true
+        // });
+        //
+        // // настройки для tooltip
+        // gantt.ext.tooltips.tooltip.delay = 500;
+        // gantt.ext.tooltips.tooltip.className = "custom-tooltip";
+        // gantt.ext.tooltips.tooltip.offsetX = 20;
+        // gantt.ext.tooltips.tooltip.offsetY = 10;
+        //
+        // // содержимое tooltip
+        // gantt.templates.tooltip_text = function (start, end, task) {
+        //     let tooltipHTML = "<div>";
+        //     tooltipHTML += "<div>" + task.text + "</div>";
+        //     tooltipHTML += "<div>Начало: " + gantt.templates.tooltip_date_format(start) + "</div>";
+        //     tooltipHTML += "<div>Конец: " + gantt.templates.tooltip_date_format(end) + "</div>";
+        //     tooltipHTML += "</div>";
+        //     return tooltipHTML;
+        // };
+        //
+        // // привязываем событие onTaskMouseOver для показа tooltip
+        // gantt.attachEvent("onTaskMouseOver", function(id, e) {
+        //     // проверяем, является ли элемент e.target элементом в колонке задач
+        //     if (!gantt.utils.dom.isChildOf(e.target, gantt.$grid)) {
+        //         gantt.ext.tooltips.tooltip.setContent(gantt.templates.tooltip_text(gantt.getTask(id).start_date, gantt.getTask(id).end_date, gantt.getTask(id)));
+        //         gantt.ext.tooltips.tooltip.show(e.pageX, e.pageY);
+        //     }
+        // });
+        //
+        // // привязываем событие onTaskMouseOut для скрытия tooltip
+        // gantt.attachEvent("onTaskMouseOut", function(id, e) {
+        //     gantt.ext.tooltips.tooltip.hide();
+        // });
+
         // Календарь
         gantt.config.scale_height = 80;
         gantt.config.show_tasks_outside_timescale = true;
@@ -72,7 +107,7 @@ export default class Gantt extends Component {
                     if (task.children === 0) {
                         let banner = "";
                         if (!task.is_on_kanban) {
-                            banner = "<div class='kanban-banner'>Добавить на канбан</div>";
+                            banner = "<div class='kanban-banner'>Отображать на канбане</div>";
                         }
                         return `<div class='kanban-container'>
               <input type='checkbox' ${task.is_on_kanban ? "checked" : ""} onchange='onKanbanViewChange(${task.id}, !${task.is_on_kanban})'>
@@ -100,7 +135,7 @@ export default class Gantt extends Component {
             let parentTask = "";
             if (task.parent) {
                 parentTask = "Базовая задача: <span style='text-decoration: underline;'>" + gantt.getTask(task.parent).text + "</span>";
-            }else{
+            } else {
                 parentTask = "Базовая задача: <span style='text-decoration: underline;'>Отсутствует</span>";
             }
 
@@ -141,6 +176,7 @@ export default class Gantt extends Component {
 
                 if (task.$new && !task.parent) {
                     // Добавляем стартовые значения для дедлайна, начальной и конечной дат
+                    text.value = "";
                     deadline.value = "";
                     startDate.value = "";
                     endDate.value = "";
@@ -189,6 +225,41 @@ export default class Gantt extends Component {
                     let parentTaskId = gantt.getSelectedId();
                     gantt.createTask(this.createTask, parentTaskId);
                 }
+                form.querySelector("[name='edit']").onclick = function () {
+                    taskId = id;
+                    let editForm = getForm("edit_task");
+                    let displayForm = getForm("display_task");
+                    displayForm.style.display = "none";
+                    editForm.style.display = "flex";
+                    let task = gantt.getTask(id);
+                    editForm.querySelector('.main_view_list').scrollTop = 0;
+                    editForm.querySelector("[name='text']").value = task.text || "";
+                    editForm.querySelector("[name='description']").value = task.description || "";
+                    editForm.querySelector("[name='deadline']").value = task.deadline ? new Date(task.deadline).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10);
+                    editForm.querySelector("[name='start_date']").value = task.start_date ? new Date(task.start_date).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10);
+                    editForm.querySelector("[name='end_date']").value = task.end_date ? new Date(task.end_date).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10);
+                    let parentTask = "";
+                    if (task.parent) {
+                        parentTask = "Базовая задача: <span style='text-decoration: underline;'>" + gantt.getTask(task.parent).text + "</span>";
+                    } else {
+                        parentTask = "Базовая задача: <span style='text-decoration: underline;'>Отсутствует</span>";
+                    }
+                    editForm.querySelector("[id='parent_task']").value = task.parent || '';
+                    editForm.querySelector("#parent_task").innerHTML = parentTask;
+                    editForm.querySelector("#parent_task").innerHTML = parentTask;
+                    editForm.querySelector('button[type="closemodal3"]').onclick = function() {
+                        gantt.hideLightbox();
+                        editForm.style.display = "none";
+                    };
+                    editForm.querySelector("[name='create_task_edit']").onclick = function () {
+                        taskId = id;
+                        let displayForm = getForm("create_task");
+                        displayForm.style.display = "none";
+                        let parentTaskId = gantt.getSelectedId();
+                        gantt.createTask(this.createTask, parentTaskId);
+                    }
+                    editForm.querySelector("[name='delete_edit']").onclick = remove;
+                };
                 form.querySelector("[name='delete']").onclick = remove;
             }
         };
@@ -648,126 +719,129 @@ export default class Gantt extends Component {
                                 <p id='parent_task'></p>
                             </div>
                             <div className='main_view_list'>
-                            <div className="project">
-                                <span>Проект</span>
-                                <select>
-                                    <option>Название проекта</option>
-                                    <option>ЛК Гант</option>
-                                    <option>ЛК Канбан</option>
-                                </select>
-                            </div>
-                            <div className='elements'>
-                                <div className="element">
-                                    <span>Дедлайн</span>
-                                    <input type="date" name='deadline1' readOnly={true}/>
-                                </div>
-                                <div className="element">
-                                    <span>Тег команды</span>
-                                    <select aria-readonly={true}>
-                                        <option>#Тег_команды</option>
-                                        <option>#Гант</option>
-                                        <option>#Канбан</option>
+                                <div className="project">
+                                    <span>Проект</span>
+                                    <select>
+                                        <option>Название проекта</option>
+                                        <option>ЛК Гант</option>
+                                        <option>ЛК Канбан</option>
                                     </select>
                                 </div>
-                                <div className="date">
-                                    <span>Планируемые сроки выполнения</span>
-                                    <div className='dateList'>
-                                        <input type="date" name='start_date1' readOnly={true}/>
-                                        <p>-</p>
-                                        <input type="date" name='end_date1' readOnly={true}/>
+                                <div className='elements'>
+                                    <div className="element">
+                                        <span>Дедлайн</span>
+                                        <input type="date" name='deadline1' readOnly={true}/>
                                     </div>
-                                </div>
-                            </div>
-                            <div className="description">
-                                <p><textarea name="description1" placeholder='Введите описание задачи...'></textarea>
-                                </p>
-                            </div>
-                            <div className="name">
-                                <div className='nameList'>
-                                    <span>Постановщик</span>
-                                    <input type="text" placeholder='ФИО' readOnly={true}/>
-                                </div>
-                                <div className='nameList'>
-                                    <span>Ответственный</span>
-                                    <input type="text" placeholder='ФИО' readOnly={true}/>
-                                </div>
-                            </div>
-                            <div className='performers'>
-                                <span>Исполнители</span>
-                                <input type="text" placeholder='ФИО' readOnly={true}/>
-                            </div>
-                            <div className='check_list'>
-                                <div className='check_list_title'>
-                                    <span>Чек-лист</span>
-                                    <button><Add/></button>
-                                </div>
-                                <div className='list_view'>
-                                    <div className='check_list_elements'>
-                                        <input type="checkbox"/>
-                                        <p className='check_list_text2'>Пункт 1</p>
+                                    <div className="element">
+                                        <span>Тег команды</span>
+                                        <select aria-readonly={true}>
+                                            <option>#Тег_команды</option>
+                                            <option>#Гант</option>
+                                            <option>#Канбан</option>
+                                        </select>
                                     </div>
-                                    <div className='check_list_elements'>
-                                        <input type="checkbox"/>
-                                        <p className='check_list_text2'>Пункт 2</p>
-                                    </div>
-                                    <div className='check_list_elements'>
-                                        <input type="checkbox"/>
-                                        <p className='check_list_text2'>Пункт 3</p>
-                                    </div>
-                                    <div className='check_list_elements'>
-                                        <input type="checkbox"/>
-                                        <p className='check_list_text2'>Пункт 4</p>
-                                    </div>
-                                    <div className='check_list_elements'>
-                                        <input type="checkbox"/>
-                                        <p className='check_list_text2'>Пункт 5</p>
-                                    </div>
-                                    <div className='check_list_elements'>
-                                        <input type="checkbox"/>
-                                        <p className='check_list_text2'>Пункт 6</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className='timer'>
-                                <div className='timer_top'>
-                                    <span>Таймер</span>
-                                    <div className='timer_top_elements'>
-                                        <p><Clock/>00:00:00</p>
-                                        <div className='timer_button'>
-                                            <button className='play_time' name="play"><Play/></button>
-                                            <button className='save_time' name="save_time">Сохранить</button>
-                                            <button className='remove_time' name="remove_time"><TrashWhite/></button>
+                                    <div className="date">
+                                        <span>Планируемые сроки выполнения</span>
+                                        <div className='dateList'>
+                                            <input type="date" name='start_date1' readOnly={true}/>
+                                            <p>-</p>
+                                            <input type="date" name='end_date1' readOnly={true}/>
                                         </div>
                                     </div>
                                 </div>
-                                <div className='timer_bottom'>
-                                    <span>Затраченное время</span>
-                                    <div className='timer_bottom_elements'>
-                                        <p>00:00:00</p>
+                                <div className="description">
+                                    <p><textarea name="description1"
+                                                 placeholder='Введите описание задачи...'></textarea>
+                                    </p>
+                                </div>
+                                <div className="name">
+                                    <div className='nameList'>
+                                        <span>Постановщик</span>
+                                        <input type="text" placeholder='ФИО' readOnly={true}/>
+                                    </div>
+                                    <div className='nameList'>
+                                        <span>Ответственный</span>
                                         <input type="text" placeholder='ФИО' readOnly={true}/>
                                     </div>
                                 </div>
-                            </div>
-                            <div className='buttons'>
-                                <input className='edit_view' type="button" name="edit" value="Редактировать"/>
-                                <input className='create_view' type="button" name="create_task" value="Создать подзадачу"/>
-                                <input className='remove_view' type="button" name="delete" value="Удалить задачу"/>
-                            </div>
-                            <div className='comments'>
-                                <div className='comments_input'>
-                                    <span>Комментарии</span>
-                                    <input type="text" placeholder='Введите комментарий...'/>
+                                <div className='performers'>
+                                    <span>Исполнители</span>
+                                    <input type="text" placeholder='ФИО' readOnly={true}/>
                                 </div>
-                                <div className='comments_output'>
-                                    <div className='comments_output_title'>
-                                        <p className='comments_output_name'>Фамилия Имя Отчество</p>
-                                        <p className='comments_output_time'>00:00</p>
+                                <div className='check_list'>
+                                    <div className='check_list_title'>
+                                        <span>Чек-лист</span>
+                                        <button><Add/></button>
                                     </div>
-                                    <p className='comments_output_text'>Lorem ipsum dolor sit amet, consectetur
-                                        adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
-                                        aliqua. Ut enim ad minim veniam, quis nostrud exercitation</p>
+                                    <div className='list_view'>
+                                        <div className='check_list_elements'>
+                                            <input type="checkbox"/>
+                                            <p className='check_list_text2'>Пункт 1</p>
+                                        </div>
+                                        <div className='check_list_elements'>
+                                            <input type="checkbox"/>
+                                            <p className='check_list_text2'>Пункт 2</p>
+                                        </div>
+                                        <div className='check_list_elements'>
+                                            <input type="checkbox"/>
+                                            <p className='check_list_text2'>Пункт 3</p>
+                                        </div>
+                                        <div className='check_list_elements'>
+                                            <input type="checkbox"/>
+                                            <p className='check_list_text2'>Пункт 4</p>
+                                        </div>
+                                        <div className='check_list_elements'>
+                                            <input type="checkbox"/>
+                                            <p className='check_list_text2'>Пункт 5</p>
+                                        </div>
+                                        <div className='check_list_elements'>
+                                            <input type="checkbox"/>
+                                            <p className='check_list_text2'>Пункт 6</p>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
+                                <div className='timer'>
+                                    <div className='timer_top'>
+                                        <span>Таймер</span>
+                                        <div className='timer_top_elements'>
+                                            <p><Clock/>00:00:00</p>
+                                            <div className='timer_button'>
+                                                <button className='play_time' name="play"><Play/></button>
+                                                <button className='save_time' name="save_time">Сохранить</button>
+                                                <button className='remove_time' name="remove_time"><TrashWhite/>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className='timer_bottom'>
+                                        <span>Затраченное время</span>
+                                        <div className='timer_bottom_elements'>
+                                            <p>00:00:00</p>
+                                            <input type="text" placeholder='ФИО' readOnly={true}/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className='buttons'>
+                                    <input className='edit_view' type="button" name="edit" value="Редактировать"/>
+                                    <input className='create_view' type="button" name="create_task"
+                                           value="Создать подзадачу"/>
+                                    <input className='remove_view' type="button" name="delete" value="Удалить задачу"/>
+                                </div>
+                                <div className='comments'>
+                                    <div className='comments_input'>
+                                        <span>Комментарии</span>
+                                        <input type="text" placeholder='Введите комментарий...'/>
+                                    </div>
+                                    <div className='comments_output'>
+                                        <div className='comments_output_title'>
+                                            <p className='comments_output_name'>Фамилия Имя Отчество</p>
+                                            <p className='comments_output_time'>00:00</p>
+                                        </div>
+                                        <p className='comments_output_text'>Lorem ipsum dolor sit amet, consectetur
+                                            adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
+                                            aliqua. Ut enim ad minim veniam, quis nostrud exercitation</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div className='closeButton'>
@@ -776,148 +850,153 @@ export default class Gantt extends Component {
                     </div>
                 </div>
                 {/*===================Редактирование задачи===================================*/}
-                {/*<div id="edit_task" className="modal" style={{display: "none"}}>*/}
-                {/*    <div className="edit-form">*/}
-                {/*        <div className='main'>*/}
-                {/*            <div className="title">*/}
-                {/*                <input*/}
-                {/*                    placeholder='Введите название'*/}
-                {/*                    type="text"*/}
-                {/*                    name="text"*/}
-                {/*                    className='create_title'*/}
-                {/*                />*/}
-                {/*                <p id='parent_task'></p>*/}
-                {/*            </div>*/}
-                {/*            <div className="project">*/}
-                {/*                <span>Проект</span>*/}
-                {/*                <select>*/}
-                {/*                    <option>Название проекта</option>*/}
-                {/*                    <option>ЛК Гант</option>*/}
-                {/*                    <option>ЛК Канбан</option>*/}
-                {/*                </select>*/}
-                {/*            </div>*/}
-                {/*            <div className='elements'>*/}
-                {/*                <div className="element">*/}
-                {/*                    <span>Дедлайн</span>*/}
-                {/*                    <input type="date" name='deadline'/>*/}
-                {/*                </div>*/}
-                {/*                <div className="element">*/}
-                {/*                    <span>Тег команды</span>*/}
-                {/*                    <select>*/}
-                {/*                        <option>#Тег_команды</option>*/}
-                {/*                        <option>#Гант</option>*/}
-                {/*                        <option>#Канбан</option>*/}
-                {/*                    </select>*/}
-                {/*                </div>*/}
-                {/*                <div className="date">*/}
-                {/*                    <span>Планируемые сроки выполнения</span>*/}
-                {/*                    <div className='dateList'>*/}
-                {/*                        <input type="date" name='start_date'/>*/}
-                {/*                        -*/}
-                {/*                        <input type="date" name='end_date'/>*/}
-                {/*                    </div>*/}
-                {/*                </div>*/}
-                {/*            </div>*/}
-                {/*            <div className="description">*/}
-                {/*                <p><textarea name="description" placeholder='Введите описание задачи...'></textarea></p>*/}
-                {/*            </div>*/}
-                {/*            <div className="name">*/}
-                {/*                <div className='nameList'>*/}
-                {/*                    <span>Постановщик</span>*/}
-                {/*                    <input type="text" placeholder='Введите Имя'/>*/}
-                {/*                </div>*/}
-                {/*                <div className='nameList'>*/}
-                {/*                    <span>Ответственный</span>*/}
-                {/*                    <select>*/}
-                {/*                        <option>Выберите</option>*/}
-                {/*                        <option>Игорь</option>*/}
-                {/*                        <option>Саша</option>*/}
-                {/*                        <option>Вера</option>*/}
-                {/*                        <option>Юля</option>*/}
-                {/*                        <option>Артем</option>*/}
-                {/*                    </select>*/}
-                {/*                </div>*/}
-                {/*            </div>*/}
-                {/*            <div className='performers'>*/}
-                {/*                <div className='performers_title'>*/}
-                {/*                    <span>Исполнители</span>*/}
-                {/*                    <button><Add/></button>*/}
-                {/*                </div>*/}
-                {/*                <div>*/}
-                {/*                    <select>*/}
-                {/*                        <option>Выберите</option>*/}
-                {/*                        <option>Игорь</option>*/}
-                {/*                        <option>Саша</option>*/}
-                {/*                        <option>Вера</option>*/}
-                {/*                        <option>Юля</option>*/}
-                {/*                        <option>Артем</option>*/}
-                {/*                    </select>*/}
-                {/*                    <button><Del/></button>*/}
-                {/*                </div>*/}
-                {/*            </div>*/}
-                {/*            <div className='check_list'>*/}
-                {/*                <div className='check_list_title'>*/}
-                {/*                    <span>Чек-лист</span>*/}
-                {/*                    <button><Add/></button>*/}
-                {/*                </div>*/}
-                {/*                <div className='list'>*/}
-                {/*                    <div className='check_list_elements'>*/}
-                {/*                        <input type="checkbox"/>*/}
-                {/*                        <input type="text" className='check_list_text' value='Пункт 1'/>*/}
-                {/*                        <button><Del/></button>*/}
-                {/*                    </div>*/}
-                {/*                    <div className='check_list_elements'>*/}
-                {/*                        <input type="checkbox"/>*/}
-                {/*                        <input type="text" className='check_list_text' value='Пункт 2'/>*/}
-                {/*                        <button><Del/></button>*/}
-                {/*                    </div>*/}
-                {/*                    <div className='check_list_elements'>*/}
-                {/*                        <input type="checkbox"/>*/}
-                {/*                        <input type="text" className='check_list_text' value='Пункт 3'/>*/}
-                {/*                        <button><Del/></button>*/}
-                {/*                    </div>*/}
-                {/*                    <div className='check_list_elements'>*/}
-                {/*                        <input type="checkbox"/>*/}
-                {/*                        <input type="text" className='check_list_text' value='Пункт 4'/>*/}
-                {/*                        <button><Del/></button>*/}
-                {/*                    </div>*/}
-                {/*                    <div className='check_list_elements'>*/}
-                {/*                        <input type="checkbox"/>*/}
-                {/*                        <input type="text" className='check_list_text' value='Пункт 5'/>*/}
-                {/*                        <button><Del/></button>*/}
-                {/*                    </div>*/}
-                {/*                    <div className='check_list_elements'>*/}
-                {/*                        <input type="checkbox"/>*/}
-                {/*                        <input type="text" className='check_list_text' value='Пункт 6'/>*/}
-                {/*                        <button><Del/></button>*/}
-                {/*                    </div>*/}
-                {/*                </div>*/}
-                {/*                <div className='timer_bottom'>*/}
-                {/*                    <span>Затраченное время</span>*/}
-                {/*                    <div className='timer_bottom_elements'>*/}
-                {/*                        <p>00:00:00</p>*/}
-                {/*                        <input type="text" placeholder='ФИО' readOnly={true}/>*/}
-                {/*                    </div>*/}
-                {/*                </div>*/}
-                {/*            </div>*/}
-                {/*            <div className='timer_bottom'>*/}
-                {/*                <span>Затраченное время</span>*/}
-                {/*                <div className='timer_bottom_elements'>*/}
-                {/*                    <p>00:00:00</p>*/}
-                {/*                    <input type="text" placeholder='ФИО' readOnly={true}/>*/}
-                {/*                </div>*/}
-                {/*            </div>*/}
-                {/*            <div className='buttons'>*/}
-                {/*                <input className='edit_view' type="button" name="save_edit" value="Сохранить"/>*/}
-                {/*                <input className='create_view' type="button" name="create_task" value="Создать подзадачу"/>*/}
-                {/*                <input className='remove_view' type="button" name="delete" value="Удалить задачу"/>*/}
-                {/*            </div>*/}
-                {/*        </div>*/}
-                {/*        <div className='closeButton'>*/}
-                {/*            <button type='closemodal' className='closemodal'><Exit/></button>*/}
-                {/*        </div>*/}
-                {/*    </div>*/}
-                {/*</div>*/}
+                <div id="edit_task" className="modal" style={{display: "none"}}>
+                    <div className="create-form">
+                        <div className='main_view'>
+                            <div className="title_edit">
+                                <input
+                                    placeholder='Введите название'
+                                    type="text"
+                                    name="text"
+                                    className='create_title'
+                                />
+                                <p id='parent_task'></p>
+                            </div>
+                            <div className='main_view_list'>
+                                <div className="project">
+                                    <span>Проект</span>
+                                    <select>
+                                        <option>Название проекта</option>
+                                        <option>ЛК Гант</option>
+                                        <option>ЛК Канбан</option>
+                                    </select>
+                                </div>
+                                <div className='elements'>
+                                    <div className="element">
+                                        <span>Дедлайн</span>
+                                        <input type="date" name='deadline'/>
+                                    </div>
+                                    <div className="element">
+                                        <span>Тег команды</span>
+                                        <select>
+                                            <option>#Тег_команды</option>
+                                            <option>#Гант</option>
+                                            <option>#Канбан</option>
+                                        </select>
+                                    </div>
+                                    <div className="date">
+                                        <span>Планируемые сроки выполнения</span>
+                                        <div className='dateList'>
+                                            <input type="date" name='start_date'/>
+                                            -
+                                            <input type="date" name='end_date'/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="description">
+                                    <p><textarea name="description" placeholder='Введите описание задачи...'></textarea>
+                                    </p>
+                                </div>
+                                <div className="name">
+                                    <div className='nameList'>
+                                        <span>Постановщик</span>
+                                        <input type="text" placeholder='Введите Имя'/>
+                                    </div>
+                                    <div className='nameList'>
+                                        <span>Ответственный</span>
+                                        <select>
+                                            <option>Выберите</option>
+                                            <option>Игорь</option>
+                                            <option>Саша</option>
+                                            <option>Вера</option>
+                                            <option>Юля</option>
+                                            <option>Артем</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div className='performers'>
+                                    <div className='performers_title'>
+                                        <span>Исполнители</span>
+                                        <button><Add/></button>
+                                    </div>
+                                    <div>
+                                        <select>
+                                            <option>Выберите</option>
+                                            <option>Игорь</option>
+                                            <option>Саша</option>
+                                            <option>Вера</option>
+                                            <option>Юля</option>
+                                            <option>Артем</option>
+                                        </select>
+                                        <button><Del/></button>
+                                    </div>
+                                </div>
+                                <div className='check_list_edit'>
+                                    <div className='check_list_title'>
+                                        <span>Чек-лист</span>
+                                        <button><Add/></button>
+                                    </div>
+                                    <div className='list'>
+                                        <div className='check_list_elements'>
+                                            <input type="checkbox"/>
+                                            <input type="text" className='check_list_text' value='Пункт 1'/>
+                                            <button><Del/></button>
+                                        </div>
+                                        <div className='check_list_elements'>
+                                            <input type="checkbox"/>
+                                            <input type="text" className='check_list_text' value='Пункт 2'/>
+                                            <button><Del/></button>
+                                        </div>
+                                        <div className='check_list_elements'>
+                                            <input type="checkbox"/>
+                                            <input type="text" className='check_list_text' value='Пункт 3'/>
+                                            <button><Del/></button>
+                                        </div>
+                                        <div className='check_list_elements'>
+                                            <input type="checkbox"/>
+                                            <input type="text" className='check_list_text' value='Пункт 4'/>
+                                            <button><Del/></button>
+                                        </div>
+                                        <div className='check_list_elements'>
+                                            <input type="checkbox"/>
+                                            <input type="text" className='check_list_text' value='Пункт 5'/>
+                                            <button><Del/></button>
+                                        </div>
+                                        <div className='check_list_elements'>
+                                            <input type="checkbox"/>
+                                            <input type="text" className='check_list_text' value='Пункт 6'/>
+                                            <button><Del/></button>
+                                        </div>
+                                    </div>
+                                    <div className='timer_bottom'>
+                                        <span>Затраченное время</span>
+                                        <div className='timer_bottom_elements'>
+                                            <p>00:00:00</p>
+                                            <select>
+                                                <option>Выберите</option>
+                                                <option>Игорь</option>
+                                                <option>Саша</option>
+                                                <option>Вера</option>
+                                                <option>Юля</option>
+                                                <option>Артем</option>
+                                            </select>
+                                            <Del/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className='buttons'>
+                                    <input className='edit_view' type="button" name="save_edit" value="Сохранить"/>
+                                    <input className='create_view' type="button" name="create_task_edit"
+                                           value="Создать подзадачу"/>
+                                    <input className='remove_view' type="button" name="delete_edit" value="Удалить задачу"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div className='closeButton'>
+                            <button type='closemodal3' className='closemodal'><Exit/></button>
+                        </div>
+                    </div>
+                </div>
                 {/*===========================================================================*/}
                 <div
                     ref={(input) => {

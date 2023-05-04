@@ -161,6 +161,17 @@
     gap: 2px;
 }
 
+.title_edit{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    width: 606px;
+    height: 10%;
+    padding: 0;
+    gap: 2px;
+}
+
 .create_title{
     background: #FFFFFF;
     width: 606px;
@@ -463,6 +474,15 @@
     height: 20%;
 }
 
+.check_list_edit{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    width: 100%;
+    height: 250px;
+}
+
 .list{
     display: flex;
     flex-direction: column;
@@ -715,6 +735,18 @@
     height: 56px;
 }
 
+.timer_bottom_elements p{
+    width: 82px;
+    height: 32px;
+    background: #FFFFFF;
+    border: 1px solid #AFBAC3;
+    border-radius: 5px;
+    display: flex;
+    padding: 0 8px;
+    text-align: center;
+    align-items: center;
+}
+
 .timer_bottom_elements{
     display: flex;
     flex-direction: row;
@@ -723,6 +755,25 @@
 }
 
 .timer_bottom_elements input{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0px 28px 0px 8px;
+    gap: 8px;
+
+    width: 192px;
+    height: 32px;
+
+    /* Basic/White */
+
+    background: #FFFFFF;
+    /* Basic/Grey */
+
+    border: 1px solid #AFBAC3;
+    border-radius: 5px;
+}
+
+.timer_bottom_elements select{
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -840,7 +891,7 @@
 .kanban-banner {
     position: absolute;
     top: -10px;
-    left: 60%;
+    left: 57%;
     transform: translateX(-50%);
     background-color: #3FA2F7;
     color: white;
