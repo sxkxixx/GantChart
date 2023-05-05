@@ -99,6 +99,20 @@ export default class Gantt extends Component {
             return "";
         };
 
+        // Deadline
+
+
+
+
+        // Также вы можете присвоить класс задачам, у которых дедлайн и которые просрочены:
+        gantt.templates.task_class = function (start, end, task) {
+            if (task.deadline && end.valueOf() > task.deadline.valueOf()) {
+                return 'overdue';
+            }
+        };
+
+
+
         // Колоны
         gantt.config.columns = [
             {name: "text", label: "ЗАДАЧИ", width: "*", tree: true},
@@ -118,7 +132,7 @@ export default class Gantt extends Component {
             },
             {
                 name: "add", label: "", width: 44
-            }
+            },
         ]
 
         function getForm(formName) {
@@ -253,8 +267,8 @@ export default class Gantt extends Component {
                     };
                     editForm.querySelector("[name='create_task_edit']").onclick = function () {
                         taskId = id;
-                        let displayForm = getForm("create_task");
-                        displayForm.style.display = "none";
+                        let editForm = getForm("edit_task");
+                        editForm.style.display = "none";
                         let parentTaskId = gantt.getSelectedId();
                         gantt.createTask(this.createTask, parentTaskId);
                     }
@@ -267,6 +281,7 @@ export default class Gantt extends Component {
         gantt.hideLightbox = function () {
             getForm("create_task").style.display = "none";
             getForm("display_task").style.display = "none";
+            getForm("edit_task").style.display = "none";
             taskId = null;
         }
 
