@@ -131,9 +131,10 @@ input[type="checkbox"] {
   height: 18px;
   border: 2px solid #AFBAC3;
   border-radius: 5px;
+  transition: all 0.2s ease-in-out; /* add transition for smooth animation */
 }
 
-input[type="checkbox"]:checked{
+input[type="checkbox"]:checked {
   border: transparent;
 }
 
@@ -147,7 +148,22 @@ input[type="checkbox"]:checked::before {
   color: #fff;
   background-color: #56C568;
   background-position: center;
+  transition: all 0.2s ease-in-out; /* add transition for smooth animation */
 }
+
+/* add hover effect to make it more interactive */
+input[type="checkbox"]:hover {
+  border-color: #56C568;
+}
+
+input[type="checkbox"]:hover:checked {
+  background-color: #56C568;
+}
+
+input[type="checkbox"]:hover:checked::before {
+  transform: scale(1.2); /* add scale transformation on hover for extra effect */
+}
+
 
 span{
   font-weight: 500;

@@ -161,7 +161,7 @@ export default class Gantt extends Component {
         gantt.config.columns = [
             {name: "text", label: "ЗАДАЧИ", width: "*", tree: true},
             {
-                name: "checked", label: "", width: "24", template: function (task) {
+                name: "checked", label: "", width: "26", template: function (task) {
                     if (task.children === 0) {
                         let banner = "";
                         if (!task.is_on_kanban) {
@@ -687,8 +687,8 @@ export default class Gantt extends Component {
                                         <button onClick={this.handleAdd}><Add/></button>
                                     </div>
                                     {this.state.data.map((performer, index) => (
-                                        <div key={index}>
-                                            <select>
+                                        <div>
+                                            <select key={index}>
                                                 <option>{performer}</option>
                                             </select>
                                             <button onClick={() => this.handleDelete(index)}><Del/></button>
