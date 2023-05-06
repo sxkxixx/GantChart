@@ -99,19 +99,7 @@ export default class Gantt extends Component {
             return "";
         };
 
-        // Deadline
-
-
-
-
-        // Также вы можете присвоить класс задачам, у которых дедлайн и которые просрочены:
-        gantt.templates.task_class = function (start, end, task) {
-            if (task.deadline && end.valueOf() > task.deadline.valueOf()) {
-                return 'overdue';
-            }
-        };
-
-
+        // deadline
 
         // Колоны
         gantt.config.columns = [
@@ -337,18 +325,7 @@ export default class Gantt extends Component {
 
         gantt.attachEvent("onAfterTaskDrag", function (id, mode, e) {
             let task = gantt.getTask(id);
-            if (new Date(task.end_date).getTime() > new Date(task.deadline).getTime()) {
-                toast.error("Дата конца не может быть позже даты дедлайна задачи", {
-                    position: "top-right",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "light",
-                });
-                // Revert the task to its original position
+            if (new Date(task.end_date).getTime() < new Date(task.start_date).getTime()) {
                 gantt.changeTaskDates(id, task.start_date, task.end_date);
                 return;
             }
@@ -400,31 +377,19 @@ export default class Gantt extends Component {
                 })
             }
 
-            if (start_date < parentId || parentId > end_date) {
-                toast.error("Дата начала или конца задачи не может быть раньше начала или позже конца родительской задачи", {
-                    position: "top-right",
-                    autoClose: 6000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "light",
-                })
-            }
+            // if (start_date > parentId || parentId < end_date) {
+            //     toast.error("Дата начала или конца задачи не может быть раньше начала или позже конца родительской задачи", {
+            //         position: "top-right",
+            //         autoClose: 6000,
+            //         hideProgressBar: false,
+            //         closeOnClick: true,
+            //         pauseOnHover: true,
+            //         draggable: true,
+            //         progress: undefined,
+            //         theme: "light",
+            //     })
+            // }
 
-            if (!deadline) {
-                toast.error("Выберите дедлайн задачи", {
-                    position: "top-right",
-                    autoClose: 6000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "light",
-                })
-            }
 
             if (!start_date || !end_date) {
                 toast.warn("Введите даты начала и конца задачи", {
@@ -477,7 +442,7 @@ export default class Gantt extends Component {
                 team_id: 1,
                 name: text,
                 description: description,
-                deadline: deadline ? formatter(new Date(deadline)) : null,
+                deadline: deadline ? formatter(new Date(deadline)) : formatter(new Date()),
                 planned_start_date: start_date_formatted,
                 planned_finish_date: end_date_formatted,
             }).then(response => {
