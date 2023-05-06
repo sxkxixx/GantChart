@@ -6,6 +6,7 @@ import 'dhtmlx-gantt/codebase/dhtmlxgantt.css';
 import s from "../Main/Main.module.css";
 import {ReactComponent as Exit} from "../../Assets/img/exitmodal.svg"
 import {ReactComponent as Play} from "../../Assets/img/playWhite.svg"
+import {ReactComponent as Stop} from "../../Assets/img/stop.svg"
 import {ReactComponent as TrashWhite} from "../../Assets/img/trashWhite.svg"
 import {ReactComponent as Add} from "../../Assets/img/addButton.svg"
 import {ReactComponent as Del} from "../../Assets/img/deleteButton.svg"
@@ -22,44 +23,105 @@ export default class Gantt extends Component {
         super(props);
         this.state = {
             data: ["Игорь", "Саша", "Вера", "Юля", "Артем"],
-            items: ["Пункт 1", "Пункт 2", "Пункт 3", "Пункт 4", "Пункт 5", "Пункт 6"]
+            items: ["Пункт 1", "Пункт 2", "Пункт 3", "Пункт 4", "Пункт 5", "Пункт 6"],
+            isRunning: false,
+            elapsedTime: 0,
+            comments: [],
+            currentComment: '',
         };
         this.handleAdd = this.handleAdd.bind(this);
         this.handleDelete = this.handleDelete.bind(this);
+        this.timerIntervalId = null;
+        this.handlePlayClick = this.handlePlayClick.bind(this);
+        this.handleSaveClick = this.handleSaveClick.bind(this);
+        this.handleRemoveClick = this.handleRemoveClick.bind(this);
     }
-
+    handleChange = (event) => {
+        this.setState({ currentComment: event.target.value });
+    }
+    handleSubmit = (event) => {
+        event.preventDefault();
+        if (this.state.currentComment.trim()) {
+            const newComment = {
+                name: 'Фамилия Имя Отчество',
+                time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+                text: this.state.currentComment,
+            };
+            this.setState({
+                comments: [...this.state.comments, newComment],
+                currentComment: '',
+            });
+        }
+    };
     addItem = () => {
         const newItems = [...this.state.items, ""];
         this.setState({items: newItems});
     };
-
     removeItem = (index) => {
         const newItems = [...this.state.items];
         newItems.splice(index, 1);
         this.setState({items: newItems});
     };
-
     handleItemChange = (event, index) => {
         const newItems = [...this.state.items];
         newItems[index] = event.target.value;
         this.setState({items: newItems});
-    };
-
+    }
     handleAdd() {
         const newData = [...this.state.data, "Новый исполнитель"];
-        this.setState({ data: newData });
+        this.setState({data: newData});
     }
-
     handleDelete(index) {
         const newData = [...this.state.data];
         newData.splice(index, 1);
-        this.setState({ data: newData });
+        this.setState({data: newData});
     }
+
+    componentWillUnmount() {
+        this.stopTimer();
+    }
+    startTimer() {
+        const startTime = Date.now() - this.state.elapsedTime;
+        this.timerIntervalId = setInterval(() => {
+            const elapsedTime = Date.now() - startTime;
+            this.setState({ elapsedTime });
+        }, 10);
+    }
+    stopTimer() {
+        clearInterval(this.timerIntervalId);
+        this.timerIntervalId = null;
+    }
+    handlePlayClick() {
+        if (this.state.isRunning) {
+            this.stopTimer();
+        } else {
+            this.startTimer();
+        }
+        this.setState({ isRunning: !this.state.isRunning });
+    }
+
+    handleSaveClick() {
+        this.props.onSave(this.state.elapsedTime);
+    }
+
+    handleRemoveClick() {
+        this.stopTimer();
+        this.setState({ isRunning: false, elapsedTime: 0 });
+    }
+
+    formatTime(time) {
+        const s = Math.floor(time / 1000 % 60);
+        const m = Math.floor(time / 1000 / 60 % 60);
+        const h = Math.floor(time / 1000 / 60 / 60);
+        return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    }
+
 
     componentDidMount() {
         gantt.config.date_format = "%Y-%m-%d";
         gantt.init(this.ganttContainer);
         gantt.i18n.setLocale("ru"); // Руссификация
+        gantt.config.links = false;
 
         // Календарь
         gantt.config.scale_height = 80;
@@ -319,6 +381,20 @@ export default class Gantt extends Component {
 
         gantt.attachEvent("onAfterTaskDrag", function (id, mode, e) {
             let task = gantt.getTask(id);
+            let parentTask = gantt.getTask(task.parent);
+            if (task.start_date < parentTask.start_date || task.end_date > parentTask.end_date) {
+                toast.warn('Даты начала и конца задачи не могут превышать даты начала и конца родительской задачи', {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                });
+                return
+            }
             if (new Date(task.end_date).getTime() < new Date(task.start_date).getTime()) {
                 gantt.changeTaskDates(id, task.start_date, task.end_date);
                 return;
@@ -347,7 +423,7 @@ export default class Gantt extends Component {
         });
 
 
-        function save() {
+        function save(id) {
             const form = getForm("create_task");
             // Получаем значения полей формы
             const parentId = document.getElementById("parent_task").value;
@@ -356,6 +432,8 @@ export default class Gantt extends Component {
             const deadline = document.getElementsByName("deadline")[0].value;
             const start_date = document.getElementsByName("start_date")[0].value;
             const end_date = document.getElementsByName("end_date")[0].value;
+            let task = gantt.getTask(id);
+            let parentTask = gantt.getTask(task.parent);
 
             // Валидация полей формы
             if (!text) {
@@ -371,18 +449,18 @@ export default class Gantt extends Component {
                 })
             }
 
-            // if (start_date > parentId || parentId < end_date) {
-            //     toast.error("Дата начала или конца задачи не может быть раньше начала или позже конца родительской задачи", {
-            //         position: "top-right",
-            //         autoClose: 6000,
-            //         hideProgressBar: false,
-            //         closeOnClick: true,
-            //         pauseOnHover: true,
-            //         draggable: true,
-            //         progress: undefined,
-            //         theme: "light",
-            //     })
-            // }
+            if (start_date < parentTask.start_date || end_date > parentTask.end_date) {
+                toast.error("Дата начала или конца задачи не может быть раньше начала или позже конца родительской задачи", {
+                    position: "top-right",
+                    autoClose: 6000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                })
+            }
 
 
             if (!start_date || !end_date) {
@@ -411,18 +489,6 @@ export default class Gantt extends Component {
                 });
             }
 
-            if (new Date(end_date).getTime() > new Date(deadline).getTime()) {
-                toast.error("Дата конца не может быть позже даты дедлайна задачи", {
-                    position: "top-right",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "light",
-                });
-            }
 
             // Форматируем даты в формат "%Y-%m-%d"
             const formatter = gantt.date.date_to_str("%Y-%m-%d");
@@ -531,7 +597,7 @@ export default class Gantt extends Component {
     };
 
     render() {
-
+        const { isRunning, elapsedTime } = this.state;
         return (
             <>
                 <div className={s.elements}>
@@ -554,7 +620,7 @@ export default class Gantt extends Component {
                 <div id="create_task" className="modal" style={{display: "none"}}>
                     <div className="create-form">
                         <div className='main'>
-                            <div className="title">
+                            <div className="title_create">
                                 <input
                                     placeholder='Введите название'
                                     type="text"
@@ -563,92 +629,95 @@ export default class Gantt extends Component {
                                 />
                                 <p id='parent_task'></p>
                             </div>
-                            <div className="project">
-                                <span>Проект</span>
-                                <select>
-                                    <option>Название проекта</option>
-                                    <option>ЛК Гант</option>
-                                    <option>ЛК Канбан</option>
-                                </select>
-                            </div>
-                            <div className='elements'>
-                                <div className="element">
-                                    <span>Дедлайн</span>
-                                    <input type="date" name='deadline'/>
-                                </div>
-                                <div className="element">
-                                    <span>Тег команды</span>
+                            <div className='main_view_list'>
+                                <div className="project">
+                                    <span>Проект</span>
                                     <select>
-                                        <option>#Тег_команды</option>
-                                        <option>#Гант</option>
-                                        <option>#Канбан</option>
+                                        <option>Название проекта</option>
+                                        <option>ЛК Гант</option>
+                                        <option>ЛК Канбан</option>
                                     </select>
                                 </div>
-                                <div className="date">
-                                    <span>Планируемые сроки выполнения</span>
-                                    <div className='dateList'>
-                                        <input type="date" name='start_date'/>
-                                        -
-                                        <input type="date" name='end_date'/>
+                                <div className='elements'>
+                                    <div className="element">
+                                        <span>Дедлайн</span>
+                                        <input type="date" name='deadline'/>
                                     </div>
-                                </div>
-                            </div>
-                            <div className="description">
-                                <p><textarea name="description" placeholder='Введите описание задачи...'></textarea></p>
-                            </div>
-                            <div className="name">
-                                <div className='nameList'>
-                                    <span>Постановщик</span>
-                                    <input type="text" placeholder='Введите Имя'/>
-                                </div>
-                                <div className='nameList'>
-                                    <span>Ответственный</span>
-                                    <select>
-                                        <option>Выберите</option>
-                                        <option>Игорь</option>
-                                        <option>Саша</option>
-                                        <option>Вера</option>
-                                        <option>Юля</option>
-                                        <option>Артем</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div className="performers-create">
-                                <div className="performers_title">
-                                    <span>Исполнители</span>
-                                    <button onClick={this.handleAdd}><Add /></button>
-                                </div>
-                                {this.state.data.map((performer, index) => (
-                                    <div key={index}>
+                                    <div className="element">
+                                        <span>Тег команды</span>
                                         <select>
-                                            <option>{performer}</option>
+                                            <option>#Тег_команды</option>
+                                            <option>#Гант</option>
+                                            <option>#Канбан</option>
                                         </select>
-                                        <button onClick={() => this.handleDelete(index)}><Del /></button>
                                     </div>
-                                ))}
-                            </div>
-                            <div className='check_list'>
-                                <div className='check_list_title'>
-                                    <span>Чек-лист</span>
-                                    <button onClick={this.addItem}><Add/></button>
+                                    <div className="date">
+                                        <span>Планируемые сроки выполнения</span>
+                                        <div className='dateList'>
+                                            <input type="date" name='start_date'/>
+                                            -
+                                            <input type="date" name='end_date'/>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className='list'>
-                                    {this.state.items.map((item, index) => (
-                                        <div className='check_list_elements' key={index}>
-                                            <input type="checkbox"/>
-                                            <input type="text"
-                                                   className='check_list_text'
-                                                   value={item}
-                                                   onChange={(event) => this.handleItemChange(event, index)}
-                                            />
-                                            <button onClick={() => this.removeItem(index)}><Del/></button>
+                                <div className="description">
+                                    <p><textarea name="description" placeholder='Введите описание задачи...'></textarea>
+                                    </p>
+                                </div>
+                                <div className="name">
+                                    <div className='nameList'>
+                                        <span>Постановщик</span>
+                                        <input type="text" placeholder='Введите Имя'/>
+                                    </div>
+                                    <div className='nameList'>
+                                        <span>Ответственный</span>
+                                        <select>
+                                            <option>Выберите</option>
+                                            <option>Игорь</option>
+                                            <option>Саша</option>
+                                            <option>Вера</option>
+                                            <option>Юля</option>
+                                            <option>Артем</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div className="performers">
+                                    <div className="performers_title">
+                                        <span>Исполнители</span>
+                                        <button onClick={this.handleAdd}><Add/></button>
+                                    </div>
+                                    {this.state.data.map((performer, index) => (
+                                        <div key={index}>
+                                            <select>
+                                                <option>{performer}</option>
+                                            </select>
+                                            <button onClick={() => this.handleDelete(index)}><Del/></button>
                                         </div>
                                     ))}
                                 </div>
-                            </div>
-                            <div className='buttons'>
-                                <input className='save' type="button" name="save" value="Сохранить"/>
-                                <input className='cancel' type="button" name="close" value="Отменить"/>
+                                <div className='check_list'>
+                                    <div className='check_list_title'>
+                                        <span>Чек-лист</span>
+                                        <button onClick={this.addItem}><Add/></button>
+                                    </div>
+                                    <div className='list'>
+                                        {this.state.items.map((item, index) => (
+                                            <div className='check_list_elements' key={index}>
+                                                <input type="checkbox"/>
+                                                <input type="text"
+                                                       className='check_list_text'
+                                                       value={item}
+                                                       onChange={(event) => this.handleItemChange(event, index)}
+                                                />
+                                                <button onClick={() => this.removeItem(index)}><Del/></button>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                                <div className='buttons'>
+                                    <input className='save' type="button" name="save" value="Сохранить"/>
+                                    <input className='cancel' type="button" name="close" value="Отменить"/>
+                                </div>
                             </div>
                         </div>
                         <div className='closeButton'>
@@ -741,12 +810,13 @@ export default class Gantt extends Component {
                                     <div className='timer_top'>
                                         <span>Таймер</span>
                                         <div className='timer_top_elements'>
-                                            <p><Clock/>00:00:00</p>
+                                            <p><Clock/>{this.formatTime(elapsedTime)}</p>
                                             <div className='timer_button'>
-                                                <button className='play_time' name="play"><Play/></button>
-                                                <button className='save_time' name="save_time">Сохранить</button>
-                                                <button className='remove_time' name="remove_time"><TrashWhite/>
+                                                <button className='play_time' name="play" onClick={this.handlePlayClick}>
+                                                    {isRunning ? <Stop/> : <Play/>}
                                                 </button>
+                                                <button className='save_time' name="save_time" onClick={this.handleSaveClick}>Сохранить</button>
+                                                <button className='remove_time' name="remove_time" onClick={this.handleRemoveClick}><TrashWhite/></button>
                                             </div>
                                         </div>
                                     </div>
@@ -764,19 +834,23 @@ export default class Gantt extends Component {
                                            value="Создать подзадачу"/>
                                     <input className='remove_view' type="button" name="delete" value="Удалить задачу"/>
                                 </div>
-                                <div className='comments'>
-                                    <div className='comments_input'>
+                                <div className="comments">
+                                    <div className="comments_input">
                                         <span>Комментарии</span>
-                                        <input type="text" placeholder='Введите комментарий...'/>
+                                        <form onSubmit={this.handleSubmit}>
+                                            <input type="text" placeholder="Введите комментарий..." value={this.state.currentComment} onChange={this.handleChange} />
+                                        </form>
                                     </div>
-                                    <div className='comments_output'>
-                                        <div className='comments_output_title'>
-                                            <p className='comments_output_name'>Фамилия Имя Отчество</p>
-                                            <p className='comments_output_time'>00:00</p>
-                                        </div>
-                                        <p className='comments_output_text'>Lorem ipsum dolor sit amet, consectetur
-                                            adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
-                                            aliqua. Ut enim ad minim veniam, quis nostrud exercitation</p>
+                                    <div className="comments_output">
+                                        {this.state.comments.map((comment, index) => (
+                                            <div className="comments_output_item" key={index}>
+                                                <div className="comments_output_title">
+                                                    <p className="comments_output_name">{comment.name}</p>
+                                                    <p className="comments_output_time">{comment.time}</p>
+                                                </div>
+                                                <p className="comments_output_text">{comment.text}</p>
+                                            </div>
+                                        ))}
                                     </div>
                                 </div>
                             </div>
@@ -854,14 +928,14 @@ export default class Gantt extends Component {
                                 <div className="performers">
                                     <div className="performers_title">
                                         <span>Исполнители</span>
-                                        <button onClick={this.handleAdd}><Add /></button>
+                                        <button onClick={this.handleAdd}><Add/></button>
                                     </div>
                                     {this.state.data.map((performer, index) => (
                                         <div key={index}>
                                             <select>
                                                 <option>{performer}</option>
                                             </select>
-                                            <button onClick={() => this.handleDelete(index)}><Del /></button>
+                                            <button onClick={() => this.handleDelete(index)}><Del/></button>
                                         </div>
                                     ))}
                                 </div>
