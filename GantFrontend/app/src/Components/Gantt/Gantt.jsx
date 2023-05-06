@@ -21,49 +21,45 @@ export default class Gantt extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            data: []
+            data: ["Игорь", "Саша", "Вера", "Юля", "Артем"],
+            items: ["Пункт 1", "Пункт 2", "Пункт 3", "Пункт 4", "Пункт 5", "Пункт 6"]
         };
+        this.handleAdd = this.handleAdd.bind(this);
+        this.handleDelete = this.handleDelete.bind(this);
+    }
+
+    addItem = () => {
+        const newItems = [...this.state.items, ""];
+        this.setState({items: newItems});
+    };
+
+    removeItem = (index) => {
+        const newItems = [...this.state.items];
+        newItems.splice(index, 1);
+        this.setState({items: newItems});
+    };
+
+    handleItemChange = (event, index) => {
+        const newItems = [...this.state.items];
+        newItems[index] = event.target.value;
+        this.setState({items: newItems});
+    };
+
+    handleAdd() {
+        const newData = [...this.state.data, "Новый исполнитель"];
+        this.setState({ data: newData });
+    }
+
+    handleDelete(index) {
+        const newData = [...this.state.data];
+        newData.splice(index, 1);
+        this.setState({ data: newData });
     }
 
     componentDidMount() {
         gantt.config.date_format = "%Y-%m-%d";
         gantt.init(this.ganttContainer);
         gantt.i18n.setLocale("ru"); // Руссификация
-
-        // //toolTip
-        // gantt.plugins({
-        //     tooltip: true
-        // });
-        //
-        // // настройки для tooltip
-        // gantt.ext.tooltips.tooltip.delay = 500;
-        // gantt.ext.tooltips.tooltip.className = "custom-tooltip";
-        // gantt.ext.tooltips.tooltip.offsetX = 20;
-        // gantt.ext.tooltips.tooltip.offsetY = 10;
-        //
-        // // содержимое tooltip
-        // gantt.templates.tooltip_text = function (start, end, task) {
-        //     let tooltipHTML = "<div>";
-        //     tooltipHTML += "<div>" + task.text + "</div>";
-        //     tooltipHTML += "<div>Начало: " + gantt.templates.tooltip_date_format(start) + "</div>";
-        //     tooltipHTML += "<div>Конец: " + gantt.templates.tooltip_date_format(end) + "</div>";
-        //     tooltipHTML += "</div>";
-        //     return tooltipHTML;
-        // };
-        //
-        // // привязываем событие onTaskMouseOver для показа tooltip
-        // gantt.attachEvent("onTaskMouseOver", function(id, e) {
-        //     // проверяем, является ли элемент e.target элементом в колонке задач
-        //     if (!gantt.utils.dom.isChildOf(e.target, gantt.$grid)) {
-        //         gantt.ext.tooltips.tooltip.setContent(gantt.templates.tooltip_text(gantt.getTask(id).start_date, gantt.getTask(id).end_date, gantt.getTask(id)));
-        //         gantt.ext.tooltips.tooltip.show(e.pageX, e.pageY);
-        //     }
-        // });
-        //
-        // // привязываем событие onTaskMouseOut для скрытия tooltip
-        // gantt.attachEvent("onTaskMouseOut", function(id, e) {
-        //     gantt.ext.tooltips.tooltip.hide();
-        // });
 
         // Календарь
         gantt.config.scale_height = 80;
@@ -98,8 +94,6 @@ export default class Gantt extends Component {
             }
             return "";
         };
-
-        // deadline
 
         // Колоны
         gantt.config.columns = [
@@ -249,7 +243,7 @@ export default class Gantt extends Component {
                     editForm.querySelector("[id='parent_task']").value = task.parent || '';
                     editForm.querySelector("#parent_task").innerHTML = parentTask;
                     editForm.querySelector("#parent_task").innerHTML = parentTask;
-                    editForm.querySelector('button[type="closemodal3"]').onclick = function() {
+                    editForm.querySelector('button[type="closemodal3"]').onclick = function () {
                         gantt.hideLightbox();
                         editForm.style.display = "none";
                     };
@@ -619,59 +613,37 @@ export default class Gantt extends Component {
                                     </select>
                                 </div>
                             </div>
-                            <div className='performers'>
-                                <div className='performers_title'>
+                            <div className="performers-create">
+                                <div className="performers_title">
                                     <span>Исполнители</span>
-                                    <button><Add/></button>
+                                    <button onClick={this.handleAdd}><Add /></button>
                                 </div>
-                                <div>
-                                    <select>
-                                        <option>Выберите</option>
-                                        <option>Игорь</option>
-                                        <option>Саша</option>
-                                        <option>Вера</option>
-                                        <option>Юля</option>
-                                        <option>Артем</option>
-                                    </select>
-                                    <button><Del/></button>
-                                </div>
+                                {this.state.data.map((performer, index) => (
+                                    <div key={index}>
+                                        <select>
+                                            <option>{performer}</option>
+                                        </select>
+                                        <button onClick={() => this.handleDelete(index)}><Del /></button>
+                                    </div>
+                                ))}
                             </div>
                             <div className='check_list'>
                                 <div className='check_list_title'>
                                     <span>Чек-лист</span>
-                                    <button><Add/></button>
+                                    <button onClick={this.addItem}><Add/></button>
                                 </div>
                                 <div className='list'>
-                                    <div className='check_list_elements'>
-                                        <input type="checkbox"/>
-                                        <input type="text" className='check_list_text' value='Пункт 1'/>
-                                        <button><Del/></button>
-                                    </div>
-                                    <div className='check_list_elements'>
-                                        <input type="checkbox"/>
-                                        <input type="text" className='check_list_text' value='Пункт 2'/>
-                                        <button><Del/></button>
-                                    </div>
-                                    <div className='check_list_elements'>
-                                        <input type="checkbox"/>
-                                        <input type="text" className='check_list_text' value='Пункт 3'/>
-                                        <button><Del/></button>
-                                    </div>
-                                    <div className='check_list_elements'>
-                                        <input type="checkbox"/>
-                                        <input type="text" className='check_list_text' value='Пункт 4'/>
-                                        <button><Del/></button>
-                                    </div>
-                                    <div className='check_list_elements'>
-                                        <input type="checkbox"/>
-                                        <input type="text" className='check_list_text' value='Пункт 5'/>
-                                        <button><Del/></button>
-                                    </div>
-                                    <div className='check_list_elements'>
-                                        <input type="checkbox"/>
-                                        <input type="text" className='check_list_text' value='Пункт 6'/>
-                                        <button><Del/></button>
-                                    </div>
+                                    {this.state.items.map((item, index) => (
+                                        <div className='check_list_elements' key={index}>
+                                            <input type="checkbox"/>
+                                            <input type="text"
+                                                   className='check_list_text'
+                                                   value={item}
+                                                   onChange={(event) => this.handleItemChange(event, index)}
+                                            />
+                                            <button onClick={() => this.removeItem(index)}><Del/></button>
+                                        </div>
+                                    ))}
                                 </div>
                             </div>
                             <div className='buttons'>
@@ -746,38 +718,23 @@ export default class Gantt extends Component {
                                 </div>
                                 <div className='performers'>
                                     <span>Исполнители</span>
-                                    <input type="text" placeholder='ФИО' readOnly={true}/>
+                                    {this.state.data.map((performer, index) => (
+                                        <div key={index}>
+                                            <input type="text" value={performer} readOnly={true}/>
+                                        </div>
+                                    ))}
                                 </div>
                                 <div className='check_list'>
                                     <div className='check_list_title'>
                                         <span>Чек-лист</span>
-                                        <button><Add/></button>
                                     </div>
                                     <div className='list_view'>
-                                        <div className='check_list_elements'>
-                                            <input type="checkbox"/>
-                                            <p className='check_list_text2'>Пункт 1</p>
-                                        </div>
-                                        <div className='check_list_elements'>
-                                            <input type="checkbox"/>
-                                            <p className='check_list_text2'>Пункт 2</p>
-                                        </div>
-                                        <div className='check_list_elements'>
-                                            <input type="checkbox"/>
-                                            <p className='check_list_text2'>Пункт 3</p>
-                                        </div>
-                                        <div className='check_list_elements'>
-                                            <input type="checkbox"/>
-                                            <p className='check_list_text2'>Пункт 4</p>
-                                        </div>
-                                        <div className='check_list_elements'>
-                                            <input type="checkbox"/>
-                                            <p className='check_list_text2'>Пункт 5</p>
-                                        </div>
-                                        <div className='check_list_elements'>
-                                            <input type="checkbox"/>
-                                            <p className='check_list_text2'>Пункт 6</p>
-                                        </div>
+                                        {this.state.items.map((item, index) => (
+                                            <div className='check_list_elements' key={index}>
+                                                <input type="checkbox"/>
+                                                <p className='check_list_text2'>{item}</p>
+                                            </div>
+                                        ))}
                                     </div>
                                 </div>
                                 <div className='timer'>
@@ -894,59 +851,37 @@ export default class Gantt extends Component {
                                         </select>
                                     </div>
                                 </div>
-                                <div className='performers'>
-                                    <div className='performers_title'>
+                                <div className="performers">
+                                    <div className="performers_title">
                                         <span>Исполнители</span>
-                                        <button><Add/></button>
+                                        <button onClick={this.handleAdd}><Add /></button>
                                     </div>
-                                    <div>
-                                        <select>
-                                            <option>Выберите</option>
-                                            <option>Игорь</option>
-                                            <option>Саша</option>
-                                            <option>Вера</option>
-                                            <option>Юля</option>
-                                            <option>Артем</option>
-                                        </select>
-                                        <button><Del/></button>
-                                    </div>
+                                    {this.state.data.map((performer, index) => (
+                                        <div key={index}>
+                                            <select>
+                                                <option>{performer}</option>
+                                            </select>
+                                            <button onClick={() => this.handleDelete(index)}><Del /></button>
+                                        </div>
+                                    ))}
                                 </div>
                                 <div className='check_list_edit'>
                                     <div className='check_list_title'>
                                         <span>Чек-лист</span>
-                                        <button><Add/></button>
+                                        <button onClick={this.addItem}><Add/></button>
                                     </div>
                                     <div className='list'>
-                                        <div className='check_list_elements'>
-                                            <input type="checkbox"/>
-                                            <input type="text" className='check_list_text' value='Пункт 1'/>
-                                            <button><Del/></button>
-                                        </div>
-                                        <div className='check_list_elements'>
-                                            <input type="checkbox"/>
-                                            <input type="text" className='check_list_text' value='Пункт 2'/>
-                                            <button><Del/></button>
-                                        </div>
-                                        <div className='check_list_elements'>
-                                            <input type="checkbox"/>
-                                            <input type="text" className='check_list_text' value='Пункт 3'/>
-                                            <button><Del/></button>
-                                        </div>
-                                        <div className='check_list_elements'>
-                                            <input type="checkbox"/>
-                                            <input type="text" className='check_list_text' value='Пункт 4'/>
-                                            <button><Del/></button>
-                                        </div>
-                                        <div className='check_list_elements'>
-                                            <input type="checkbox"/>
-                                            <input type="text" className='check_list_text' value='Пункт 5'/>
-                                            <button><Del/></button>
-                                        </div>
-                                        <div className='check_list_elements'>
-                                            <input type="checkbox"/>
-                                            <input type="text" className='check_list_text' value='Пункт 6'/>
-                                            <button><Del/></button>
-                                        </div>
+                                        {this.state.items.map((item, index) => (
+                                            <div className='check_list_elements' key={index}>
+                                                <input type="checkbox"/>
+                                                <input type="text"
+                                                       className='check_list_text'
+                                                       value={item}
+                                                       onChange={(event) => this.handleItemChange(event, index)}
+                                                />
+                                                <button onClick={() => this.removeItem(index)}><Del/></button>
+                                            </div>
+                                        ))}
                                     </div>
                                     <div className='timer_bottom'>
                                         <span>Затраченное время</span>
@@ -968,7 +903,8 @@ export default class Gantt extends Component {
                                     <input className='edit_view' type="button" name="save_edit" value="Сохранить"/>
                                     <input className='create_view' type="button" name="create_task_edit"
                                            value="Создать подзадачу"/>
-                                    <input className='remove_view' type="button" name="delete_edit" value="Удалить задачу"/>
+                                    <input className='remove_view' type="button" name="delete_edit"
+                                           value="Удалить задачу"/>
                                 </div>
                             </div>
                         </div>
