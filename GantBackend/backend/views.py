@@ -49,8 +49,8 @@ def edit_dates(request: Request, id):
         deadline = datetime.strptime(data.get('deadline'), DATE_FORMAT).date()
     except:
         raise ValueError(f'Incorrect date format. Must be a "{DATE_FORMAT}" format')
-    if not is_valid_date_term(start_date, finish_date, deadline):
-        raise ValueError('Must be "start_date < finish_date <= deadline"')
+    if not is_valid_date_term(start_date, finish_date):
+        raise ValueError('Must be "start_date < finish_date"')
     parent = task.parent_id
 
     task.planned_start_date = start_date
@@ -80,8 +80,8 @@ def create_task(request: Request):
     except:
         raise ValueError(f'Incorrect date format. Must be a "{DATE_FORMAT}" format')
 
-    if not is_valid_date_term(start_date, finish_date, deadline):
-        raise ValueError('Must be "start_date < finish_date <= deadline"')
+    if not is_valid_date_term(start_date, finish_date):
+        raise ValueError('Must be "start_date < finish_date"')
 
     task = Task(
         parent_id=parent_task,

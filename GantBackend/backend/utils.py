@@ -29,13 +29,11 @@ def many_requests_db_tasks(parent_id, task_list: list):
     return task_list
 
 
-def is_valid_date_term(start_date, finish_date, deadline):
-    return start_date < finish_date <= deadline
+def is_valid_date_term(start_date, finish_date):
+    return start_date < finish_date
 
 
 def is_in_parent_terms(parent: Task, task: Task):
     if parent is None:
         return True
-    return parent.planned_start_date <= task.planned_start_date \
-        and task.planned_finish_date <= parent.planned_finish_date\
-        and task.deadline <= parent.planned_finish_date
+    return parent.planned_start_date <= task.planned_start_date and task.planned_finish_date <= parent.planned_finish_date
