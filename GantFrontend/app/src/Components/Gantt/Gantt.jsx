@@ -357,11 +357,20 @@ export default class Gantt extends Component {
 
         gantt.templates.task_class = function (start, end, task) {
             if (task.$level === 0 || task.$level === 1) {
-                return "parent-task";
+                if (new Date() > end) {
+                    return "parent-task-complete";
+                } else {
+                    return "parent-task";
+                }
             } else {
-                return "child-task";
+                if (new Date() > end) {
+                    return "child-task-complete";
+                } else {
+                    return "child-task";
+                }
             }
-        }
+        };
+
 
         // Get запрос задач
         axios.get('http://localhost:8000/api/v1/gant/tasks')
@@ -432,8 +441,8 @@ export default class Gantt extends Component {
             const deadline = document.getElementsByName("deadline")[0].value;
             const start_date = document.getElementsByName("start_date")[0].value;
             const end_date = document.getElementsByName("end_date")[0].value;
-            let task = gantt.getTask(id);
-            let parentTask = gantt.getTask(task.parent);
+            // let task = gantt.getTask(id);
+            let parentTask = document.getElementById("parent_task").value;
 
             // Валидация полей формы
             if (!text) {

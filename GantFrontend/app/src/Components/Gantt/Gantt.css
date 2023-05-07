@@ -6,6 +6,14 @@
     background-color: #FAB44C;
 }
 
+.parent-task-complete .gantt_task_content {
+    background-color: #B1B7BA;
+}
+
+.child-task-complete .gantt_task_content {
+    background-color: #B1B7BA;
+}
+
 .gantt_grid_head_cell[data-column-id='add'] {
     display: none;
 }
@@ -934,4 +942,3 @@
 .kanban-container .kanban-banner.show {
     opacity: 1;
 }
-
