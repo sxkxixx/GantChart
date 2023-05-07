@@ -676,7 +676,7 @@ export default class Gantt extends Component {
                                 <div className="name">
                                     <div className='nameList'>
                                         <span>Постановщик</span>
-                                        <input type="text" placeholder='Введите Имя'/>
+                                        <input type="text" placeholder='ФИО' readOnly={true}/>
                                     </div>
                                     <div className='nameList'>
                                         <span>Ответственный</span>
@@ -751,7 +751,7 @@ export default class Gantt extends Component {
                             <div className='main_view_list'>
                                 <div className="project">
                                     <span>Проект</span>
-                                    <select>
+                                    <select disabled>
                                         <option>Название проекта</option>
                                         <option>ЛК Гант</option>
                                         <option>ЛК Канбан</option>
@@ -764,7 +764,7 @@ export default class Gantt extends Component {
                                     </div>
                                     <div className="element">
                                         <span>Тег команды</span>
-                                        <select aria-readonly={true}>
+                                        <select disabled>
                                             <option>#Тег_команды</option>
                                             <option>#Гант</option>
                                             <option>#Канбан</option>
@@ -781,7 +781,7 @@ export default class Gantt extends Component {
                                 </div>
                                 <div className="description">
                                     <p><textarea name="description1"
-                                                 placeholder='Введите описание задачи...'></textarea>
+                                                 placeholder='Описание задачи' readOnly={true}></textarea>
                                     </p>
                                 </div>
                                 <div className="name">
