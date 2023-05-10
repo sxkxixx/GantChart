@@ -159,7 +159,14 @@ export default class Gantt extends Component {
 
         // Колоны
         gantt.config.columns = [
-            {name: "text", label: "ЗАДАЧИ", width: "*", tree: true},
+            {name: "text", label: "ЗАДАЧИ", width: "*", tree: true, grid: true,
+                template: function (task) {
+                    if (task.end_date < new Date()) {
+                        return "<span class='completed_text'>" + task.text + "</span>";
+                    } else {
+                        return task.text;
+                    }
+                }},
             {
                 name: "checked", label: "", width: "26", template: function (task) {
                     if (task.children === 0) {
@@ -787,11 +794,11 @@ export default class Gantt extends Component {
                                 <div className="name">
                                     <div className='nameList'>
                                         <span>Постановщик</span>
-                                        <input type="text" placeholder='ФИО' readOnly={true}/>
+                                        <input type="text" placeholder='Глад Валакас' readOnly={true}/>
                                     </div>
                                     <div className='nameList'>
                                         <span>Ответственный</span>
-                                        <input type="text" placeholder='ФИО' readOnly={true}/>
+                                        <input type="text" placeholder='Глад Валакас' readOnly={true}/>
                                     </div>
                                 </div>
                                 <div className='performers'>

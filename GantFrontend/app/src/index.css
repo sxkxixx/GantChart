@@ -164,6 +164,9 @@ input[type="checkbox"]:hover:checked::before {
   transform: scale(1.2); /* add scale transformation on hover for extra effect */
 }
 
+input[type="checkbox"]:hover:not(:checked) {
+  transform: scale(1.2);
+}
 
 span{
   font-weight: 500;

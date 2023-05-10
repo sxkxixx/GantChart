@@ -942,3 +942,11 @@
 .kanban-container .kanban-banner.show {
     opacity: 1;
 }
+
+.completed_text {
+    text-decoration: line-through;
+    font-size: var(--fontSizeBody);
+    font-family: 'Roboto', sans-serif;
+    font-style: normal;
+    font-weight: 400;
+}
