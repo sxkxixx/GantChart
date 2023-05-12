@@ -75,6 +75,8 @@ WSGI_APPLICATION = 'GantBackend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
+CSRF_TRUSTED_ORIGINS = ['https://gantbackend.onrender.com']
+
 DATABASES = {
     'default': {
         'ENGINE': ENGINE,
