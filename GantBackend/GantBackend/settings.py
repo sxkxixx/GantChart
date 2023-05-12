@@ -82,7 +82,7 @@ DATABASES = {
         'USER': USER,
         'PASSWORD': PASSWORD,
         'HOST': HOST,
-        'PORT': PORT
+        # 'PORT': PORT
     }
 }
 
