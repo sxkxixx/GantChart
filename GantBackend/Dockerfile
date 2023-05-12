@@ -12,7 +12,7 @@ COPY . .
 RUN pip install -r requirements.txt
 RUN python manage.py makemigrations
 RUN python manage.py migrate
-RUN python manage.py createsuperuser --username admin --password admin --noinput --email 'admin@gmail.com'
+
 
 
 CMD python manage.py runserver 0.0.0.0:10000
