@@ -13,7 +13,7 @@ import {ReactComponent as Del} from "../../Assets/img/deleteButton.svg"
 import {ReactComponent as Clock} from "../../Assets/img/clock.svg"
 import {toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import {onKanbanViewChange} from './onJanban';
+import {onKanbanViewChange} from './onKanban';
 
 window.onKanbanViewChange = onKanbanViewChange;
 let taskId = null;
@@ -622,7 +622,7 @@ export default class Gantt extends Component {
                             <option>Мои Задачи</option>
                         </select>
                         <select name="projects" id="projects">
-                            <option>Проект 123</option>
+                            <option>Проект</option>
                         </select>
                         <select name="teams" id="teams">
                             <option>Команда</option>
