@@ -1,15 +1,6 @@
 from pathlib import Path
-from dotenv import load_dotenv
 import os
 
-load_dotenv()
-
-ENGINE = os.getenv("ENGINE")
-USER = os.getenv('USER')
-NAME = os.getenv('NAME')
-PASSWORD = os.getenv('PASSWORD')
-HOST = os.getenv('HOST')
-PORT = os.getenv('PORT')
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -18,12 +9,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('SECRET_KEY')
+SECRET_KEY = 'django-insecure-p(n_94e*fu9mtb&7!-!is7vll8*w13kb4h_ztdnb24b)q&jeck'
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = int(os.getenv('DEBUG', True))
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ["0.0.0.0"]
 
 # Application definition
 
@@ -75,15 +65,16 @@ WSGI_APPLICATION = 'GantBackend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-CSRF_TRUSTED_ORIGINS = ['https://gantbackend.onrender.com']
+# CSRF_TRUSTED_ORIGINS = ['https://gantbackend.onrender.com']
 
 DATABASES = {
-    'default': {
-        'ENGINE': ENGINE,
-        'NAME': NAME,
-        'USER': USER,
-        'PASSWORD': PASSWORD,
-        'HOST': HOST,
+    "default": {
+        "ENGINE": os.environ.get("SQL_ENGINE", "django.db.backends.sqlite3"),
+        "NAME": os.environ.get("SQL_DATABASE", BASE_DIR / "db.sqlite3"),
+        "USER": os.environ.get("SQL_USER", "user"),
+        "PASSWORD": os.environ.get("SQL_PASSWORD", "password"),
+        "HOST": os.environ.get("SQL_HOST", "localhost"),
+        "PORT": os.environ.get("SQL_PORT", "5432"),
     }
 }
 

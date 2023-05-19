@@ -1,18 +1,29 @@
-version: "3"
+version: "3.7"
 
 services:
   backend:
-    restart: unless-stopped
-    build:
-      dockerfile: ./GantBackend
-    expose:
-      - 10000
-  frontend:
-    restart: unless-stopped
-    build:
-      dockerfile: ./GantFrontend
+    build: ./GantBackend
+    command: python manage.py runserver 0.0.0.0:8000
+    ports:
+      - '8000:8000'
+    env_file: .env
     depends_on:
-      - backend
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:13.0-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=sxkxixx
+      - POSTGRES_PASSWORD=sxkxixx
+      - POSTGRES_DB=sxkxixx
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-q", "-d", "db" ]
+      interval: 5s
+      timeout: 5s
+      retries: 50
 
 volumes:
-    static_volume: {}
+  postgres_data:
