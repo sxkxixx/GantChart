@@ -9,11 +9,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-p(n_94e*fu9mtb&7!-!is7vll8*w13kb4h_ztdnb24b)q&jeck'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 DEBUG = int(os.getenv('DEBUG', True))
 
-ALLOWED_HOSTS = ["0.0.0.0"]
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -64,8 +64,6 @@ WSGI_APPLICATION = 'GantBackend.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
-
-# CSRF_TRUSTED_ORIGINS = ['https://gantbackend.onrender.com']
 
 DATABASES = {
     "default": {

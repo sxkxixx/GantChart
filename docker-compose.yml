@@ -1,6 +1,7 @@
 version: '3'
 services:
     backend:
+        restart: always
         build: ./GantBackend
         command: python manage.py runserver 0.0.0.0:8000
         ports:
@@ -11,6 +12,18 @@ services:
                 condition: service_healthy
         networks:
             - sail
+            - apps
+    frontend:
+        build:
+            context: ./GantFrontend
+            args:
+                REACT_APP_API_URL: http://localhost:80
+        ports:
+            - "80:80"
+        networks:
+            - apps
+        depends_on:
+            - backend
     mysql:
         image: 'mysql/mysql-server:8.0'
         ports:
@@ -37,4 +50,5 @@ services:
 networks:
     sail:
         driver: bridge
+    apps:
 

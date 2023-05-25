@@ -17,6 +17,7 @@ import {onKanbanViewChange} from './onJanban';
 
 window.onKanbanViewChange = onKanbanViewChange;
 let taskId = null;
+const url = process.env.REACT_APP_API_URL;
 
 export default class Gantt extends Component {
     constructor(props) {
@@ -380,7 +381,7 @@ export default class Gantt extends Component {
 
 
         // Get запрос задач
-        axios.get('http://localhost:8000/api/v1/gant/tasks')
+        axios.get(`${url}/api/v1/gant/tasks`)
             .then(response => {
                 const transformedData = this.transformData(response.data);
                 gantt.parse(transformedData);
@@ -415,7 +416,7 @@ export default class Gantt extends Component {
                 gantt.changeTaskDates(id, task.start_date, task.end_date);
                 return;
             }
-            axios.post(`http://localhost:8000/api/v1/gant/task/${id}/edit_dates`, {
+            axios.post(`${url}/api/v1/gant/task/${id}/edit_dates`, {
                 planned_start_date: new Date(task.start_date).toISOString().slice(0, 10),
                 planned_finish_date: new Date(task.end_date).toISOString().slice(0, 10),
                 deadline: task.deadline
@@ -512,7 +513,7 @@ export default class Gantt extends Component {
             const end_date_formatted = formatter(new Date(end_date));
 
             // Отправляем POST запрос на сервер для создания новой задачи
-            axios.post('http://127.0.0.1:8000/api/v1/gant/task/create', {
+            axios.post(`${url}/api/v1/gant/task/create`, {
                 parent_id: parentId ? parentId : null,
                 project_id: 1,
                 team_id: 1,
@@ -552,7 +553,7 @@ export default class Gantt extends Component {
 
         function remove() {
             let task = gantt.getTask(taskId);
-            axios.delete(`http://localhost:8000/api/v1/gant/task/${task.id}/del`)
+            axios.delete(`${url}/api/v1/gant/task/${task.id}/del`)
                 .then(response => {
                     console.log(response.data);
                     toast.success("Задача удалена", {
