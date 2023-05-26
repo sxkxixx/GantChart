@@ -2,21 +2,6 @@ from django.contrib import admin
 from .models import *
 
 
-@admin.register(Project)
-class ProjectAdmin(admin.ModelAdmin):
-    list_display = ('id', 'title')
-
-
-@admin.register(User)
-class UserAdmin(admin.ModelAdmin):
-    list_display = ('name', 'surname')
-
-
-@admin.register(Team)
-class TeamAdmin(admin.ModelAdmin):
-    list_display = ('name',)
-
-
 @admin.register(Role)
 class RoleAdmin(admin.ModelAdmin):
     list_display = ('name', )
@@ -37,7 +22,7 @@ class ExecutorAdmin(admin.ModelAdmin):
     list_display = ('task_id', 'user_id', )
 
 
-@admin.register(TaskStage)
+@admin.register(Stage)
 class TaskStageAdmin(admin.ModelAdmin):
     list_display = ('task_id', 'description', 'is_ready')
 

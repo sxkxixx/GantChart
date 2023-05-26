@@ -1,0 +1,11 @@
+:root{
+    --colorText: #000000;
+    --ColorTextActive: #FFFFFF;
+    --fontSizeBody: 16px;
+    --background: #F6F7FB;
+    --elementsBackground:#FFFFFF;
+    --primaryButton: #D9D9D9;
+    --primaryButtonHover: #0340BB;
+    --mainTask: #889198;
+    --forTask: #B6BDC3;
+}
