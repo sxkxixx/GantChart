@@ -1,20 +1,7 @@
-from .models import Comment, User, TaskStage, Task
+from .models import Task
+from django.forms import model_to_dict
 
 DATE_FORMAT = "%Y-%m-%d"
-
-
-def get_task_comments(task_id):
-    comments = Comment.objects.filter(task_id=task_id).values('id', 'content', 'user_id')
-    for comment in comments:
-        comment['user'] = User.objects.filter(id=comment['user_id']).values('name', 'surname').get()
-        comment['user']['user_id'] = comment['user_id']
-        comment.pop('user_id')
-    return comments
-
-
-def get_task_stages(task_id):
-    stages = TaskStage.objects.filter(task_id=task_id).values('id', 'description', 'is_ready')
-    return stages
 
 
 def many_requests_db_tasks(parent_id, task_list: list):
@@ -26,6 +13,16 @@ def many_requests_db_tasks(parent_id, task_list: list):
     task_list += tasks
     for task in tasks:
         task['children'] = many_requests_db_tasks(task['id'], task.get('children', []))
+    return task_list
+
+
+def get_tasks(initial_tasks_list, parent_id, task_list):
+    tasks = list(filter(lambda x: x['parent_id'] == parent_id, initial_tasks_list))
+    if not tasks:
+        return []
+    task_list += tasks
+    for task in tasks:
+        task['children'] = get_tasks(initial_tasks_list, task.get('id'), task.get('children', []))
     return task_list
 
 

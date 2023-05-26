@@ -8,5 +8,6 @@ urlpatterns = [
     path('task/create', create_task),
     path('task/<int:id>/edit_dates', edit_dates),
     path('task/<int:id>/kanban_view', change_kanban_view),
-    path('task/<int:id>/del', delete_task)
+    path('task/<int:id>/del', delete_task),
+    path('task/<int:id>/edit', edit_task)
 ]
