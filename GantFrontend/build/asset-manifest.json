@@ -1,0 +1,31 @@
+{
+  "files": {
+    "main.css": "/static/css/main.30082f80.css",
+    "main.js": "/static/js/main.03e89f4c.js",
+    "static/media/logo.svg": "/static/media/logo.09225f58d88a6f32a21ece198215e54f.svg",
+    "static/media/gantt.svg": "/static/media/gantt.7a8082b79dd908ac92db.svg",
+    "static/media/ganttWhite.svg": "/static/media/ganttWhite.904ff4bfac771fd4ce27b11dc1378a4d.svg",
+    "static/media/deleteButton.svg": "/static/media/deleteButton.0e2fbd7481ff74ca41f6ee50f3a41e7b.svg",
+    "static/media/trashWhite.svg": "/static/media/trashWhite.ee03c93d8a4b3464c25d3c2564052ce5.svg",
+    "static/media/canban.svg": "/static/media/canban.06bac0688b528f015ab44707437d32ca.svg",
+    "static/media/stop.svg": "/static/media/stop.d6262e885e628216c5b96c3498b9056d.svg",
+    "static/media/addButton.svg": "/static/media/addButton.b26fc630eff263b6763b193dd04df69c.svg",
+    "static/media/exit.svg": "/static/media/exit.efe35a85c226c9057d93468561a662df.svg",
+    "static/media/playWhite.svg": "/static/media/playWhite.be2f7b36ec1b9452541711eb3ba939c8.svg",
+    "static/media/exitmodal.svg": "/static/media/exitmodal.f8db133618d2c86d606fbab685762c37.svg",
+    "static/media/clock.svg": "/static/media/clock.cf00d74632ba597d80d988c39afbb440.svg",
+    "static/media/flag.svg": "/static/media/flag.6c0c9674539cc1536b18.svg",
+    "static/media/profile.svg": "/static/media/profile.cc8ffe1d005ac9226bc22b14d0cbd93c.svg",
+    "index.html": "/index.html",
+    "static/media/add.svg": "/static/media/add.4e8aa8e48cd1fd2a9d8b.svg",
+    "static/media/close.svg": "/static/media/close.909d419a64a3652e3421.svg",
+    "static/media/open.svg": "/static/media/open.c2c8d6eda7f8d620eec9.svg",
+    "static/media/flagcheck.svg": "/static/media/flagcheck.ec3fa4acc59cf6dea655.svg",
+    "main.30082f80.css.map": "/static/css/main.30082f80.css.map",
+    "main.03e89f4c.js.map": "/static/js/main.03e89f4c.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.30082f80.css",
+    "static/js/main.03e89f4c.js"
+  ]
+}
