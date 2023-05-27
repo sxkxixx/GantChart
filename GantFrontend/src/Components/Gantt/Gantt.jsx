@@ -167,14 +167,7 @@ export default class Gantt extends Component {
         // Колоны
         gantt.config.columns = [
             {
-                name: "text", label: "ЗАДАЧИ", width: "*", tree: true, grid: true,
-                template: function (task) {
-                    if (task.end_date < new Date()) {
-                        return "<span class='completed_text'>" + task.text + "</span>";
-                    } else {
-                        return task.text;
-                    }
-                }
+                name: "text", label: "ЗАДАЧИ", width: "*", tree: true, grid: true
             },
             {
                 name: "checked", label: "", width: "26", template: function (task) {
@@ -374,17 +367,9 @@ export default class Gantt extends Component {
 
         gantt.templates.task_class = function (start, end, task) {
             if (task.$level === 0 || task.$level === 1) {
-                if (new Date() > end) {
-                    return "parent-task-complete";
-                } else {
-                    return "parent-task";
-                }
+                return "parent-task";
             } else {
-                if (new Date() > end) {
-                    return "child-task-complete";
-                } else {
-                    return "child-task";
-                }
+                return "child-task";
             }
         };
 
@@ -655,7 +640,7 @@ export default class Gantt extends Component {
         }
 
         function remove() {
-            let task = gantt.getTask(taskId);
+            let task = gantt.getTask(taskId)
             axios.delete(`http://127.0.0.1:8000/api/v1/gant/task/${task.id}/del`)
                 .then(response => {
                     console.log(response.data);
