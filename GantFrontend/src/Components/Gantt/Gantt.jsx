@@ -298,11 +298,11 @@ export default class Gantt extends Component {
                     editForm.style.display = "flex";
                     let task = gantt.getTask(id);
                     editForm.querySelector('.main_view_list').scrollTop = 0;
-                    editForm.querySelector("[name='text']").value = task.text || "";
-                    editForm.querySelector("[name='description']").value = task.description || "";
-                    editForm.querySelector("[name='deadline']").value = task.deadline ? new Date(task.deadline).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10);
-                    editForm.querySelector("[name='start_date']").value = task.start_date ? new Date(task.start_date).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10);
-                    editForm.querySelector("[name='end_date']").value = task.end_date ? new Date(task.end_date).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10);
+                    editForm.querySelector("[name='text_edit']").value = task.text || "";
+                    editForm.querySelector("[name='description_edit']").value = task.description || "";
+                    editForm.querySelector("[name='deadline_edit']").value = task.deadline ? new Date(task.deadline).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10);
+                    editForm.querySelector("[name='start_date_edit']").value = task.start_date ? new Date(task.start_date).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10);
+                    editForm.querySelector("[name='end_date_edit']").value = task.end_date ? new Date(task.end_date).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10);
                     let parentTask = "";
                     if (task.parent) {
                         parentTask = "Базовая задача: <span style='text-decoration: underline;'>" + gantt.getTask(task.parent).text + "</span>";
@@ -316,6 +316,7 @@ export default class Gantt extends Component {
                         gantt.hideLightbox();
                         editForm.style.display = "none";
                     };
+                    editForm.querySelector("[name='save_edit']").onclick = edit
                     editForm.querySelector("[name='create_task_edit']").onclick = function () {
                         taskId = id;
                         let editForm = getForm("edit_task");
@@ -512,14 +513,20 @@ export default class Gantt extends Component {
 
             // Отправляем POST запрос на сервер для создания новой задачи
             axios.post(`http://127.0.0.1:8000/api/v1/gant/task/create`, {
-                parent_id: parentId ? parentId : null,
-                project_id: 1,
-                team_id: 1,
-                name: text,
-                description: description,
-                deadline: deadline ? formatter(new Date(deadline)) : formatter(new Date()),
-                planned_start_date: start_date_formatted,
-                planned_finish_date: end_date_formatted,
+                task: {
+                    parent_id: parentId ? parentId : null,
+                    project_id: 1,
+                    team_id: 1,
+                    name: text,
+                    description: description,
+                    deadline: deadline ? formatter(new Date(deadline)) : formatter(new Date()),
+                    planned_start_date: start_date_formatted,
+                    planned_finish_date: end_date_formatted,
+                },
+                stages: [
+                    {description: "string"},
+                    {description: "string"}
+                ]
             }).then(response => {
                 form.style.display = "none";
                 console.log(response.data);
@@ -539,6 +546,73 @@ export default class Gantt extends Component {
             }).catch(error => {
                 console.error(error);
                 toast.warning("Задача не создана", {
+                    position: "top-right",
+                    autoClose: 1000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                });
+            });
+        }
+
+        function edit(){
+            let task = gantt.getTask(taskId);
+
+            const form = getForm("edit_task");
+            // Получаем значения полей формы
+            const parentId = document.getElementById("parent_task").value;
+            const text = document.getElementsByName("text_edit")[0].value;
+            const description = form.querySelector("[name='description_edit']").value.trim();
+            const deadline = document.getElementsByName("deadline_edit")[0].value;
+            const start_date = document.getElementsByName("start_date_edit")[0].value;
+            const end_date = document.getElementsByName("end_date_edit")[0].value;
+
+            // Валидация полей формы
+
+            // Форматируем даты в формат "%Y-%m-%d"
+            const formatter = gantt.date.date_to_str("%Y-%m-%d");
+            const start_date_formatted = formatter(new Date(start_date));
+            const end_date_formatted = formatter(new Date(end_date));
+
+            // Отправляем POST запрос на сервер для создания новой задачи
+            axios.post(`http://127.0.0.1:8000/api/v1/gant/task/${task.id}/edit`, {
+                task: {
+                    parent_id: parentId ? parentId : null,
+                    project_id: 1,
+                    team_id: 1,
+                    name: text,
+                    description: description,
+                    deadline: deadline ? formatter(new Date(deadline)) : formatter(new Date()),
+                    planned_start_date: start_date_formatted,
+                    planned_finish_date: end_date_formatted,
+                },
+                stages: [
+                    {description: "string"},
+                    {description: "string"}
+                ]
+            }).then(response => {
+                gantt.updateTask(taskId);
+                form.style.display = "none";
+                console.log(response.data);
+                toast.success("Задача Редактирована", {
+                    position: "top-right",
+                    autoClose: 1000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                });
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1200);
+            }).catch(error => {
+                console.error(error);
+                toast.warning("Задача не Редактирована", {
                     position: "top-right",
                     autoClose: 1000,
                     hideProgressBar: false,
@@ -893,7 +967,7 @@ export default class Gantt extends Component {
                                 <input
                                     placeholder='Введите название'
                                     type="text"
-                                    name="text"
+                                    name="text_edit"
                                     className='create_title'
                                 />
                                 <p id='parent_task'></p>
@@ -910,7 +984,7 @@ export default class Gantt extends Component {
                                 <div className='elements'>
                                     <div className="element">
                                         <span>Дедлайн</span>
-                                        <input type="date" name='deadline'/>
+                                        <input type="date" name='deadline_edit'/>
                                     </div>
                                     <div className="element">
                                         <span>Тег команды</span>
@@ -923,14 +997,14 @@ export default class Gantt extends Component {
                                     <div className="date">
                                         <span>Планируемые сроки выполнения</span>
                                         <div className='dateList'>
-                                            <input type="date" name='start_date'/>
+                                            <input type="date" name='start_date_edit'/>
                                             -
-                                            <input type="date" name='end_date'/>
+                                            <input type="date" name='end_date_edit'/>
                                         </div>
                                     </div>
                                 </div>
                                 <div className="description">
-                                    <p><textarea name="description" placeholder='Введите описание задачи...'></textarea>
+                                    <p><textarea name="description_edit" placeholder='Введите описание задачи...'></textarea>
                                     </p>
                                 </div>
                                 <div className="name">
