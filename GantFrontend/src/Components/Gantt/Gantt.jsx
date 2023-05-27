@@ -167,7 +167,14 @@ export default class Gantt extends Component {
         // Колоны
         gantt.config.columns = [
             {
-                name: "text", label: "ЗАДАЧИ", width: "*", tree: true, grid: true
+                name: "text", label: "ЗАДАЧИ", width: "*", tree: true, grid: true,
+                template: function (task) {
+                    if (task.is_completed === true) {
+                        return "<span class='completed_text'>" + task.text + "</span>";
+                    } else {
+                        return task.text;
+                    }
+                }
             },
             {
                 name: "checked", label: "", width: "26", template: function (task) {
@@ -367,9 +374,17 @@ export default class Gantt extends Component {
 
         gantt.templates.task_class = function (start, end, task) {
             if (task.$level === 0 || task.$level === 1) {
-                return "parent-task";
+                if (task.is_completed === true) {
+                    return "parent-task-complete";
+                } else {
+                    return "parent-task";
+                }
             } else {
-                return "child-task";
+                if (task.is_completed === true) {
+                    return "child-task-complete";
+                } else {
+                    return "child-task";
+                }
             }
         };
 
