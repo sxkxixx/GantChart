@@ -539,6 +539,16 @@ export default class Gantt extends Component {
                 }, 1200);
             }).catch(error => {
                 console.error(error);
+                toast.warning("Задача не создана", {
+                    position: "top-right",
+                    autoClose: 1000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                });
             });
         }
 
@@ -794,11 +804,11 @@ export default class Gantt extends Component {
                                 <div className="name">
                                     <div className='nameList'>
                                         <span>Постановщик</span>
-                                        <input type="text" placeholder='Глад Валакас' readOnly={true}/>
+                                        <input type="text" placeholder='ФИО' readOnly={true}/>
                                     </div>
                                     <div className='nameList'>
                                         <span>Ответственный</span>
-                                        <input type="text" placeholder='Глад Валакас' readOnly={true}/>
+                                        <input type="text" placeholder='ФИО' readOnly={true}/>
                                     </div>
                                 </div>
                                 <div className='performers'>
