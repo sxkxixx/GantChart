@@ -55,7 +55,7 @@ class Task(models.Model):
 
 class Executor(models.Model):
     id = models.BigAutoField(verbose_name='ID исполнителя', primary_key=True, auto_created=True)
-    task_id = models.ForeignKey(Task, on_delete=models.PROTECT, to_field='id')
+    task_id = models.ForeignKey(Task, on_delete=models.CASCADE, to_field='id')
     user_id = models.IntegerField()
     role_id = models.ForeignKey(Role, on_delete=models.CASCADE, to_field='id')
     time_spent = models.TimeField(verbose_name='Время выполнения задачи')
@@ -68,7 +68,7 @@ class Executor(models.Model):
 
 class Stage(models.Model):
     id = models.BigAutoField(verbose_name='ID подэтапа', primary_key=True, auto_created=True)
-    task_id = models.ForeignKey(Task, null=False, on_delete=models.PROTECT)
+    task_id = models.ForeignKey(Task, null=False, on_delete=models.CASCADE)
     description = models.CharField(verbose_name='Описание этапа', max_length=255)
     is_ready = models.BooleanField(verbose_name='Подэтап выполнен', default=False)
     created_at = models.DateTimeField(verbose_name='Время создания', auto_now_add=True)
@@ -80,7 +80,7 @@ class Stage(models.Model):
 
 class Comment(models.Model):
     id = models.BigAutoField(verbose_name='ID комментария', primary_key=True, auto_created=True)
-    task_id = models.ForeignKey(Task, on_delete=models.PROTECT, to_field='id')
+    task_id = models.ForeignKey(Task, on_delete=models.CASCADE, to_field='id')
     user_id = models.IntegerField()
     content = models.CharField(verbose_name='Текст комментария', max_length=255, null=False)
     created_at = models.DateTimeField(verbose_name='Время создания', auto_now_add=True)
