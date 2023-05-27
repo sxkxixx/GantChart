@@ -1,27 +1,14 @@
 from django.db import models
 
 
-class Project(models.Model):
-    id = models.AutoField(primary_key=True, auto_created=True)
-    title = models.CharField(verbose_name='Название проекта', max_length=100)
-
-
-class User(models.Model):
-    id = models.AutoField(primary_key=True, auto_created=True)
-    name = models.CharField(max_length=30)
-    surname = models.CharField(max_length=30)
-
-
-class Team(models.Model):
-    id = models.SmallAutoField(primary_key=True, auto_created=True)
-    name = models.CharField(unique=True, max_length=60)
-
-
 class Role(models.Model):
     id = models.SmallAutoField(verbose_name='Role ID', primary_key=True, auto_created=True)
     name = models.CharField(verbose_name='Role Name', unique=True, max_length=30)
     created_at = models.DateTimeField(verbose_name='Время создания', auto_now_add=True)
     updated_at = models.DateTimeField(verbose_name='Время обновления', auto_now=True)
+
+    class Meta:
+        db_table = 'roles'
 
 
 class Status(models.Model):
@@ -30,13 +17,17 @@ class Status(models.Model):
     created_at = models.DateTimeField(verbose_name='Время создания', auto_now_add=True)
     updated_at = models.DateTimeField(verbose_name='Время обновления', auto_now=True)
 
+    class Meta:
+        db_table = 'statuses'
+
 
 class Task(models.Model):
     id = models.BigAutoField(verbose_name='ID задачи', primary_key=True, auto_created=True)
-    parent_id = models.ForeignKey('self', null=True, blank=True, verbose_name='Ссылка на родительскую задачу', on_delete=models.PROTECT,
+    parent_id = models.ForeignKey('self', null=True, blank=True, verbose_name='Ссылка на родительскую задачу',
+                                  on_delete=models.PROTECT,
                                   to_field='id')
-    project_id = models.ForeignKey(Project, on_delete=models.PROTECT, to_field='id')
-    team_id = models.ForeignKey(Team, on_delete=models.PROTECT, to_field='id')
+    project_id = models.IntegerField()
+    team_id = models.IntegerField()
     name = models.CharField(verbose_name='Название задачи', max_length=100, null=False)
     description = models.CharField(verbose_name='Описание задачи', null=True, blank=True, max_length=255)
     is_on_kanban = models.BooleanField(verbose_name='Отображение на канбане', default=True)
@@ -49,30 +40,51 @@ class Task(models.Model):
     created_at = models.DateTimeField(verbose_name='Время создания', auto_now_add=True)
     updated_at = models.DateTimeField(verbose_name='Время обновления', auto_now=True)
 
+    def update(self, **kwargs):
+        self.name = kwargs.get('name', self.name)
+        self.description = kwargs.get('description', self.description)
+        self.planned_start_date = kwargs.get('planned_start_date', self.planned_start_date)
+        self.planned_finish_date = kwargs.get('planned_finish_date', self.planned_finish_date)
+        self.deadline = kwargs.get('deadline', self.deadline)
+        self.save()
+
+
+    class Meta:
+        db_table = 'tasks'
+
 
 class Executor(models.Model):
     id = models.BigAutoField(verbose_name='ID исполнителя', primary_key=True, auto_created=True)
     task_id = models.ForeignKey(Task, on_delete=models.PROTECT, to_field='id')
-    user_id = models.ForeignKey(User, on_delete=models.PROTECT, to_field='id')
+    user_id = models.IntegerField()
     role_id = models.ForeignKey(Role, on_delete=models.CASCADE, to_field='id')
     time_spent = models.TimeField(verbose_name='Время выполнения задачи')
     created_at = models.DateTimeField(verbose_name='Время создания', auto_now_add=True)
     updated_at = models.DateTimeField(verbose_name='Время обновления', auto_now=True)
 
+    class Meta:
+        db_table = 'executors'
 
-class TaskStage(models.Model):
+
+class Stage(models.Model):
     id = models.BigAutoField(verbose_name='ID подэтапа', primary_key=True, auto_created=True)
     task_id = models.ForeignKey(Task, null=False, on_delete=models.PROTECT)
     description = models.CharField(verbose_name='Описание этапа', max_length=255)
-    is_ready = models.BooleanField(verbose_name='Подэтап выполнен')
+    is_ready = models.BooleanField(verbose_name='Подэтап выполнен', default=False)
     created_at = models.DateTimeField(verbose_name='Время создания', auto_now_add=True)
     updated_at = models.DateTimeField(verbose_name='Время обновления', auto_now=True)
+
+    class Meta:
+        db_table = 'stages'
 
 
 class Comment(models.Model):
     id = models.BigAutoField(verbose_name='ID комментария', primary_key=True, auto_created=True)
     task_id = models.ForeignKey(Task, on_delete=models.PROTECT, to_field='id')
-    user_id = models.ForeignKey(User, on_delete=models.PROTECT, to_field='id')
+    user_id = models.IntegerField()
     content = models.CharField(verbose_name='Текст комментария', max_length=255, null=False)
     created_at = models.DateTimeField(verbose_name='Время создания', auto_now_add=True)
     updated_at = models.DateTimeField(verbose_name='Время обновления', auto_now=True)
+
+    class Meta:
+        db_table = 'comments'
