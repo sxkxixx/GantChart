@@ -96,7 +96,7 @@ def create_task(request: Request):
         team_id=task_data['team_id'],
         name=task_data['name'],
         description=task_data.get('description', None),
-        status_id=Status.objects.get(name='В работу'),
+        status_id=Status.objects.get(name='Запланирована'),
         planned_start_date=start_date,
         planned_finish_date=finish_date,
         deadline=deadline
@@ -108,7 +108,7 @@ def create_task(request: Request):
         task.save()
         for stage in stages_data:
             Stage.objects.create(
-                task_id=task.id,
+                task_id_id=task.id,
                 description=stage.get('description')
             )
         return Response(model_to_dict(task))
