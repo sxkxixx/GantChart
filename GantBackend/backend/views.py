@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework.request import Request
 from .models import *
-from .utils import many_requests_db_tasks, is_valid_date_term, DATE_FORMAT, \
+from .utils import is_valid_date_term, DATE_FORMAT, \
     is_in_parent_terms, get_tasks
 from datetime import datetime
 
@@ -89,14 +89,13 @@ def create_task(request: Request):
         raise ValueError(f'Incorrect date format. Must be a "{DATE_FORMAT}" format')
     if not is_valid_date_term(start_date, finish_date):
         raise ValueError('Must be "start_date < finish_date"')
-
     task = Task(
         parent_id=parent_task,
         project_id=task_data['project_id'],
         team_id=task_data['team_id'],
         name=task_data['name'],
         description=task_data.get('description', None),
-        status_id=Status.objects.get(name='Запланирована'),
+        status_id=Status.objects.get_or_create(name='Запланирована')[0],
         planned_start_date=start_date,
         planned_finish_date=finish_date,
         deadline=deadline
@@ -161,7 +160,7 @@ def edit_task(request: Request, id: int):
         stage.delete()
     for stage in stages_data:
         Stage.objects.create(
-            task_id_id=task.id,
+            task_id=task.id,
             description=stage.get('description')
         )
     task.update(
