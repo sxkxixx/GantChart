@@ -24,10 +24,17 @@ export default class Gantt extends Component {
         this.state = {
             data: ["Игорь", "Саша", "Вера", "Юля", "Артем"],
             items: ["Пункт 1", "Пункт 2", "Пункт 3", "Пункт 4", "Пункт 5", "Пункт 6"],
+            options: [
+                { id: 1, name: 'Название проекта' },
+                { id: 21, name: 'ЛК оценка' },
+                { id: 22, name: 'ЛК Гант' },
+                { id: 23, name: 'ЛК Канбан' }
+            ],
             isRunning: false,
             elapsedTime: 0,
             comments: [],
             currentComment: '',
+            selectedOptionId: null
         };
         this.handleAdd = this.handleAdd.bind(this);
         this.handleDelete = this.handleDelete.bind(this);
@@ -35,6 +42,12 @@ export default class Gantt extends Component {
         this.handlePlayClick = this.handlePlayClick.bind(this);
         this.handleSaveClick = this.handleSaveClick.bind(this);
         this.handleRemoveClick = this.handleRemoveClick.bind(this);
+        this.handleOptionChange = this.handleOptionChange.bind(this);
+    }
+
+    handleOptionChange(event) {
+        const selectedOptionId = event.target.value;
+        this.setState({ selectedOptionId });
     }
 
     handleChange = (event) => {
@@ -129,6 +142,33 @@ export default class Gantt extends Component {
         gantt.i18n.setLocale("ru"); // Руссификация
         gantt.config.links = false;
         gantt.config.show_errors = false; // отключаем баннер ошибок
+
+        //scroll
+        gantt.config.scrollable = true;
+        gantt.config.grid_width = 400;
+        gantt.config.scroll_size = 20;
+        gantt.config.layout = {
+            css: "gantt_container",
+            cols: [
+                {
+                    width: 430,
+                    min_width: 300,
+                    rows:[
+                        {view: "grid", scrollX: "gridScroll", scrollable: true, scrollY: "scrollVer"},
+                        {view: "scrollbar", id: "gridScroll"}
+                    ]
+                },
+                {resizer: true, width: 1},
+                {
+                    min_width: 1000,
+                    rows:[
+                        {view: "timeline", scrollX: "scrollHor", scrollY: "scrollVer"},
+                        {view: "scrollbar", id: "scrollHor"}
+                    ]
+                },
+                {view: "scrollbar", id: "scrollVer"}
+            ],
+        };
 
         // Календарь
         gantt.config.scale_height = 80;
@@ -563,7 +603,7 @@ export default class Gantt extends Component {
                 });
                 setTimeout(() => {
                     window.location.reload();
-                }, 1200);
+                }, 1000);
             }).catch(error => {
                 console.error(error);
                 toast.warning("Задача не создана", {
@@ -753,9 +793,9 @@ export default class Gantt extends Component {
                                 <div className="project">
                                     <span>Проект</span>
                                     <select>
-                                        <option>Название проекта</option>
-                                        <option>ЛК Гант</option>
-                                        <option>ЛК Канбан</option>
+                                        {this.state.options.map(option => (
+                                            <option key={option.id} value={option.id}>{option.name}</option>
+                                        ))}
                                     </select>
                                 </div>
                                 <div className='elements'>
@@ -863,9 +903,9 @@ export default class Gantt extends Component {
                                 <div className="project">
                                     <span>Проект</span>
                                     <select disabled>
-                                        <option>Название проекта</option>
-                                        <option>ЛК Гант</option>
-                                        <option>ЛК Канбан</option>
+                                        {this.state.options.map(option => (
+                                            <option key={option.id} value={option.id}>{option.name}</option>
+                                        ))}
                                     </select>
                                 </div>
                                 <div className='elements'>
@@ -1002,9 +1042,9 @@ export default class Gantt extends Component {
                                 <div className="project">
                                     <span>Проект</span>
                                     <select>
-                                        <option>Название проекта</option>
-                                        <option>ЛК Гант</option>
-                                        <option>ЛК Канбан</option>
+                                        {this.state.options.map(option => (
+                                            <option key={option.id} value={option.id}>{option.name}</option>
+                                        ))}
                                     </select>
                                 </div>
                                 <div className='elements'>
@@ -1118,7 +1158,7 @@ export default class Gantt extends Component {
                     ref={(input) => {
                         this.ganttContainer = input
                     }}
-                    style={{width: '90%', height: '85%'}}
+                    style={{width: '90%', height: '85%', overflow: 'auto' }}
                 ></div>
             </>
         );
