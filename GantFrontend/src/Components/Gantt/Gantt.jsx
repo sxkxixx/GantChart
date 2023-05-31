@@ -468,7 +468,7 @@ export default class Gantt extends Component {
             }
             axios.post(`http://127.0.0.1:8000/api/v1/gant/task/${id}/edit_dates`, {
                 planned_start_date: new Date(task.start_date).toISOString().slice(0, 10),
-                planned_finish_date: new Date(task.end_date).toISOString().slice(0, 10),
+                planned_final_date: new Date(task.end_date).toISOString().slice(0, 10),
                 deadline: task.deadline
             })
                 .then(response => {
@@ -582,7 +582,7 @@ export default class Gantt extends Component {
                     description: description,
                     deadline: deadline ? formatter(new Date(deadline)) : formatter(new Date()),
                     planned_start_date: start_date_formatted,
-                    planned_finish_date: end_date_formatted,
+                    planned_final_date: end_date_formatted,
                 },
                 stages: [
                     {description: "string"},
@@ -648,7 +648,7 @@ export default class Gantt extends Component {
                     description: description,
                     deadline: deadline ? formatter(new Date(deadline)) : formatter(new Date()),
                     planned_start_date: start_date_formatted,
-                    planned_finish_date: end_date_formatted,
+                    planned_final_date: end_date_formatted,
                 },
                 stages: [
                     {description: "string"},
@@ -731,7 +731,7 @@ export default class Gantt extends Component {
                 is_on_kanban: task.is_on_kanban,
                 is_completed: task.is_completed,
                 start_date: task.planned_start_date,
-                end_date: task.planned_finish_date,
+                end_date: task.planned_final_date,
                 deadline: task.deadline,
                 open: true,
                 parent: parentId,

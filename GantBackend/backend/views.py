@@ -16,7 +16,7 @@ def get_all_tasks(request):
     project_filter = int(request.data.get('project_id', 1))
     tasks = Task.objects.filter(project_id=project_filter).values('id', 'parent_id', 'name', 'description',
                                                                   'is_on_kanban', 'is_completed', 'planned_start_date',
-                                                                  'planned_finish_date', 'deadline')
+                                                                  'planned_final_date', 'deadline')
     tasks = get_tasks(tasks, None, [])
     return Response(tasks)
 
@@ -27,11 +27,12 @@ def get_task_by_id(request, id):
     Выдает полную информацию по задаче. Если задачи с таким id нет, возвращается ошибка с 404-статус кодом.
     """
     try:
-        task = {'task': model_to_dict(Task.objects.get(id=id)), 'stages': Stage.objects.filter(task_id=id).values('id', 'description', 'is_ready')}
+        task = Task.objects.get(id=id)
     except:
         return Response({"msg": "Enter the correct data."}, status=404)
-
-    return Response(task)
+    comments = Comment.objects.filter(task_id=task.id).all().values('id', 'user_id', 'content')
+    stages = Stage.objects.filter(task_id=task.id).all().values('id', 'description', 'is_ready')
+    return Response({'task': model_to_dict(task), 'comments': comments, 'stages': stages})
 
 
 @api_view(['POST'])
@@ -41,7 +42,7 @@ def edit_dates(request: Request, id):
     planned_start_date < planned_finish_date <= deadline не выполняется или нет задачи с таким id, выбрасывается ошибка с 404-статус кодом
 
     Структура body в запросе:
-    { "planned_start_date":"str", "planned_finish_date":"str", "deadline":"str" }
+    { "planned_start_date":"str", "planned_final_date":"str", "deadline":"str" }
     """
     try:
         task = Task.objects.get(id=id)
@@ -50,7 +51,7 @@ def edit_dates(request: Request, id):
     data: dict = request.data
     try:
         start_date = datetime.strptime(data.get('planned_start_date'), DATE_FORMAT).date()
-        finish_date = datetime.strptime(data.get('planned_finish_date'), DATE_FORMAT).date()
+        finish_date = datetime.strptime(data.get('planned_final_date'), DATE_FORMAT).date()
         deadline = datetime.strptime(data.get('deadline'), DATE_FORMAT).date()
     except:
         raise ValueError(f'Incorrect date format. Must be a "{DATE_FORMAT}" format')
@@ -59,7 +60,7 @@ def edit_dates(request: Request, id):
     parent = task.parent_id
 
     task.planned_start_date = start_date
-    task.planned_finish_date = finish_date
+    task.planned_final_date = finish_date
     task.deadline = deadline
     if is_in_parent_terms(parent, task):
         task.save()
@@ -72,7 +73,7 @@ def create_task(request: Request):
     """Создать задачу:
     {"task":
     {"parent_id":0, "project_id":0, "team_id":0, "name":"string", "description":"string",
-    "planned_start_date":"%Y-%m-%d", "planned_finish_date":"%Y-%m-%d", "deadline":"%Y-%m-%d"},
+    "planned_start_date":"%Y-%m-%d", "planned_final_date":"%Y-%m-%d", "deadline":"%Y-%m-%d"},
     "stages": [{"description": "string"}, {"description": "string"}]
     }
     """
@@ -83,11 +84,11 @@ def create_task(request: Request):
         parent_task = None
     try:
         start_date = datetime.strptime(task_data.get('planned_start_date'), DATE_FORMAT).date()
-        finish_date = datetime.strptime(task_data.get('planned_finish_date'), DATE_FORMAT).date()
+        final_date = datetime.strptime(task_data.get('planned_final_date'), DATE_FORMAT).date()
         deadline = datetime.strptime(task_data.get('deadline'), DATE_FORMAT).date()
     except:
         raise ValueError(f'Incorrect date format. Must be a "{DATE_FORMAT}" format')
-    if not is_valid_date_term(start_date, finish_date):
+    if not is_valid_date_term(start_date, final_date):
         raise ValueError('Must be "start_date < finish_date"')
     task = Task(
         parent_id=parent_task,
@@ -95,9 +96,9 @@ def create_task(request: Request):
         team_id=task_data['team_id'],
         name=task_data['name'],
         description=task_data.get('description', None),
-        status_id=Status.objects.get_or_create(name='Запланирована')[0],
+        status_id=Status.objects.get_or_create(name='В Работу')[0],
         planned_start_date=start_date,
-        planned_finish_date=finish_date,
+        planned_final_date=final_date,
         deadline=deadline
     )
     if is_in_parent_terms(parent_task, task):
@@ -147,7 +148,7 @@ def delete_task(request: Request, id: int):
 def edit_task(request: Request, id: int):
     """{"task":
     {"name":"string", "description":"string",
-    "planned_start_date":"%Y-%m-%d", "planned_finish_date":"%Y-%m-%d", "deadline":"%Y-%m-%d"},
+    "planned_start_date":"%Y-%m-%d", "planned_final_date":"%Y-%m-%d", "deadline":"%Y-%m-%d"},
     "stages": [{"description": "string"}, {"description": "string"}]
     }"""
     task_data = request.data.get('task')
@@ -160,14 +161,14 @@ def edit_task(request: Request, id: int):
         stage.delete()
     for stage in stages_data:
         Stage.objects.create(
-            task_id=task.id,
+            task_id=task,
             description=stage.get('description')
         )
     task.update(
         name=task_data.get('name', task.name),
         description=task_data.get('description', task.description),
         planned_start_date=task_data.get('planned_start_date', task.planned_start_date),
-        planned_finish_date=task_data.get('planned_finish_date', task.planned_finish_date),
+        planned_final_date=task_data.get('planned_final_date', task.planned_final_date),
         deadline=task_data.get('deadline', task.deadline)
     )
     return Response({'task_id': task.id, 'status': 'updated'})

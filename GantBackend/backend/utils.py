@@ -20,4 +20,4 @@ def is_valid_date_term(start_date, finish_date):
 def is_in_parent_terms(parent: Task, task: Task):
     if parent is None:
         return True
-    return parent.planned_start_date <= task.planned_start_date and task.planned_finish_date <= parent.planned_finish_date
+    return parent.planned_start_date <= task.planned_start_date and task.planned_final_date <= parent.planned_final_date
