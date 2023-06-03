@@ -143,6 +143,17 @@ export default class Gantt extends Component {
         gantt.config.links = false;
         gantt.config.show_errors = false; // отключаем баннер ошибок
 
+        // gantt.attachEvent("onAfterTaskAdd", function(id,item){
+        //     // добавляем задачу на диаграмму
+        //     gantt.addTask(item);
+        //
+        //     // перерисовываем диаграмму
+        //     gantt.render();
+        // });
+
+        gantt.config.start_date = new Date(2023, 1, 1);
+        gantt.config.end_date = new Date(9999, 12, 31);
+
         //scroll
         gantt.config.scrollable = true;
         gantt.config.grid_width = 400;
@@ -601,9 +612,9 @@ export default class Gantt extends Component {
                     progress: undefined,
                     theme: "light",
                 });
-                setTimeout(() => {
-                    window.location.reload();
-                }, 1000);
+                // setTimeout(() => {
+                //     window.location.reload();
+                // }, 1000);
             }).catch(error => {
                 console.error(error);
                 toast.warning("Задача не создана", {
@@ -716,6 +727,8 @@ export default class Gantt extends Component {
             gantt.deleteTask(taskId);
             gantt.hideLightbox();
         }
+
+        gantt.render();
     }
 
     transformData(data) {
