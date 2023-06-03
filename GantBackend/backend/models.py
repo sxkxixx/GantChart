@@ -45,7 +45,7 @@ class Task(models.Model):
         self.planned_start_date = kwargs.get('planned_start_date', self.planned_start_date)
         self.planned_final_date = kwargs.get('planned_finish_date', self.planned_final_date)
         self.deadline = kwargs.get('deadline', self.deadline)
-        self.save()
+        self.save(using='default')
 
     class Meta:
         db_table = 'tasks'
@@ -88,49 +88,58 @@ class Comment(models.Model):
         db_table = 'comments'
 
 
-# TODO: Модели оценки
+class UralapiEventuts(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    title = models.CharField(max_length=100)
+    start_date = models.DateField(blank=True, null=True)
+    end_date = models.DateField(blank=True, null=True)
 
-#
-# class Project(models.Model):
-#     id_event_id = models.BigIntegerField()
-#     title = models.CharField(max_length=100, verbose_name='Название проекта')
-#     id_director_id = models.BigIntegerField()
-#     # evaluation_criteria = models.BigIntegerField()
-#     start_date = models.DateField(blank=True, null=True, verbose_name='Дата начала')
-#     end_date = models.DateField(blank=True, null=True, verbose_name='Дата окончания')
-#
-#     class Meta:
-#         managed = False
-#         db_table = 'uralapi_project'
-#
-#
-# class Team(models.Model):
-#     id_project = models.ForeignKey(Project, models.DO_NOTHING, verbose_name='Название проекта')
-#     title = models.CharField(max_length=200, verbose_name='Название команды')
-#     id_tutor = models.BigIntegerField()
-#     team_chat = models.URLField(blank=True, null=True, verbose_name='Ссылка на чат')
-#     teg = models.CharField(max_length=200, unique=True, verbose_name='Тег')
-#
-#     class Meta:
-#         managed = False
-#         db_table = 'uralapi_team'
+    class Meta:
+        managed = False
+        db_table = 'uralapi_eventuts'
 
 
-# class User(models.Model):
-#     id = models.BigIntegerField(primary_key=True)
-#     password = models.CharField(max_length=128, null=False)
-#     last_login = models.DateTimeField(null=True)
-#     is_superuser = models.BooleanField(null=False)
-#     first_name = models.CharField(max_length=150, null=False)
-#     last_name = models.CharField(max_length=150, null=False)
-#     is_staff = models.BooleanField(null=False)
-#     is_active = models.BooleanField(null=False)
-#     date_joined = models.DateTimeField(null=False)
-#     username = models.CharField(max_length=100, null=True, blank=True)
-#     email = models.CharField(max_length=254, unique=True, null=False)
-#     patronymic = models.CharField(max_length=100, null=True, blank=True)
-#     image = models.CharField(max_length=100, default=None, null=True, blank=True)
-#
-#     class Meta(models.Model):
-#         managed = False
-#         db_table = 'uralapi_user'
+class UralapiProject(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    title = models.CharField(max_length=100)
+    start_date = models.DateField(blank=True, null=True)
+    end_date = models.DateField(blank=True, null=True)
+    id_director = models.ForeignKey('UralapiUser', models.DO_NOTHING)
+    id_event = models.ForeignKey(UralapiEventuts, models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'uralapi_project'
+
+
+class UralapiTeam(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    title = models.CharField(max_length=200)
+    team_chat = models.CharField(max_length=200, blank=True, null=True)
+    teg = models.CharField(unique=True, max_length=200)
+    id_project = models.ForeignKey(UralapiProject, models.DO_NOTHING)
+    id_tutor = models.ForeignKey('UralapiUser', models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'uralapi_team'
+
+
+class UralapiUser(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    password = models.CharField(max_length=128)
+    last_login = models.DateTimeField(blank=True, null=True)
+    is_superuser = models.IntegerField()
+    first_name = models.CharField(max_length=150)
+    last_name = models.CharField(max_length=150)
+    is_staff = models.IntegerField()
+    is_active = models.IntegerField()
+    date_joined = models.DateTimeField()
+    username = models.CharField(max_length=100, blank=True, null=True)
+    email = models.CharField(unique=True, max_length=254)
+    patronymic = models.CharField(max_length=100, blank=True, null=True)
+    image = models.CharField(max_length=100, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'uralapi_user'
