@@ -1,4 +1,4 @@
-import React, {Component, useEffect} from 'react';
+import React, {Component} from 'react';
 import axios from 'axios';
 import './Gantt.css'
 import {gantt} from 'dhtmlx-gantt';
@@ -22,13 +22,11 @@ export default class Gantt extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            data: ["Игорь", "Саша", "Вера", "Юля", "Артем"],
-            items: ["Пункт 1", "Пункт 2", "Пункт 3", "Пункт 4", "Пункт 5", "Пункт 6"],
+            data: ["Игорь"],
+            items: ["Пункт 1"],
             options: [
-                { id: 1, name: 'Название проекта' },
-                { id: 21, name: 'ЛК оценка' },
-                { id: 22, name: 'ЛК Гант' },
-                { id: 23, name: 'ЛК Канбан' }
+                {id: 1, name: 'Название проекта'},
+                {id: 21, name: 'ЛК Стажер'},
             ],
             isRunning: false,
             elapsedTime: 0,
@@ -47,9 +45,8 @@ export default class Gantt extends Component {
 
     handleOptionChange(event) {
         const selectedOptionId = event.target.value;
-        this.setState({ selectedOptionId });
+        this.setState({selectedOptionId});
     }
-
     handleChange = (event) => {
         this.setState({currentComment: event.target.value});
     }
@@ -138,21 +135,33 @@ export default class Gantt extends Component {
 
     componentDidMount() {
         gantt.config.date_format = "%Y-%m-%d";
-        gantt.init(this.ganttContainer);
-        gantt.i18n.setLocale("ru"); // Руссификация
-        gantt.config.links = false;
-        gantt.config.show_errors = false; // отключаем баннер ошибок
+        gantt.config.container_resize_method = "timeout";
+        gantt.config.show_tasks_outside_timescale = true;
 
-        // gantt.attachEvent("onAfterTaskAdd", function(id,item){
-        //     // добавляем задачу на диаграмму
-        //     gantt.addTask(item);
-        //
-        //     // перерисовываем диаграмму
-        //     gantt.render();
-        // });
+        gantt.templates.parse_date = function (date) {
+            return new Date(date);
+        };
+        gantt.templates.format_date = function (date) {
+            let formatFunc = gantt.date.date_to_str(gantt.config.date_format);
+            return formatFunc(date);
+        };
 
+        // Календарь
+        gantt.config.scale_height = 80;
+        gantt.config.show_tasks_outside_timescale = true;
         gantt.config.start_date = new Date(2023, 1, 1);
-        gantt.config.end_date = new Date(9999, 12, 31);
+        gantt.config.end_date = new Date(2024, 1, 1);
+        gantt.config.fit_tasks = true;
+        gantt.config.scales = [
+            {unit: "month", step: 1, format: "%F, %Y"},
+            {unit: "day", step: 1, format: "%j"}
+        ];
+
+        gantt.config.show_progress = false;
+        gantt.config.show_links = false;
+        gantt.i18n.setLocale("ru"); // Руссификация
+        gantt.config.show_errors = false; // отключаем баннер ошибок
+        gantt.init(this.ganttContainer)
 
         //scroll
         gantt.config.scrollable = true;
@@ -164,7 +173,7 @@ export default class Gantt extends Component {
                 {
                     width: 430,
                     min_width: 300,
-                    rows:[
+                    rows: [
                         {view: "grid", scrollX: "gridScroll", scrollable: true, scrollY: "scrollVer"},
                         {view: "scrollbar", id: "gridScroll"}
                     ]
@@ -172,7 +181,7 @@ export default class Gantt extends Component {
                 {resizer: true, width: 1},
                 {
                     min_width: 1000,
-                    rows:[
+                    rows: [
                         {view: "timeline", scrollX: "scrollHor", scrollY: "scrollVer"},
                         {view: "scrollbar", id: "scrollHor"}
                     ]
@@ -180,14 +189,6 @@ export default class Gantt extends Component {
                 {view: "scrollbar", id: "scrollVer"}
             ],
         };
-
-        // Календарь
-        gantt.config.scale_height = 80;
-        gantt.config.show_tasks_outside_timescale = true;
-        gantt.config.scales = [
-            {unit: "month", step: 1, format: "%F, %Y"},
-            {unit: "day", step: 1, format: "%j"}
-        ];
 
         // Dropdown
         gantt.templates.grid_open = function (item) {
@@ -250,9 +251,11 @@ export default class Gantt extends Component {
             return document.getElementById(formName);
         }
 
+        // get ID
         gantt.showLightbox = function (id) {
             taskId = id;
-            let task = gantt.getTask(id);
+            let task = gantt.getTask(id)
+            let taskUrl = "http://127.0.0.1:8000/api/v1/gant/task/" + taskId;
 
             let form;
             let $new = task.$new;
@@ -260,15 +263,14 @@ export default class Gantt extends Component {
             let parentTask = "";
             if (task.parent) {
                 parentTask = "Базовая задача: <span style='text-decoration: underline;'>" + gantt.getTask(task.parent).text + "</span>";
-            } else {
+            }else{
                 parentTask = "Базовая задача: <span style='text-decoration: underline;'>Отсутствует</span>";
             }
 
             if ($new) {
-                // Show the create task form
                 form = getForm("create_task");
 
-                // вывод данных
+                // Display task data in form
                 let text = form.querySelector("[name='text']");
                 let description = form.querySelector("[name='description']");
                 let deadline = form.querySelector("[name='deadline']");
@@ -312,82 +314,92 @@ export default class Gantt extends Component {
                 form.querySelector('button[type="closemodal"]').onclick = cancel;
                 form.querySelector("[name='save']").onclick = save;
                 form.querySelector("[name='close']").onclick = cancel;
-            } else {
-                // Show the task details form
-                form = getForm("display_task");
-                // вывод данных
-                let textView = form.querySelector("[name='text1']");
-                let descriptionView = form.querySelector("[name='description1']");
-                let deadlineView = form.querySelector("[name='deadline1']");
-                let startDateView = form.querySelector("[name='start_date1']");
-                let endDateView = form.querySelector("[name='end_date1']");
-
-                form.querySelector("[id='parent_task']").value = task.parent || '';
-                form.querySelector("#parent_task").innerHTML = parentTask;
-
-                descriptionView.focus();
-                textView.focus();
-                deadlineView.focus();
-                startDateView.focus();
-                endDateView.focus();
-
-
-                descriptionView.value = task.description || "";
-                textView.value = task.text || "";
-                deadlineView.value = task.deadline ? new Date(task.deadline).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10);
-                startDateView.value = task.start_date ? new Date(task.start_date).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10);
-                endDateView.value = task.end_date ? new Date(task.end_date).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10);
-
-                form.style.display = "flex";
-
-                //name="create_task"
-                form.querySelector('.main_view_list').scrollTop = 0;
-                form.querySelector('button[type="closemodal1"]').onclick = cancel;
-                form.querySelector("[name='create_task']").onclick = function () {
-                    taskId = id;
-                    let displayForm = getForm("display_task");
-                    displayForm.style.display = "none";
-                    let parentTaskId = gantt.getSelectedId();
-                    gantt.createTask(this.createTask, parentTaskId);
-                }
-                form.querySelector("[name='edit']").onclick = function () {
-                    taskId = id;
-                    let editForm = getForm("edit_task");
-                    let displayForm = getForm("display_task");
-                    displayForm.style.display = "none";
-                    editForm.style.display = "flex";
-                    let task = gantt.getTask(id);
-                    editForm.querySelector('.main_view_list').scrollTop = 0;
-                    editForm.querySelector("[name='text_edit']").value = task.text || "";
-                    editForm.querySelector("[name='description_edit']").value = task.description || "";
-                    editForm.querySelector("[name='deadline_edit']").value = task.deadline ? new Date(task.deadline).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10);
-                    editForm.querySelector("[name='start_date_edit']").value = task.start_date ? new Date(task.start_date).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10);
-                    editForm.querySelector("[name='end_date_edit']").value = task.end_date ? new Date(task.end_date).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10);
-                    let parentTask = "";
-                    if (task.parent) {
-                        parentTask = "Базовая задача: <span style='text-decoration: underline;'>" + gantt.getTask(task.parent).text + "</span>";
-                    } else {
-                        parentTask = "Базовая задача: <span style='text-decoration: underline;'>Отсутствует</span>";
-                    }
-                    editForm.querySelector("[id='parent_task']").value = task.parent || '';
-                    editForm.querySelector("#parent_task").innerHTML = parentTask;
-                    editForm.querySelector("#parent_task").innerHTML = parentTask;
-                    editForm.querySelector('button[type="closemodal3"]').onclick = function () {
-                        gantt.hideLightbox();
-                        editForm.style.display = "none";
-                    };
-                    editForm.querySelector("[name='save_edit']").onclick = edit
-                    editForm.querySelector("[name='create_task_edit']").onclick = function () {
-                        taskId = id;
-                        let editForm = getForm("edit_task");
-                        editForm.style.display = "none";
-                        let parentTaskId = gantt.getSelectedId();
-                        gantt.createTask(this.createTask, parentTaskId);
-                    }
-                    editForm.querySelector("[name='delete_edit']").onclick = remove;
-                };
-                form.querySelector("[name='delete']").onclick = remove;
             }
+
+            axios.get(taskUrl)
+                .then(response => {
+                    let taskData = response.data;
+                    console.log(taskData)
+
+                if(!$new) {
+                        // Show the task details form
+                        form = getForm("display_task");
+                        // вывод данных
+                        let textView = form.querySelector("[name='text1']");
+                        let descriptionView = form.querySelector("[name='description1']");
+                        let deadlineView = form.querySelector("[name='deadline1']");
+                        let startDateView = form.querySelector("[name='start_date1']");
+                        let endDateView = form.querySelector("[name='end_date1']");
+
+                        form.querySelector("[id='parent_task']").value = task.parent || '';
+                        form.querySelector("#parent_task").innerHTML = parentTask;
+
+                        descriptionView.focus();
+                        textView.focus();
+                        deadlineView.focus();
+                        startDateView.focus();
+                        endDateView.focus();
+
+                        descriptionView.value = taskData.task.description || "";
+                        textView.value = taskData.task.name || "";
+                        deadlineView.value = taskData.task.deadline ? new Date(taskData.task.deadline).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10);
+                        startDateView.value = taskData.task.planned_start_date ? new Date(taskData.task.planned_start_date).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10);
+                        endDateView.value = taskData.task.planned_final_date ? new Date(taskData.task.planned_final_date).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10);
+
+                        form.style.display = "flex";
+
+                        //name="create_task"
+                        form.querySelector('.main_view_list').scrollTop = 0;
+                        form.querySelector('button[type="closemodal1"]').onclick = cancel;
+                        form.querySelector("[name='create_task']").onclick = function () {
+                            taskId = id;
+                            let displayForm = getForm("display_task");
+                            displayForm.style.display = "none";
+                            let parentTaskId = gantt.getSelectedId();
+                            gantt.createTask(this.createTask, parentTaskId);
+                        }
+                        form.querySelector("[name='edit']").onclick = function () {
+                            taskId = id;
+                            let editForm = getForm("edit_task");
+                            let displayForm = getForm("display_task");
+                            displayForm.style.display = "none";
+                            editForm.style.display = "flex";
+                            let task = gantt.getTask(id);
+                            editForm.querySelector('.main_view_list').scrollTop = 0;
+                            editForm.querySelector("[name='text_edit']").value = taskData.task.name || "";
+                            editForm.querySelector("[name='description_edit']").value = taskData.task.description || "";
+                            editForm.querySelector("[name='deadline_edit']").value = taskData.task.deadline ? new Date(taskData.task.deadline).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10);
+                            editForm.querySelector("[name='start_date_edit']").value = taskData.task.planned_start_date ? new Date(taskData.task.planned_start_date).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10);
+                            editForm.querySelector("[name='end_date_edit']").value = taskData.task.planned_final_date ? new Date(taskData.task.planned_final_date).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10);
+                            let parentTask = "";
+                            if (task.parent) {
+                                parentTask = "Базовая задача: <span style='text-decoration: underline;'>" + gantt.getTask(task.parent).text + "</span>";
+                            } else {
+                                parentTask = "Базовая задача: <span style='text-decoration: underline;'>Отсутствует</span>";
+                            }
+                            editForm.querySelector("[id='parent_task']").value = task.parent || '';
+                            editForm.querySelector("#parent_task").innerHTML = parentTask;
+                            editForm.querySelector("#parent_task").innerHTML = parentTask;
+                            editForm.querySelector('button[type="closemodal3"]').onclick = function () {
+                                gantt.hideLightbox();
+                                editForm.style.display = "none";
+                            };
+                            editForm.querySelector("[name='save_edit']").onclick = edit
+                            editForm.querySelector("[name='create_task_edit']").onclick = function () {
+                                taskId = id;
+                                let editForm = getForm("edit_task");
+                                editForm.style.display = "none";
+                                let parentTaskId = gantt.getSelectedId();
+                                gantt.createTask(this.createTask, parentTaskId);
+                            }
+                            editForm.querySelector("[name='delete_edit']").onclick = remove;
+                        };
+                        form.querySelector("[name='delete']").onclick = remove;
+                    }
+                })
+                .catch(error => {
+                    console.log(error);
+                });
         };
 
         gantt.hideLightbox = function () {
@@ -444,10 +456,12 @@ export default class Gantt extends Component {
             .then(response => {
                 const transformedData = this.transformData(response.data);
                 gantt.parse(transformedData);
+                gantt.refreshData();
             })
             .catch(error => {
                 console.error(error);
             });
+
 
         gantt.config.drag_move = true;
 
@@ -484,9 +498,10 @@ export default class Gantt extends Component {
             })
                 .then(response => {
                     console.log(response.data);
+                    gantt.refreshData();
                     toast.success('Дата успешно изменена', {
                         position: "top-right",
-                        autoClose: 5000,
+                        autoClose: 1000,
                         hideProgressBar: false,
                         closeOnClick: true,
                         pauseOnHover: true,
@@ -499,7 +514,7 @@ export default class Gantt extends Component {
                     console.error(error);
                     toast.warn('Дата не изменена', {
                         position: "top-right",
-                        autoClose: 5000,
+                        autoClose: 1000,
                         hideProgressBar: false,
                         closeOnClick: true,
                         pauseOnHover: true,
@@ -510,8 +525,42 @@ export default class Gantt extends Component {
                 });
         });
 
+        gantt.attachEvent("onBeforeGanttRender", function () {
+            let range = gantt.getSubtaskDates();
+            let scaleUnit = gantt.getState().scale_unit;
+            if (range.start_date && range.end_date) {
+                gantt.config.start_date = gantt.calculateEndDate(range.start_date, -10, scaleUnit);
+                gantt.config.end_date = gantt.calculateEndDate(range.end_date, 20, scaleUnit);
+            }
+        });
 
-        function save(id) {
+        gantt.attachEvent("onTaskDrag", function (id, mode, task, original) {
+            let state = gantt.getState();
+            let minDate = state.min_date,
+                maxDate = state.max_date;
+
+            let scaleStep = gantt.date.add(new Date(), state.scale_step, state.scale_unit) - new Date();
+
+            let showDate,
+                repaint = false;
+            if (mode === "resize" || mode === "move") {
+                if (Math.abs(task.start_date - minDate) < scaleStep) {
+                    showDate = task.start_date;
+                    repaint = true;
+
+                } else if (Math.abs(task.end_date - maxDate) < scaleStep) {
+                    showDate = task.end_date;
+                    repaint = true;
+                }
+
+                if (repaint) {
+                    gantt.render();
+                    gantt.showDate(showDate);
+                }
+            }
+        });
+
+        function save() {
             const form = getForm("create_task");
             // Получаем значения полей формы
             const parentId = document.getElementById("parent_task").value;
@@ -550,7 +599,6 @@ export default class Gantt extends Component {
                 })
             }
 
-
             if (!start_date || !end_date) {
                 toast.warn("Введите даты начала и конца задачи", {
                     position: "top-right",
@@ -577,7 +625,6 @@ export default class Gantt extends Component {
                 });
             }
 
-
             // Форматируем даты в формат "%Y-%m-%d"
             const formatter = gantt.date.date_to_str("%Y-%m-%d");
             const start_date_formatted = formatter(new Date(start_date));
@@ -591,7 +638,7 @@ export default class Gantt extends Component {
                     team_id: 1,
                     name: text,
                     description: description,
-                    deadline: deadline ? formatter(new Date(deadline)) : formatter(new Date()),
+                    deadline: deadline ? formatter(new Date(deadline)) : formatter(new Date(end_date_formatted)),
                     planned_start_date: start_date_formatted,
                     planned_final_date: end_date_formatted,
                 },
@@ -612,9 +659,9 @@ export default class Gantt extends Component {
                     progress: undefined,
                     theme: "light",
                 });
-                // setTimeout(() => {
-                //     window.location.reload();
-                // }, 1000);
+                setTimeout(() => {
+                    window.location.reload();
+                }, 800);
             }).catch(error => {
                 console.error(error);
                 toast.warning("Задача не создана", {
@@ -641,8 +688,6 @@ export default class Gantt extends Component {
             const deadline = document.getElementsByName("deadline_edit")[0].value;
             const start_date = document.getElementsByName("start_date_edit")[0].value;
             const end_date = document.getElementsByName("end_date_edit")[0].value;
-
-            // Валидация полей формы
 
             // Форматируем даты в формат "%Y-%m-%d"
             const formatter = gantt.date.date_to_str("%Y-%m-%d");
@@ -681,7 +726,7 @@ export default class Gantt extends Component {
                 });
                 setTimeout(() => {
                     window.location.reload();
-                }, 1200);
+                }, 800);
             }).catch(error => {
                 console.error(error);
                 toast.warning("Задача не Редактирована", {
@@ -705,27 +750,28 @@ export default class Gantt extends Component {
             gantt.hideLightbox();
         }
 
-        function remove() {
-            let task = gantt.getTask(taskId)
-            axios.delete(`http://127.0.0.1:8000/api/v1/gant/task/${task.id}/del`)
+        function cascadeDeleteTask(taskId) {
+            const childTasks = gantt.getChildren(taskId);
+            childTasks.forEach(childTask => {
+                cascadeDeleteTask(childTask);
+            });
+            axios.delete(`http://127.0.0.1:8000/api/v1/gant/task/${taskId}/del`)
                 .then(response => {
                     console.log(response.data);
-                    toast.success("Задача удалена", {
-                        position: "top-right",
-                        autoClose: 1200,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
-                        theme: "light",
-                    });
                 })
                 .catch(error => {
                     console.error(error);
                 });
             gantt.deleteTask(taskId);
+        }
+
+        function remove() {
+            const task = gantt.getTask(taskId);
+            cascadeDeleteTask(task.id);
             gantt.hideLightbox();
+            setTimeout(() => {
+                window.location.reload();
+            }, 800);
         }
 
         gantt.render();
@@ -737,14 +783,20 @@ export default class Gantt extends Component {
         function transformTask(task, parentId = 0) {
             const taskId = task.id;
 
+            const startDate = new Date(task.planned_start_date);
+            startDate.setHours(23, 59, 0);
+
+            const endDate = new Date(task.planned_final_date);
+            endDate.setHours(23, 59, 0);
+
             taskMap.set(taskId, {
                 id: taskId,
                 text: task.name,
                 description: task.description,
                 is_on_kanban: task.is_on_kanban,
                 is_completed: task.is_completed,
-                start_date: task.planned_start_date,
-                end_date: task.planned_final_date,
+                start_date: startDate,
+                end_date: endDate,
                 deadline: task.deadline,
                 open: true,
                 parent: parentId,
@@ -822,6 +874,7 @@ export default class Gantt extends Component {
                                             <option>#Тег_команды</option>
                                             <option>#Гант</option>
                                             <option>#Канбан</option>
+                                            <option>#Оценка</option>
                                         </select>
                                     </div>
                                     <div className="date">
@@ -932,6 +985,7 @@ export default class Gantt extends Component {
                                             <option>#Тег_команды</option>
                                             <option>#Гант</option>
                                             <option>#Канбан</option>
+                                            <option>#Оценка</option>
                                         </select>
                                     </div>
                                     <div className="date">
@@ -1017,6 +1071,7 @@ export default class Gantt extends Component {
                                         <form onSubmit={this.handleSubmit}>
                                             <input type="text" placeholder="Введите комментарий..."
                                                    value={this.state.currentComment} onChange={this.handleChange}/>
+                                            <button type="submit">Добавить</button>
                                         </form>
                                     </div>
                                     <div className="comments_output">
@@ -1071,6 +1126,7 @@ export default class Gantt extends Component {
                                             <option>#Тег_команды</option>
                                             <option>#Гант</option>
                                             <option>#Канбан</option>
+                                            <option>#Оценка</option>
                                         </select>
                                     </div>
                                     <div className="date">
@@ -1171,7 +1227,7 @@ export default class Gantt extends Component {
                     ref={(input) => {
                         this.ganttContainer = input
                     }}
-                    style={{width: '90%', height: '85%', overflow: 'auto' }}
+                    style={{width: '90%', height: '85%', overflow: 'auto'}}
                 ></div>
             </>
         );

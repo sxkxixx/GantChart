@@ -45,6 +45,11 @@
     background: #004CE3;
     border-radius: 5px;
     color: white;
+    transition: all 0.2s ease-in-out;
+}
+
+.button button:hover{
+    background: #003192;
 }
 
 .gant{

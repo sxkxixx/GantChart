@@ -594,11 +594,14 @@
     padding: 0 16px;
     width: 148px;
     height: 32px;
-
-    /* Primary/Blue_7 */
-
     background: #004CE3;
     border-radius: 5px;
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+}
+
+.edit_view:hover{
+    background: #003192;
 }
 
 .create_view{
@@ -607,13 +610,16 @@
     justify-content: center;
     align-items: center;
     padding: 0 16px;
-
     width: 179px;
     height: 32px;
-
     background: #004CE3;
     border-radius: 5px;
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+}
 
+.create_view:hover{
+    background: #003192;
 }
 
 .remove_view{
@@ -626,6 +632,12 @@
     height: 32px;
     background: #AFBAC3;
     border-radius: 5px;
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+}
+
+.remove_view:hover{
+    background: #31393C;
 }
 
 .save{
@@ -635,36 +647,35 @@
     align-items: center;
     padding: 0px 16px;
     gap: 8px;
-
     width: 113px;
     height: 32px;
-
-    /* Primary/Blue_7 */
-
     background: #004CE3;
     border-radius: 5px;
     cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
 
+.save:hover{
+    background: #003192;
 }
 
 .cancel{
-    /* Auto layout */
-
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
     padding: 0px 16px;
     gap: 8px;
-
     width: 107px;
     height: 32px;
-
-    /* Basic/Grey */
-
     background: #AFBAC3;
     border-radius: 5px;
     cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.cancel:hover{
+    background: #31393C;
 }
 
 .close{}
@@ -720,6 +731,11 @@
     height: 32px;
     background: #004CE3;
     border-radius: 5px;
+    transition: all 0.2s ease-in-out;
+}
+
+.play_time:hover{
+    background: #003192;
 }
 
 .save_time{
@@ -729,6 +745,11 @@
     background: #004CE3;
     border-radius: 5px;
     color: white;
+    transition: all 0.2s ease-in-out;
+}
+
+.save_time:hover{
+    background: #003192;
 }
 
 .remove_time{
@@ -737,6 +758,11 @@
     height: 32px;
     background: #AFBAC3;
     border-radius: 5px;
+    transition: all 0.2s ease-in-out;
+}
+
+.remove_time:hover{
+    background: #31393C;
 }
 
 .timer_button{
@@ -823,6 +849,7 @@
 }
 
 .comments_input{
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -837,11 +864,27 @@
     flex-direction: row;
     align-items: flex-start;
     padding: 8px 16px;
-    width: 606px;
+    width: 476px;
     height: 32px;
     background: #FFFFFF;
     border: 1px solid #AFBAC3;
     border-radius: 5px;
+}
+
+.comments_input button{
+    position: absolute;
+    top: 25px;
+    right: 10px;
+    padding: 4px 18px;
+    height: 32px;
+    border-radius: 6px;
+    background: #004CE3;
+    color: white;
+    transition: all 0.2s ease-in-out;
+}
+
+.comments_input button:hover{
+    background: #003192;
 }
 
 .comments_output{

@@ -43,7 +43,7 @@ class Task(models.Model):
         self.name = kwargs.get('name', self.name)
         self.description = kwargs.get('description', self.description)
         self.planned_start_date = kwargs.get('planned_start_date', self.planned_start_date)
-        self.planned_final_date = kwargs.get('planned_finish_date', self.planned_final_date)
+        self.planned_final_date = kwargs.get('planned_final_date', self.planned_final_date)
         self.deadline = kwargs.get('deadline', self.deadline)
         self.save(using='default')
 
