@@ -23,16 +23,22 @@ export default class Gantt extends Component {
         super(props);
         this.state = {
             data: ["Игорь"],
-            items: ["Пункт 1"],
-            options: [
-                {id: 1, name: 'Название проекта'},
-                {id: 21, name: 'ЛК Стажер'},
+            stagesID: [],
+            projectId: [
+                {id: 1, name: 'Название проекта1'},
+                {id: 2, name: 'Название проекта2'},
+            ],
+            teamId: [
+                {id: 1, name: '#Тег команды1'},
+                {id: 2, name: '#Тег команды2'},
+                {id: 3, name: '#Тег команды3'},
             ],
             isRunning: false,
             elapsedTime: 0,
             comments: [],
             currentComment: '',
-            selectedOptionId: null
+            selectedProjectId: null,
+            selectedTeamId: null,
         };
         this.handleAdd = this.handleAdd.bind(this);
         this.handleDelete = this.handleDelete.bind(this);
@@ -40,13 +46,8 @@ export default class Gantt extends Component {
         this.handlePlayClick = this.handlePlayClick.bind(this);
         this.handleSaveClick = this.handleSaveClick.bind(this);
         this.handleRemoveClick = this.handleRemoveClick.bind(this);
-        this.handleOptionChange = this.handleOptionChange.bind(this);
     }
 
-    handleOptionChange(event) {
-        const selectedOptionId = event.target.value;
-        this.setState({selectedOptionId});
-    }
     handleChange = (event) => {
         this.setState({currentComment: event.target.value});
     }
@@ -65,20 +66,19 @@ export default class Gantt extends Component {
         }
     };
     addItem = () => {
-        const newItems = [...this.state.items, ""];
-        this.setState({items: newItems});
+        const newItems = [...this.state.stagesID, ""];
+        this.setState({stagesID: newItems});
     };
     removeItem = (index) => {
-        const newItems = [...this.state.items];
+        const newItems = [...this.state.stagesID];
         newItems.splice(index, 1);
-        this.setState({items: newItems});
+        this.setState({stagesID: newItems});
     };
     handleItemChange = (event, index) => {
-        const newItems = [...this.state.items];
+        const newItems = [...this.state.stagesID];
         newItems[index] = event.target.value;
-        this.setState({items: newItems});
+        this.setState({stagesID: newItems});
     }
-
     handleAdd() {
         const newData = [...this.state.data, "Новый исполнитель"];
         this.setState({data: newData});
@@ -263,7 +263,7 @@ export default class Gantt extends Component {
             let parentTask = "";
             if (task.parent) {
                 parentTask = "Базовая задача: <span style='text-decoration: underline;'>" + gantt.getTask(task.parent).text + "</span>";
-            }else{
+            } else {
                 parentTask = "Базовая задача: <span style='text-decoration: underline;'>Отсутствует</span>";
             }
 
@@ -276,15 +276,11 @@ export default class Gantt extends Component {
                 let deadline = form.querySelector("[name='deadline']");
                 let startDate = form.querySelector("[name='start_date']");
                 let endDate = form.querySelector("[name='end_date']");
+                let projectId = form.querySelector("[id='project-op']");
+                let teamId = form.querySelector("[id='team-op']");
 
                 form.querySelector("[id='parent_task']").value = task.parent || '';
                 form.querySelector("#parent_task").innerHTML = parentTask;
-
-                description.focus();
-                text.focus();
-                deadline.focus();
-                startDate.focus();
-                endDate.focus();
 
                 if (task.$new && task.parent) {
                     let parentTask = gantt.getTask(task.parent);
@@ -293,21 +289,30 @@ export default class Gantt extends Component {
                     deadline.value = parentTask.deadline ? new Date(parentTask.deadline).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10);
                     startDate.value = parentTask.start_date ? new Date(parentTask.start_date).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10);
                     endDate.value = parentTask.end_date ? new Date(parentTask.end_date).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10);
+                    projectId.value = task.project_id
+                    teamId.value = task.team_id
                 } else {
                     description.value = task.description || "";
                     text.value = task.text || "";
                     deadline.value = task.deadline ? new Date(task.deadline).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10);
                     startDate.value = task.start_date ? new Date(task.start_date).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10);
                     endDate.value = task.end_date ? new Date(task.end_date).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10);
+                    projectId.value = task.project_id
+                    teamId.value = task.team_id
                 }
 
                 if (task.$new && !task.parent) {
-                    // Добавляем стартовые значения для дедлайна, начальной и конечной дат
                     text.value = "";
                     deadline.value = "";
                     startDate.value = "";
                     endDate.value = "";
+                    projectId.value = task.project_id
+                    teamId.value = task.team_id
                 }
+
+                let stagesInputs = form.querySelectorAll('.check_list_text');
+                let stagesArr = Array.from(stagesInputs).map(input => ({ description: input.value }));
+                task.stages = stagesArr;
 
                 form.style.display = "flex";
 
@@ -321,30 +326,45 @@ export default class Gantt extends Component {
                     let taskData = response.data;
                     console.log(taskData)
 
-                if(!$new) {
+                    if (!$new) {
                         // Show the task details form
                         form = getForm("display_task");
+
                         // вывод данных
                         let textView = form.querySelector("[name='text1']");
                         let descriptionView = form.querySelector("[name='description1']");
                         let deadlineView = form.querySelector("[name='deadline1']");
                         let startDateView = form.querySelector("[name='start_date1']");
                         let endDateView = form.querySelector("[name='end_date1']");
+                        let projectId = form.querySelector("[id='project-op1']");
+                        let teamId = form.querySelector("[id='team-op1']");
 
                         form.querySelector("[id='parent_task']").value = task.parent || '';
                         form.querySelector("#parent_task").innerHTML = parentTask;
-
-                        descriptionView.focus();
-                        textView.focus();
-                        deadlineView.focus();
-                        startDateView.focus();
-                        endDateView.focus();
 
                         descriptionView.value = taskData.task.description || "";
                         textView.value = taskData.task.name || "";
                         deadlineView.value = taskData.task.deadline ? new Date(taskData.task.deadline).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10);
                         startDateView.value = taskData.task.planned_start_date ? new Date(taskData.task.planned_start_date).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10);
                         endDateView.value = taskData.task.planned_final_date ? new Date(taskData.task.planned_final_date).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10);
+                        projectId.value = taskData.task.project_id
+                        teamId.value = taskData.task.team_id
+                        let stagesArr = taskData.stages;
+                        let stagesInputs = Array.from(form.querySelectorAll('.check_list_text'));
+                        for (let i = 0; i < stagesInputs.length; i++) {
+                            stagesInputs[i].value = stagesArr[i].description || '';
+                        }
+                        let stagesContainer = form.querySelector("#stages-container");
+                        stagesContainer.innerHTML = "";
+                        for (let i = 0; i < stagesArr.length; i++) {
+                            let stageInput = document.createElement("div");
+                            stageInput.classList.add("check_list_elements");
+                            stageInput.innerHTML = `
+<input type="checkbox" ${stagesArr[i].is_ready ? "checked" : ""} />
+<p class='check_list_text2'>${stagesArr[i].description}</p>
+`;
+                            stagesContainer.appendChild(stageInput);
+                        }
 
                         form.style.display = "flex";
 
@@ -368,9 +388,23 @@ export default class Gantt extends Component {
                             editForm.querySelector('.main_view_list').scrollTop = 0;
                             editForm.querySelector("[name='text_edit']").value = taskData.task.name || "";
                             editForm.querySelector("[name='description_edit']").value = taskData.task.description || "";
+                            editForm.querySelector("[id='project-op-edit']").value = taskData.task.project_id
+                            editForm.querySelector("[id='team-op-edit']").value = taskData.task.team_id
                             editForm.querySelector("[name='deadline_edit']").value = taskData.task.deadline ? new Date(taskData.task.deadline).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10);
                             editForm.querySelector("[name='start_date_edit']").value = taskData.task.planned_start_date ? new Date(taskData.task.planned_start_date).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10);
                             editForm.querySelector("[name='end_date_edit']").value = taskData.task.planned_final_date ? new Date(taskData.task.planned_final_date).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10);
+                            let stagesContainerEdit = editForm.querySelector("#stages-container-edit");
+                            stagesContainerEdit.innerHTML = "";
+                            for (let i = 0; i < stagesArr.length; i++) {
+                                let stageInput = document.createElement("div");
+                                stageInput.classList.add("check_list_elements");
+                                stageInput.innerHTML = `
+        <input type="checkbox" ${stagesArr[i].is_ready ? "checked" : ""} />
+        <p class='check_list_text2'>${stagesArr[i].description}</p>
+    `;
+                                stagesContainerEdit.appendChild(stageInput);
+                            }
+
                             let parentTask = "";
                             if (task.parent) {
                                 parentTask = "Базовая задача: <span style='text-decoration: underline;'>" + gantt.getTask(task.parent).text + "</span>";
@@ -569,10 +603,40 @@ export default class Gantt extends Component {
             const deadline = document.getElementsByName("deadline")[0].value;
             const start_date = document.getElementsByName("start_date")[0].value;
             const end_date = document.getElementsByName("end_date")[0].value;
-            // let task = gantt.getTask(id);
             let parentTask = document.getElementById("parent_task").value;
+            let projectId = form.querySelector("[id='project-op']").value;
+            let teamId = form.querySelector("[id='team-op']").value;
+            let stagesInputs = form.querySelectorAll('.check_list_text');
+            let stagesArr = Array.from(stagesInputs).map(input => ({ description: input.value }));
 
             // Валидация полей формы
+
+            if(!projectId){
+                toast.error("Выберите проект", {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                })
+            }
+
+            if(!teamId){
+                toast.error("Выберите команду", {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                })
+            }
+
             if (!text) {
                 toast.error("Введите название задачи", {
                     position: "top-right",
@@ -634,18 +698,15 @@ export default class Gantt extends Component {
             axios.post(`http://127.0.0.1:8000/api/v1/gant/task/create`, {
                 task: {
                     parent_id: parentId ? parentId : null,
-                    project_id: 1,
-                    team_id: 1,
+                    project_id: projectId,
+                    team_id: teamId,
                     name: text,
                     description: description,
                     deadline: deadline ? formatter(new Date(deadline)) : formatter(new Date(end_date_formatted)),
                     planned_start_date: start_date_formatted,
                     planned_final_date: end_date_formatted,
                 },
-                stages: [
-                    {description: "string"},
-                    {description: "string"}
-                ]
+                stages: stagesArr
             }).then(response => {
                 form.style.display = "none";
                 console.log(response.data);
@@ -688,6 +749,8 @@ export default class Gantt extends Component {
             const deadline = document.getElementsByName("deadline_edit")[0].value;
             const start_date = document.getElementsByName("start_date_edit")[0].value;
             const end_date = document.getElementsByName("end_date_edit")[0].value;
+            const projectId = form.querySelector("[id='project-op-edit']").value;
+            const teamId = form.querySelector("[id='team-op-edit']").value;
 
             // Форматируем даты в формат "%Y-%m-%d"
             const formatter = gantt.date.date_to_str("%Y-%m-%d");
@@ -698,8 +761,8 @@ export default class Gantt extends Component {
             axios.post(`http://127.0.0.1:8000/api/v1/gant/task/${task.id}/edit`, {
                 task: {
                     parent_id: parentId ? parentId : null,
-                    project_id: 1,
-                    team_id: 1,
+                    project_id: projectId,
+                    team_id: teamId,
                     name: text,
                     description: description,
                     deadline: deadline ? formatter(new Date(deadline)) : formatter(new Date()),
@@ -708,7 +771,6 @@ export default class Gantt extends Component {
                 },
                 stages: [
                     {description: "string"},
-                    {description: "string"}
                 ]
             }).then(response => {
                 gantt.updateTask(taskId);
@@ -769,9 +831,7 @@ export default class Gantt extends Component {
             const task = gantt.getTask(taskId);
             cascadeDeleteTask(task.id);
             gantt.hideLightbox();
-            setTimeout(() => {
-                window.location.reload();
-            }, 800);
+            window.location.reload()
         }
 
         gantt.render();
@@ -800,7 +860,10 @@ export default class Gantt extends Component {
                 deadline: task.deadline,
                 open: true,
                 parent: parentId,
-                children: task.children.length
+                children: task.children.length,
+                project_id: null,
+                team_id: null,
+                stages: [],
             });
 
             if (task.children) {
@@ -857,8 +920,8 @@ export default class Gantt extends Component {
                             <div className='main_view_list'>
                                 <div className="project">
                                     <span>Проект</span>
-                                    <select>
-                                        {this.state.options.map(option => (
+                                    <select id='project-op'>
+                                        {this.state.projectId.map(option => (
                                             <option key={option.id} value={option.id}>{option.name}</option>
                                         ))}
                                     </select>
@@ -870,11 +933,10 @@ export default class Gantt extends Component {
                                     </div>
                                     <div className="element">
                                         <span>Тег команды</span>
-                                        <select>
-                                            <option>#Тег_команды</option>
-                                            <option>#Гант</option>
-                                            <option>#Канбан</option>
-                                            <option>#Оценка</option>
+                                        <select id='team-op'>
+                                            {this.state.teamId.map(option => (
+                                                <option key={option.id} value={option.id}>{option.name}</option>
+                                            ))}
                                         </select>
                                     </div>
                                     <div className="date">
@@ -927,8 +989,8 @@ export default class Gantt extends Component {
                                         <button onClick={this.addItem}><Add/></button>
                                     </div>
                                     <div className='list'>
-                                        {this.state.items.map((item, index) => (
-                                            <div className='check_list_elements' key={index}>
+                                        {this.state.stagesID.map((item, index) => (
+                                            <div className='check_list_elements' key={index} id={`item-${index}`}>
                                                 <input type="checkbox"/>
                                                 <input type="text"
                                                        className='check_list_text'
@@ -968,8 +1030,8 @@ export default class Gantt extends Component {
                             <div className='main_view_list'>
                                 <div className="project">
                                     <span>Проект</span>
-                                    <select disabled>
-                                        {this.state.options.map(option => (
+                                    <select id='project-op1' disabled>
+                                        {this.state.projectId.map(option => (
                                             <option key={option.id} value={option.id}>{option.name}</option>
                                         ))}
                                     </select>
@@ -981,11 +1043,10 @@ export default class Gantt extends Component {
                                     </div>
                                     <div className="element">
                                         <span>Тег команды</span>
-                                        <select disabled>
-                                            <option>#Тег_команды</option>
-                                            <option>#Гант</option>
-                                            <option>#Канбан</option>
-                                            <option>#Оценка</option>
+                                        <select id='team-op1' disabled>
+                                            {this.state.teamId.map(option => (
+                                                <option key={option.id} value={option.id}>{option.name}</option>
+                                            ))}
                                         </select>
                                     </div>
                                     <div className="date">
@@ -1024,14 +1085,7 @@ export default class Gantt extends Component {
                                     <div className='check_list_title'>
                                         <span>Чек-лист</span>
                                     </div>
-                                    <div className='list_view'>
-                                        {this.state.items.map((item, index) => (
-                                            <div className='check_list_elements' key={index}>
-                                                <input type="checkbox"/>
-                                                <p className='check_list_text2'>{item}</p>
-                                            </div>
-                                        ))}
-                                    </div>
+                                    <div className='list_view' id="stages-container"></div>
                                 </div>
                                 <div className='timer'>
                                     <div className='timer_top'>
@@ -1109,8 +1163,8 @@ export default class Gantt extends Component {
                             <div className='main_view_list'>
                                 <div className="project">
                                     <span>Проект</span>
-                                    <select>
-                                        {this.state.options.map(option => (
+                                    <select id='project-op-edit'>
+                                        {this.state.projectId.map(option => (
                                             <option key={option.id} value={option.id}>{option.name}</option>
                                         ))}
                                     </select>
@@ -1122,11 +1176,10 @@ export default class Gantt extends Component {
                                     </div>
                                     <div className="element">
                                         <span>Тег команды</span>
-                                        <select>
-                                            <option>#Тег_команды</option>
-                                            <option>#Гант</option>
-                                            <option>#Канбан</option>
-                                            <option>#Оценка</option>
+                                        <select id='team-op-edit'>
+                                            {this.state.teamId.map(option => (
+                                                <option key={option.id} value={option.id}>{option.name}</option>
+                                            ))}
                                         </select>
                                     </div>
                                     <div className="date">
@@ -1179,19 +1232,7 @@ export default class Gantt extends Component {
                                         <span>Чек-лист</span>
                                         <button onClick={this.addItem}><Add/></button>
                                     </div>
-                                    <div className='list'>
-                                        {this.state.items.map((item, index) => (
-                                            <div className='check_list_elements' key={index}>
-                                                <input type="checkbox"/>
-                                                <input type="text"
-                                                       className='check_list_text'
-                                                       value={item}
-                                                       onChange={(event) => this.handleItemChange(event, index)}
-                                                />
-                                                <button onClick={() => this.removeItem(index)}><Del/></button>
-                                            </div>
-                                        ))}
-                                    </div>
+                                    <div className='list_view' id="stages-container-edit"></div>
                                     <div className='timer_bottom'>
                                         <span>Затраченное время</span>
                                         <div className='timer_bottom_elements'>
