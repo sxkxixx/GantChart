@@ -3,8 +3,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework.request import Request
 from .models import *
-from .utils import is_valid_date_term, DATE_FORMAT, \
-    is_in_parent_terms, get_tasks
+from .utils import is_valid_date_term, DATE_FORMAT, is_in_parent_terms, get_tasks
 from datetime import datetime
 
 
@@ -29,7 +28,8 @@ def get_task_by_id(request, id):
         return Response({"msg": "Enter the correct data."}, status=404)
     comments = Comment.objects.using('default').filter(task_id=task.id).all().values('id', 'user_id', 'content')
     stages = Stage.objects.using('default').filter(task_id=task.id).all().values('id', 'description', 'is_ready')
-    return Response({'task': model_to_dict(task), 'comments': comments, 'stages': stages})
+    executor = Executor.objects.using('default').filter(task_id=id).values('id', 'task_id', 'user_id', 'role_id')
+    return Response({'task': model_to_dict(task), 'comments': comments, 'stages': stages, 'executor': executor})
 
 
 @api_view(['POST'])
@@ -37,7 +37,6 @@ def edit_dates(request: Request, id):
     """
     Изменение дат начала, окончания выполнения задачи и дедлайна: Если условие
     planned_start_date < planned_finish_date <= deadline не выполняется или нет задачи с таким id, выбрасывается ошибка с 404-статус кодом
-
     Структура body в запросе:
     { "planned_start_date":"str", "planned_final_date":"str", "deadline":"str" }
     """
@@ -69,8 +68,8 @@ def create_task(request: Request):
     """Создать задачу:
     {"task":
     {"parent_id":0, "project_id":0, "team_id":0, "name":"string", "description":"string",
-    "planned_start_date":"%Y-%m-%d", "planned_final_date":"%Y-%m-%d", "deadline":"%Y-%m-%d"},
-    "stages": [{"description": "string"}, {"description": "string"}, "responsible_for_task": 0]
+    "planned_start_date":"%Y-%m-%d", "planned_final_date":"%Y-%m-%d", "deadline":"%Y-%m-%d", "executor_id": 0},
+    "stages": [{"description": "string"}, {"description": "string"}]
     }
     """
     task_data, stages_data = request.data.get('task'), request.data.get('stages')
@@ -99,6 +98,10 @@ def create_task(request: Request):
             parent_task.is_on_kanban = False
             parent_task.save(using='default')
         task.save(using='default')
+        Executor.objects.using('default').create(
+            task_id_id=task.id,
+            user_id=task_data.get('executor_id'),
+            role_id=Role.objects.get_or_create(name='Ответственный')[0])
         for stage in stages_data:
             Stage.objects.using('default').create(
                 task_id_id=task.id,

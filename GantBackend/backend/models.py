@@ -56,7 +56,7 @@ class Executor(models.Model):
     task_id = models.ForeignKey(Task, on_delete=models.CASCADE, db_column='task_id', to_field='id')
     user_id = models.IntegerField()
     role_id = models.ForeignKey(Role, on_delete=models.CASCADE, db_column='role_id', to_field='id')
-    time_spent = models.TimeField(verbose_name='Время выполнения задачи')
+    time_spent = models.TimeField(verbose_name='Время выполнения задачи', null=True, blank=True)
     created_at = models.DateTimeField(verbose_name='Время создания', auto_now_add=True)
     updated_at = models.DateTimeField(verbose_name='Время обновления', auto_now=True)
 
@@ -95,8 +95,8 @@ class UralapiEventuts(models.Model):
     end_date = models.DateField(blank=True, null=True)
 
     class Meta:
-        managed = False
         db_table = 'uralapi_eventuts'
+        managed = False
 
 
 class UralapiProject(models.Model):
@@ -108,8 +108,8 @@ class UralapiProject(models.Model):
     id_event = models.ForeignKey(UralapiEventuts, models.DO_NOTHING)
 
     class Meta:
-        managed = False
         db_table = 'uralapi_project'
+        managed = False
 
 
 class UralapiTeam(models.Model):
@@ -121,8 +121,8 @@ class UralapiTeam(models.Model):
     id_tutor = models.ForeignKey('UralapiUser', models.DO_NOTHING)
 
     class Meta:
-        managed = False
         db_table = 'uralapi_team'
+        managed = False
 
 
 class UralapiUser(models.Model):
@@ -141,5 +141,5 @@ class UralapiUser(models.Model):
     image = models.CharField(max_length=100, blank=True, null=True)
 
     class Meta:
-        managed = False
         db_table = 'uralapi_user'
+        managed = False
