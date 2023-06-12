@@ -10,6 +10,7 @@ import {ReactComponent as Stop} from "../../Assets/img/stop.svg"
 import {ReactComponent as TrashWhite} from "../../Assets/img/trashWhite.svg"
 import {ReactComponent as Add} from "../../Assets/img/addButton.svg"
 import {ReactComponent as Del} from "../../Assets/img/deleteButton.svg"
+import deleteButton from "../../Assets/img/deleteButton.svg";
 import {ReactComponent as Clock} from "../../Assets/img/clock.svg"
 import {toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -31,6 +32,11 @@ export default class Gantt extends Component {
             selectedProjectIdFilter: 1,
             currentEvent: 1,
             selectedTeamId: null,
+            usersLocal: [
+                {id: 1, first_name: 'Игорь'},
+                {id: 2, first_name: 'Олег'},
+                {id: 3, first_name: 'Ольга'},
+            ],
             users: [
                 {id: 1, first_name: 'Игорь'},
                 {id: 2, first_name: 'Олег'},
@@ -44,7 +50,8 @@ export default class Gantt extends Component {
                 {id: 1, title: 'ЛК Гант'},
                 {id: 2, title: 'ЛК Канбан'},
                 {id: 3, title: 'ЛК Оценка'},
-            ]
+            ],
+            divs: []
         };
         this.handleAdd = this.handleAdd.bind(this);
         this.handleDelete = this.handleDelete.bind(this);
@@ -87,14 +94,14 @@ export default class Gantt extends Component {
     }
 
     handleAdd() {
-        const newData = [...this.state.data, "Новый исполнитель"];
-        this.setState({data: newData});
+        const newData = [...this.state.divs, this.state.divs];
+        this.setState({divs: newData});
     }
 
     handleDelete(index) {
-        const newData = [...this.state.data];
+        const newData = [...this.state.divs];
         newData.splice(index, 1);
-        this.setState({data: newData});
+        this.setState({divs: newData});
     }
 
     componentWillUnmount() {
@@ -144,6 +151,12 @@ export default class Gantt extends Component {
         gantt.config.date_format = "%Y-%m-%d";
         gantt.config.container_resize_method = "timeout";
         gantt.config.show_tasks_outside_timescale = true;
+
+        // Подзадачи
+        gantt.templates.grid_indent = function(item) {
+            return "<div class='gantt_tree_indent' style='width:" + (item.$level * 4) + "px;'></div>";
+        };
+
 
         gantt.templates.parse_date = function (date) {
             return new Date(date);
@@ -222,8 +235,6 @@ export default class Gantt extends Component {
             }
             return "";
         };
-
-        // filter
 
         // Колоны
         gantt.config.columns = [
@@ -417,7 +428,10 @@ export default class Gantt extends Component {
                                 stageInput.classList.add("check_list_elements");
                                 stageInput.innerHTML = `
         <input type="checkbox" ${stagesArr[i].is_ready ? "checked" : ""} />
-        <p class='check_list_text2'>${stagesArr[i].description}</p>
+        <p class='check_list_text'>${stagesArr[i].description}</p>
+        <button>
+            <img src="${deleteButton}" alt="Delete">
+        </button>
     `;
                                 stagesContainerEdit.appendChild(stageInput);
                             }
@@ -505,11 +519,11 @@ export default class Gantt extends Component {
         // Get запрос задач
         axios.get(`http://127.0.0.1:8000/api/v1/gant/tasks`,)
             .then(response => {
-            const transformedData = this.transformData(response.data);
-            console.log(response)
-            gantt.parse(transformedData);
-            gantt.refreshData();
-        })
+                const transformedData = this.transformData(response.data);
+                console.log(response)
+                gantt.parse(transformedData);
+                gantt.refreshData();
+            })
             .catch(error => {
                 console.error(error);
             });
@@ -869,13 +883,24 @@ export default class Gantt extends Component {
             window.location.reload()
         }
 
-        const storedProjectId = localStorage.getItem('selectedProjectId');
-        if (storedProjectId) {
-            this.handleProjectChange(storedProjectId);
-        }
+        const divs = this.state.users.map((performer, index) => ({
+            selectedUserId: performer.id,
+            handleSelectChange: (e) => this.handleSelectChange(e, index)
+        }));
+        this.setState({ divs });
 
         gantt.render();
     }
+
+    handleSelectChange = (event, index) => {
+        const { value } = event.target;
+        this.setState(prevState => {
+            const divs = [...prevState.divs];
+            divs[index].selectedUserId = value;
+            return { divs };
+        });
+    };
+
 
 
     transformData(data) {
@@ -935,28 +960,41 @@ export default class Gantt extends Component {
             selectedProjectIdFilter: projectId
         });
 
-        localStorage.setItem('selectedProjectId', projectId);
-
         console.log(projectId);
         setTimeout(() => {
-            const storedProjectId = localStorage.getItem('selectedProjectId');
 
-            axios.get(`http://127.0.0.1:8000/api/v1/gant/tasks`,{
+            axios.get(`http://127.0.0.1:8000/api/v1/gant/tasks`, {
                 params: {
-                    project_id: storedProjectId
+                    project_id: this.state.selectedProjectIdFilter
                 }
             }).then(response => {
-                    // console.log(storedProjectId);
-                    console.log(response);
-                    const transformedData = this.transformData(response.data);
-                    gantt.parse(transformedData);
+                const updatedTasks = {};
+                const transformedData = this.transformData(response.data);
 
-                    // Обновляем отображение gantt для новых данных
-                    gantt.refreshData();
+                // Обойти все задачи и обновить/удалить соответствующие элементы
+                transformedData.data.forEach((task) => {
+                    const existingTask = gantt.getTask(task.id);
+                    if (existingTask) {
+                        // Задача уже существует, обновляем ее данные
+                        gantt.updateTask(task.id, task);
+                        updatedTasks[task.id] = true;
+                    } else {
+                        // Задачи не существует, добавляем ее
+                        gantt.addTask(task);
+                        updatedTasks[task.id] = true;
+                    }
+                });
 
-                    // Перерисовываем gantt
-                    gantt.render();
-                })
+                // Удалить все задачи, которых нет в updatedTasks
+                gantt.eachTask((task) => {
+                    if (!updatedTasks[task.id]) {
+                        gantt.deleteTask(task.id);
+                    }
+                });
+
+                // Перерисовать gantt
+                gantt.render();
+            })
                 .catch(error => {
                     console.error(error);
                 });
@@ -974,7 +1012,8 @@ export default class Gantt extends Component {
                         <select name="tasks" id="tasks">
                             <option>Мои Задачи</option>
                         </select>
-                        <select name="projects" id="projects" onChange={(event) => this.handleProjectChange(event.target.value)}>
+                        <select name="projects" id="projects"
+                                onChange={(event) => this.handleProjectChange(event.target.value)}>
                             <option value="">Проект</option>
                             {this.state.projects.map(project => (
                                 <option key={project.id} value={project.id}>{project.title}</option>
@@ -1040,7 +1079,7 @@ export default class Gantt extends Component {
                                     <div className='nameList'>
                                         <span>Постановщик</span>
                                         <select id='user-op'>
-                                            {this.state.users.map(option => (
+                                            {this.state.usersLocal.map(option => (
                                                 <option key={option.id} value={option.id}>{option.first_name}</option>
                                             ))}
                                         </select>
@@ -1059,10 +1098,12 @@ export default class Gantt extends Component {
                                         <span>Исполнители</span>
                                         <button onClick={this.handleAdd}><Add/></button>
                                     </div>
-                                    {this.state.users.map((performer, index) => (
+                                    {this.state.divs.map((div, index) => (
                                         <div key={index}>
-                                            <select>
-                                                <option>{performer.first_name}</option>
+                                            <select value={div.selectedUserId} onChange={div.handleSelectChange}>
+                                                {this.state.usersLocal.map((user) => (
+                                                    <option key={user.id} value={user.id}>{user.first_name}</option>
+                                                ))}
                                             </select>
                                             <button onClick={() => this.handleDelete(index)}><Del/></button>
                                         </div>
@@ -1152,7 +1193,7 @@ export default class Gantt extends Component {
                                     <div className='nameList'>
                                         <span>Постановщик</span>
                                         <select id='user-op1' disabled>
-                                            {this.state.users.map(option => (
+                                            {this.state.usersLocal.map(option => (
                                                 <option key={option.id} value={option.id}>{option.first_name}</option>
                                             ))}
                                         </select>
@@ -1168,10 +1209,12 @@ export default class Gantt extends Component {
                                 </div>
                                 <div className='performers'>
                                     <span>Исполнители</span>
-                                    {this.state.users.map((performer, index) => (
+                                    {this.state.divs.map((div, index) => (
                                         <div key={index}>
-                                            <select disabled>
-                                                <option>{performer.first_name}</option>
+                                            <select disabled value={div.selectedUserId} onChange={div.handleSelectChange}>
+                                                {this.state.usersLocal.map((user) => (
+                                                    <option key={user.id} value={user.id}>{user.first_name}</option>
+                                                ))}
                                             </select>
                                         </div>
                                     ))}
@@ -1295,7 +1338,7 @@ export default class Gantt extends Component {
                                     <div className='nameList'>
                                         <span>Постановщик</span>
                                         <select id='user-op-edit'>
-                                            {this.state.users.map(option => (
+                                            {this.state.usersLocal.map(option => (
                                                 <option key={option.id} value={option.id}>{option.first_name}</option>
                                             ))}
                                         </select>
@@ -1314,10 +1357,12 @@ export default class Gantt extends Component {
                                         <span>Исполнители</span>
                                         <button onClick={this.handleAdd}><Add/></button>
                                     </div>
-                                    {this.state.users.map((performer, index) => (
+                                    {this.state.divs.map((div, index) => (
                                         <div key={index}>
-                                            <select>
-                                                <option>{performer.first_name}</option>
+                                            <select value={div.selectedUserId} onChange={div.handleSelectChange}>
+                                                {this.state.usersLocal.map((user) => (
+                                                    <option key={user.id} value={user.id}>{user.first_name}</option>
+                                                ))}
                                             </select>
                                             <button onClick={() => this.handleDelete(index)}><Del/></button>
                                         </div>
