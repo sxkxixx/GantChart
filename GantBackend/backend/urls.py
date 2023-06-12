@@ -12,5 +12,5 @@ urlpatterns = [
     path('task/<int:id>/edit', edit_task),
     path('projects', get_project_info),
     path('teams', get_teams_info),
-    path('users', get_users_info)
+    path('users', get_users_info),
 ]

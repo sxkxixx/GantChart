@@ -14,8 +14,9 @@ def get_all_tasks(request):
     """
     fields = ['id', 'parent_id', 'name', 'description', 'is_on_kanban',
               'is_completed', 'planned_start_date', 'planned_final_date', 'deadline']
-    project_filter = request.data.get('project_id')
-    tasks = Task.objects.using('default').filter(project_id=int(project_filter)).values(*fields) if project_filter else Task.objects.using('default').all().values(*fields)
+    project_filter = request.GET.get('project_id', None)
+    tasks = Task.objects.using('default').filter(project_id=int(project_filter)).values(
+        *fields) if project_filter else Task.objects.using('default').all().values(*fields)
     tasks = get_tasks(tasks, None, [])
     return Response(tasks)
 
