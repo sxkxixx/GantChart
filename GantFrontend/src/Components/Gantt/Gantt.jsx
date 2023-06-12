@@ -942,10 +942,6 @@ export default class Gantt extends Component {
             const storedProjectId = localStorage.getItem('selectedProjectId');
 
             axios.get(`http://127.0.0.1:8000/api/v1/gant/tasks`,{
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                data: {},
                 params: {
                     project_id: storedProjectId
                 }
