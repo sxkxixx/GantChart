@@ -37,20 +37,9 @@ export default class Gantt extends Component {
                 {id: 2, first_name: 'Олег'},
                 {id: 3, first_name: 'Ольга'},
             ],
-            users: [
-                {id: 1, first_name: 'Игорь'},
-                {id: 2, first_name: 'Олег'},
-                {id: 3, first_name: 'Ольга'},
-            ],
-            projects: [
-                {id: 1, title: 'ЛК Стажер1'},
-                {id: 2, title: 'ЛК Стажер2'}
-            ],
-            teams: [
-                {id: 1, title: 'ЛК Гант'},
-                {id: 2, title: 'ЛК Канбан'},
-                {id: 3, title: 'ЛК Оценка'},
-            ],
+            users: [],
+            projects: [],
+            teams: [],
             divs: []
         };
         this.handleAdd = this.handleAdd.bind(this);
@@ -685,6 +674,19 @@ export default class Gantt extends Component {
                 })
             }
 
+            if (!responsible) {
+                toast.error("Выберите ответственного", {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                })
+            }
+
             if (!text) {
                 toast.error("Введите название задачи", {
                     position: "top-right",
@@ -883,7 +885,7 @@ export default class Gantt extends Component {
             window.location.reload()
         }
 
-        const divs = this.state.users.map((performer, index) => ({
+        const divs = this.state.usersLocal.map((performer, index) => ({
             selectedUserId: performer.id,
             handleSelectChange: (e) => this.handleSelectChange(e, index)
         }));
@@ -900,6 +902,19 @@ export default class Gantt extends Component {
             return { divs };
         });
     };
+
+    fetchTasks() {
+        axios.get(`http://127.0.0.1:8000/api/v1/gant/tasks`)
+            .then(response => {
+                const transformedData = this.transformData(response.data);
+                console.log(response)
+                gantt.parse(transformedData);
+                gantt.refreshData();
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    }
 
 
 
