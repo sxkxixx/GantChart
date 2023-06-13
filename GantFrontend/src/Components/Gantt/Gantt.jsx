@@ -410,20 +410,41 @@ export default class Gantt extends Component {
                             editForm.querySelector("[name='deadline_edit']").value = taskData.task.deadline ? new Date(taskData.task.deadline).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10);
                             editForm.querySelector("[name='start_date_edit']").value = taskData.task.planned_start_date ? new Date(taskData.task.planned_start_date).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10);
                             editForm.querySelector("[name='end_date_edit']").value = taskData.task.planned_final_date ? new Date(taskData.task.planned_final_date).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10);
+
                             let stagesContainerEdit = editForm.querySelector("#stages-container-edit");
-                            stagesContainerEdit.innerHTML = "";
-                            for (let i = 0; i < stagesArr.length; i++) {
-                                let stageInput = document.createElement("div");
-                                stageInput.classList.add("check_list_elements");
-                                stageInput.innerHTML = `
-        <input type="checkbox" ${stagesArr[i].is_ready ? "checked" : ""} />
-        <p class='check_list_text'>${stagesArr[i].description}</p>
-        <button>
-            <img src="${deleteButton}" alt="Delete">
-        </button>
-    `;
-                                stagesContainerEdit.appendChild(stageInput);
+                            const newStagesArr = [...taskData.stages];
+                            function addStage() {
+                                newStagesArr.push({
+                                    is_ready: false,
+                                    description: "",
+                                });
+                                renderStages();
                             }
+
+                            function renderStages() {
+                                stagesContainerEdit.innerHTML = "";
+                                for (let i = 0; i < newStagesArr.length; i++) {
+                                    let stageInput = document.createElement("div");
+                                    stageInput.classList.add("check_list_elements");
+                                    stageInput.innerHTML = `
+      <input type="checkbox" ${newStagesArr[i].is_ready ? "checked" : ""} />
+      <input type="text" class='check_list_text' value="${newStagesArr[i].description}">
+      <button class="delete-btn">
+        <img src="${deleteButton}" alt="Delete">
+      </button>
+    `;
+                                    stagesContainerEdit.appendChild(stageInput);
+
+                                    // Add event listener to delete button
+                                    const deleteBtn = stageInput.querySelector(".delete-btn");
+                                    deleteBtn.addEventListener("click", () => {
+                                        newStagesArr.splice(i, 1);
+                                        renderStages();
+                                    });
+                                }
+                            }
+                            renderStages();
+                            document.querySelector("#add-stage-btn").addEventListener("click", addStage);
 
                             let parentTask = "";
                             if (task.parent) {
@@ -808,6 +829,17 @@ export default class Gantt extends Component {
             const start_date_formatted = formatter(new Date(start_date));
             const end_date_formatted = formatter(new Date(end_date));
 
+
+            // Собираем информацию о стадиях задачи
+            const stagesContainerEdit = form.querySelector("#stages-container-edit");
+            const stageInputs = stagesContainerEdit.querySelectorAll(".check_list_elements");
+            const updatedStages = Array.from(stageInputs).map((input) => {
+                const checkbox = input.querySelector("input[type='checkbox']");
+                const textInput = input.querySelector("input[type='text']");
+                return { description: textInput.value, is_ready: checkbox.checked };
+            });
+
+
             // Отправляем POST запрос на сервер для создания новой задачи
             axios.post(`http://127.0.0.1:8000/api/v1/gant/task/${task.id}/edit`, {
                 task: {
@@ -820,9 +852,7 @@ export default class Gantt extends Component {
                     planned_start_date: start_date_formatted,
                     planned_final_date: end_date_formatted,
                 },
-                stages: [
-                    {description: "string"},
-                ]
+                stages: updatedStages,
             }).then(response => {
                 gantt.updateTask(taskId);
                 form.style.display = "none";
@@ -902,21 +932,6 @@ export default class Gantt extends Component {
             return { divs };
         });
     };
-
-    fetchTasks() {
-        axios.get(`http://127.0.0.1:8000/api/v1/gant/tasks`)
-            .then(response => {
-                const transformedData = this.transformData(response.data);
-                console.log(response)
-                gantt.parse(transformedData);
-                gantt.refreshData();
-            })
-            .catch(error => {
-                console.error(error);
-            });
-    }
-
-
 
     transformData(data) {
         const taskMap = new Map();
@@ -1386,7 +1401,7 @@ export default class Gantt extends Component {
                                 <div className='check_list_edit'>
                                     <div className='check_list_title'>
                                         <span>Чек-лист</span>
-                                        <button onClick={this.addItem}><Add/></button>
+                                        <button id="add-stage-btn"><Add/></button>
                                     </div>
                                     <div className='list_view' id="stages-container-edit"></div>
                                     <div className='timer_bottom'>
