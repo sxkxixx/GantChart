@@ -1,18 +1,16 @@
-import s from './App.module.css'
-import Header from './Components/Header/Header'
-import Main from './Components/Main/Main'
 import {ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Main from "./pages/main/main";
+import {ThemeProvider} from "styled-components";
+import GlobalStyles from "./styles/GlobalStyles";
 
-function App() {
-
-
+const App = () => {
     return (
-        <div className={s.container}>
-            <Header/>
+        <ThemeProvider theme={theme}>
+            <GlobalStyles />
             <Main/>
             <ToastContainer/>
-        </div>
+        </ThemeProvider>
     )
 }
 
