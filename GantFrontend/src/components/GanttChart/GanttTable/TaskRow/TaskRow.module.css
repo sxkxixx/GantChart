@@ -1,0 +1,13 @@
+.taskRow {
+    cursor: pointer;
+}
+
+.collapseButton {
+    font-size: 14px;
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+.collapsed {
+    opacity: 0.5;
+}
