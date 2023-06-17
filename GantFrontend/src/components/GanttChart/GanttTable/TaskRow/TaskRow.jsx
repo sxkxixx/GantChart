@@ -4,11 +4,6 @@ import s from "./TaskRow.module.css";
 const TaskRow = ({ task, indentLevel = 0, collapsedTasks = [], toggleTaskCollapse }) => {
     const [expanded, setExpanded] = useState(false);
 
-    const startDateString = task.startDate.toLocaleDateString();
-    const endDateString = task.endDate.toLocaleDateString();
-    const durationInDays =
-        (task.endDate.getTime() - task.startDate.getTime()) / (1000 * 60 * 60 * 24);
-
     const hasChildren = task.children && task.children.length > 0;
 
     const toggleExpansion = () => {
@@ -29,15 +24,11 @@ const TaskRow = ({ task, indentLevel = 0, collapsedTasks = [], toggleTaskCollaps
                 <td style={{ paddingLeft: `${indentLevel * 20}px` }}>
                     {hasChildren && (
                         <span className={s.collapseButton}>
-                            {isCollapsed ? "▶" : "▼"}
-                        </span>
+                        {isCollapsed ? "▶" : "▼"}
+                    </span>
                     )}
                     {task.name}
                 </td>
-                <td>{startDateString}</td>
-                <td>{endDateString}</td>
-                <td>{durationInDays} days</td>
-                <td>{task.progress * 100}%</td>
             </tr>
             {expanded &&
                 task.children &&

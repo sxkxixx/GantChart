@@ -1,0 +1,12 @@
+.ganttRow td {
+    border: none;
+}
+
+.ganttCell {
+    height: 10px;
+    border-bottom: 2px solid black;
+}
+
+.ganttCellActive {
+    background-color: blue;
+}

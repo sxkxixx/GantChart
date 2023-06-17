@@ -1,13 +1,32 @@
+.container{
+    display: flex;
+    flex-direction: column;
+    width: 30%;
+    height: 100%;
+}
+
+
 .taskRow {
     cursor: pointer;
 }
 
 .collapseButton {
-    font-size: 14px;
-    font-weight: bold;
-    margin-right: 5px;
+    margin-right: 8px;
 }
 
-.collapsed {
-    opacity: 0.5;
+.collapsed .collapseButton {
+    transform: rotate(-90deg);
+}
+
+.ganttRow td {
+    border: none;
+}
+
+.ganttCell {
+    height: 10px;
+    border-bottom: 2px solid black;
+}
+
+.ganttCellActive {
+    background-color: blue;
 }
