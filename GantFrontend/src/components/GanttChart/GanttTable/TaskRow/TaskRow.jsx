@@ -1,41 +1,38 @@
-import React, { useState } from "react";
-import s from "./TaskRow.module.css";
+import React, { useState } from 'react';
+import s from './TaskRow.module.css';
 
-const TaskRow = ({ task, indentLevel = 0, collapsedTasks = [], toggleTaskCollapse }) => {
-    const [expanded, setExpanded] = useState(false);
-
+const TaskRow = ({
+                     task,
+                     indentLevel = 0,
+                     collapsedTasks = [],
+                     toggleTaskCollapse,
+                 }) => {
     const hasChildren = task.children && task.children.length > 0;
-
-    const toggleExpansion = () => {
-        if (hasChildren) {
-            setExpanded(!expanded);
-            toggleTaskCollapse(task.id);
-        }
-    };
 
     const isCollapsed = collapsedTasks.includes(task.id);
 
     return (
         <>
             <tr
-                className={`${s.taskRow}${isCollapsed ? ` ${s.collapsed}` : ""}`}
-                onClick={toggleExpansion}
+                className={`${s.taskRow}${isCollapsed ? ` ${s.collapsed}` : ''}`}
+                onClick={() => toggleTaskCollapse(task.id)}
             >
                 <td style={{ paddingLeft: `${indentLevel * 20}px` }}>
                     {hasChildren && (
                         <span className={s.collapseButton}>
-                        {isCollapsed ? "▶" : "▼"}
-                    </span>
+              {isCollapsed ? '▶' : '▼'}
+            </span>
                     )}
                     {task.name}
                 </td>
             </tr>
-            {expanded &&
-                task.children &&
-                task.children.map((child) => (
+
+            {hasChildren &&
+                !isCollapsed &&
+                task.children.map((childTask) => (
                     <TaskRow
-                        key={child.id}
-                        task={child}
+                        key={childTask.id}
+                        task={childTask}
                         indentLevel={indentLevel + 1}
                         collapsedTasks={collapsedTasks}
                         toggleTaskCollapse={toggleTaskCollapse}
