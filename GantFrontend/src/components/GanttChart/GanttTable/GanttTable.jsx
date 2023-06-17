@@ -11,6 +11,19 @@ const GanttTable = ({ tasks, indentLevel = 0, collapsedTasks, toggleTaskCollapse
 
     const projectDurationInDays = (latestDate.getTime() - earliestDate.getTime()) / (1000 * 60 * 60 * 24);
 
+    // Flatten the tasks hierarchy using recursion
+    const flattenTasks = (tasks) => {
+        return tasks.reduce((acc, task) => {
+            acc.push(task);
+            if (task.children && task.children.length > 0 && !collapsedTasks.includes(task.id)) {
+                acc.push(...flattenTasks(task.children));
+            }
+            return acc;
+        }, []);
+    };
+
+    const flattenedTasks = flattenTasks(tasks);
+
     return (
         <div className={s.container}>
             <div className={s.table}>
@@ -46,14 +59,13 @@ const GanttTable = ({ tasks, indentLevel = 0, collapsedTasks, toggleTaskCollapse
                     </tr>
                     </thead>
                     <tbody>
-                    {tasks.map(task => (
+                    {/* Pass the flattened tasks array to GanttRow */}
+                    {flattenedTasks.map(task => (
                         <GanttRow
                             key={task.id}
                             task={task}
                             earliestDate={earliestDate}
                             projectDurationInDays={projectDurationInDays}
-                            collapsedTasks={collapsedTasks}
-                            toggleTaskCollapse={toggleTaskCollapse}
                         />
                     ))}
                     </tbody>

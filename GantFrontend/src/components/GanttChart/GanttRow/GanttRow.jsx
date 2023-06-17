@@ -3,8 +3,7 @@ import s from './GanttRow.module.css';
 
 const GanttRow = ({ task, earliestDate, projectDurationInDays }) => (
     <tr className={s.ganttRow}>
-        <td></td>
-        <td colSpan="4"></td>
+        <td>{' '.repeat(task.indentLevel * 4)}{task.name}</td>
         {[...Array(projectDurationInDays)].map((_, i) => {
             const currentDate = new Date(earliestDate);
             currentDate.setDate(currentDate.getDate() + i);
