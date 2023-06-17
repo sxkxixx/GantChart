@@ -1,11 +1,10 @@
 import React from 'react';
 import TaskRow from './TaskRow/TaskRow';
 import s from './GanttTable.module.css';
-import GanttRow from '../GanttRow/GanttRow';
 import styled from 'styled-components';
 
 const Row = styled.tr`
-  height: 77px;
+  height: 30px;
 `;
 
 const GanttTable = ({
@@ -14,31 +13,21 @@ const GanttTable = ({
                         collapsedTasks,
                         toggleTaskCollapse,
                     }) => {
-    // Get all start and end dates
     const allStartDates = tasks.map((task) => task.startDate);
     const allEndDates = tasks.map((task) => task.endDate);
 
-    // Find earliest and latest date
     const earliestDate = new Date(Math.min(...allStartDates));
     const latestDate = new Date(Math.max(...allEndDates));
 
-    // Calculate project duration in days
     const projectDurationInDays =
         (latestDate.getTime() - earliestDate.getTime()) / (1000 * 60 * 60 * 24);
 
-    // Generate an array of dates within the project duration
     const dateArray = [...Array(projectDurationInDays)].map((_, i) => {
         const currentDate = new Date(earliestDate);
         currentDate.setDate(currentDate.getDate() + i);
         return currentDate;
     });
 
-    // Generate an array of months within the project duration
-    const monthArray = [
-        ...new Set(dateArray.map((date) => date.getMonth())),
-    ];
-
-    // Flatten the tasks hierarchy using recursion
     const flattenTasks = (tasks, addedIds = new Set(), isChild = false) => {
         return tasks.reduce((acc, task) => {
             if (!addedIds.has(task.id)) {
@@ -50,9 +39,12 @@ const GanttTable = ({
                     !collapsedTasks.includes(task.id) &&
                     !isChild
                 ) {
-                    task.children.forEach(child => {
+                    task.children.forEach((child) => {
                         if (!addedIds.has(child.id)) {
                             acc.push(...flattenTasks([child], addedIds, true));
+                            if (child.children && child.children.length > 0 && !collapsedTasks.includes(child.id)) {
+                                acc.push(...flattenTasks(child.children, addedIds, true));
+                            }
                         }
                     });
                 }
@@ -62,8 +54,31 @@ const GanttTable = ({
     };
 
 
-
     const flattenedTasks = flattenTasks(tasks);
+
+    const ganttRows = flattenedTasks.map((task) => {
+        const daysFromStart = (task.startDate.getTime() - earliestDate.getTime()) / (1000 * 60 * 60 * 24);
+        const taskDurationInDays = (task.endDate.getTime() - task.startDate.getTime()) / (1000 * 60 * 60 * 24);
+        const taskWidth = taskDurationInDays / projectDurationInDays * 100;
+
+        let rowCells = [];
+
+        for (let i = 0; i < daysFromStart; i++) {
+            rowCells.push(<td key={`empty-cell-${i}`} className={s.cell}>&nbsp;</td>);
+        }
+
+        rowCells.push(
+            <td
+                key={`task-cell-${task.id}`}
+                className={`${s.cell} ${s.task}`}
+                style={{ width: `${taskWidth}%`, backgroundColor: task.color || '#4f8fff'}}
+            >
+                {task.name}
+            </td>
+        );
+
+        return <Row key={`gantt-row-${task.id}`}>{rowCells}</Row>;
+    });
 
     return (
         <div className={s.container}>
@@ -92,34 +107,13 @@ const GanttTable = ({
                 <table className={s.rowBody}>
                     <thead>
                     <tr>
-                        {monthArray.map((month) => (
-                            <th key={month} colSpan="30">
-                                {dateArray
-                                    .find((date) => date.getMonth() === month)
-                                    ?.toLocaleString("default", { month: "long" })}
-                            </th>
-                        ))}
-                    </tr>
-                    <tr>
                         {dateArray.map((date) => (
                             <th key={date}>{date.toLocaleDateString()}</th>
                         ))}
                     </tr>
                     </thead>
                     <tbody className={s.rowTable}>
-                    {tasks.map(
-                        (task) =>
-                            task.startDate <= latestDate &&
-                            task.endDate >= earliestDate && (
-                                <GanttRow
-                                    key={task.id}
-                                    task={task}
-                                    earliestDate={earliestDate}
-                                    projectDurationInDays={projectDurationInDays}
-                                    dateArray={dateArray}
-                                />
-                            )
-                    )}
+                    {ganttRows}
                     </tbody>
                 </table>
             </div>
