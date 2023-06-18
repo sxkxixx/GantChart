@@ -1,11 +1,7 @@
 import React from 'react';
 import TaskRow from './TaskRow/TaskRow';
 import s from './GanttTable.module.css';
-import styled from 'styled-components';
-
-const Row = styled.tr`
-  height: 30px;
-`;
+import GanttTaskRow from './GanttTaskRow/GanttTaskRow';
 
 const GanttTable = ({
                         tasks,
@@ -28,66 +24,14 @@ const GanttTable = ({
         return currentDate;
     });
 
-    const flattenTasks = (tasks, addedIds = new Set(), isChild = false) => {
-        return tasks.reduce((acc, task) => {
-            if (!addedIds.has(task.id)) {
-                acc.push(task);
-                addedIds.add(task.id);
-                if (
-                    task.children &&
-                    task.children.length > 0 &&
-                    !collapsedTasks.includes(task.id) &&
-                    !isChild
-                ) {
-                    task.children.forEach((child) => {
-                        if (!addedIds.has(child.id)) {
-                            acc.push(...flattenTasks([child], addedIds, true));
-                            if (child.children && child.children.length > 0 && !collapsedTasks.includes(child.id)) {
-                                acc.push(...flattenTasks(child.children, addedIds, true));
-                            }
-                        }
-                    });
-                }
-            }
-            return acc;
-        }, []);
-    };
-
-
-    const flattenedTasks = flattenTasks(tasks);
-
-    const ganttRows = flattenedTasks.map((task) => {
-        const daysFromStart = (task.startDate.getTime() - earliestDate.getTime()) / (1000 * 60 * 60 * 24);
-        const taskDurationInDays = (task.endDate.getTime() - task.startDate.getTime()) / (1000 * 60 * 60 * 24);
-        const taskWidth = taskDurationInDays / projectDurationInDays * 100;
-
-        let rowCells = [];
-
-        for (let i = 0; i < daysFromStart; i++) {
-            rowCells.push(<td key={`empty-cell-${i}`} className={s.cell}>&nbsp;</td>);
-        }
-
-        rowCells.push(
-            <td
-                key={`task-cell-${task.id}`}
-                className={`${s.cell} ${s.task}`}
-                style={{ width: `${taskWidth}%`, backgroundColor: task.color || '#4f8fff'}}
-            >
-                {task.name}
-            </td>
-        );
-
-        return <Row key={`gantt-row-${task.id}`}>{rowCells}</Row>;
-    });
-
     return (
         <div className={s.container}>
             <div className={s.table}>
                 <table>
                     <thead>
-                    <Row>
+                    <tr>
                         <th>Name</th>
-                    </Row>
+                    </tr>
                     </thead>
                     <tbody>
                     {tasks.map((task) => (
@@ -104,18 +48,28 @@ const GanttTable = ({
             </div>
 
             <div className={s.row}>
-                <table className={s.rowBody}>
-                    <thead>
-                    <tr>
-                        {dateArray.map((date) => (
-                            <th key={date}>{date.toLocaleDateString()}</th>
+                <div className={s.tableWrapper}>
+                    <table>
+                        <thead>
+                        <tr>
+                            {dateArray.map((date, index) => (
+                                <th key={index}>{date.toLocaleDateString()}</th>
+                            ))}
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {tasks.map((task) => (
+                            <GanttTaskRow
+                                key={task.id}
+                                task={task}
+                                projectDurationInDays={projectDurationInDays}
+                                collapsedTasks={collapsedTasks}
+                                toggleTaskCollapse={toggleTaskCollapse}
+                            />
                         ))}
-                    </tr>
-                    </thead>
-                    <tbody className={s.rowTable}>
-                    {ganttRows}
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     );

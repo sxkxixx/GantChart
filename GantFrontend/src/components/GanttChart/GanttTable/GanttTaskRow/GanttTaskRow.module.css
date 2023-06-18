@@ -1,0 +1,12 @@
+.cell {
+    height: 41px;
+    width: 30px;
+    border: 1px solid #ccc;
+}
+
+.cellActive {
+    background-color: #0070ff;
+    opacity: 0.5;
+    height: 41px;
+    width: 30px;
+}
