@@ -10,3 +10,11 @@
     height: 41px;
     width: 30px;
 }
+
+.cellMixed {
+    background-color: #faecd3;
+}
+
+.taskIndent {
+    margin-left: 20px;
+}

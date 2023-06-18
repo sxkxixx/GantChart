@@ -8,7 +8,7 @@ const GanttChart = () => {
             id: 1,
             name: 'Task 1',
             startDate: new Date('2023-06-15'),
-            endDate: new Date('2023-06-30'),
+            endDate: new Date('2023-07-27'),
             children: [
                 {
                     id: 2,
@@ -23,10 +23,10 @@ const GanttChart = () => {
                             endDate: new Date('2023-06-15'),
                             children: [
                                 {
-                                    id: 5,
+                                    id: 4,
                                     name: 'Subtask 1.1.1',
-                                    startDate: new Date('2023-06-14'),
-                                    endDate: new Date('2023-06-30'),
+                                    startDate: new Date('2023-06-17'),
+                                    endDate: new Date('2023-06-20'),
                                 },
                             ],
                         },
@@ -34,7 +34,14 @@ const GanttChart = () => {
                 },
             ],
         },
+        {
+            id: 5,
+            name: 'Task 2',
+            startDate: new Date('2023-07-18'),
+            endDate: new Date('2023-08-30'),
+        }
     ]);
+
 
     const [collapsedTasks, setCollapsedTasks] = useState([]);
 
