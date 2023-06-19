@@ -3,7 +3,6 @@ import TaskRow from './TaskRow/TaskRow';
 import s from './GanttTable.module.css';
 import GanttTaskRow from './GanttTaskRow/GanttTaskRow';
 
-
 const GanttTable = ({
                         tasks,
                         indentLevel = 0,
@@ -19,11 +18,14 @@ const GanttTable = ({
     const projectDurationInDays =
         Math.ceil((latestDate.getTime() - earliestDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
 
-    const dateArray = [...Array(projectDurationInDays)].map((_, i) => {
-        const currentDate = new Date(earliestDate);
-        currentDate.setDate(currentDate.getDate() + i);
-        return currentDate;
-    });
+    const startDate = new Date(earliestDate);
+    const endDate = new Date(startDate);
+    endDate.setDate(endDate.getDate() + projectDurationInDays - 1);
+
+    const dateArray = [];
+    for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
+        dateArray.push(new Date(d));
+    }
 
     const groupedDates = dateArray.reduce((acc, date) => {
         const monthString = date.toLocaleString('default', { month: 'long' });
@@ -32,7 +34,9 @@ const GanttTable = ({
         return acc;
     }, {});
 
-    const monthArrays = Object.keys(groupedDates).map((month) => groupedDates[month]);
+    const monthArrays = Object.keys(groupedDates).map(
+        (month) => groupedDates[month]
+    );
 
     return (
         <div className={s.container}>
@@ -71,7 +75,9 @@ const GanttTable = ({
                         </tr>
                         <tr>
                             {dateArray.map((date, index) => (
-                                <th key={index} colSpan="1">{date.toLocaleDateString()}</th>
+                                <th key={index} colSpan="1" style={{ width: '30px' }}>
+                                    {date.getDate()}
+                                </th>
                             ))}
                         </tr>
                         </thead>
@@ -81,6 +87,7 @@ const GanttTable = ({
                                 key={task.id}
                                 task={task}
                                 projectDurationInDays={projectDurationInDays}
+                                startDate={startDate}
                                 collapsedTasks={collapsedTasks}
                                 toggleTaskCollapse={toggleTaskCollapse}
                             />
@@ -93,4 +100,4 @@ const GanttTable = ({
     );
 };
 
-export default GanttTable
+export default GanttTable;

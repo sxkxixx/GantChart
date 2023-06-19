@@ -19,8 +19,8 @@ const GanttChart = () => {
                         {
                             id: 3,
                             name: 'Subtask 1.2',
-                            startDate: new Date('2023-06-12'),
-                            endDate: new Date('2023-06-15'),
+                            startDate: new Date('2023-06-16'),
+                            endDate: new Date('2023-06-18'),
                             children: [
                                 {
                                     id: 4,
