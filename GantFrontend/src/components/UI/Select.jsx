@@ -7,6 +7,7 @@ const StyledSelect = styled.select`
   align-items: center;
   padding: 0 16px;
   gap: 8px;
+  height: 30px;
   width: 248px;
   background: #FFFFFF;
   border: 1px solid #AFBAC3;
@@ -14,7 +15,7 @@ const StyledSelect = styled.select`
 `;
 
 
-const Select = ({ options, onChange }) => (
+const Select = ({ options = [], onChange }) => (
     <StyledSelect onChange={onChange}>
         {options.map((option) => (
             <option key={option.value} value={option.value}>
@@ -22,6 +23,6 @@ const Select = ({ options, onChange }) => (
             </option>
         ))}
     </StyledSelect>
-)
+);
 
 export default Select
