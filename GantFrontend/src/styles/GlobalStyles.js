@@ -72,6 +72,7 @@ const GlobalStyles = createGlobalStyle`
     font-size: inherit;
     color: inherit;
     background-color: transparent;
+    cursor: pointer;
   }
 
   input::-ms-clear {
