@@ -8,7 +8,7 @@ const GanttTaskRow = ({
                           collapsedTasks,
                           indentLevel = 0,
                       }) => {
-    const { id, startDate: taskStartDate, endDate: taskEndDate, children } = task;
+    const { id, planned_start_date: taskStartDate, planned_final_date: taskEndDate, children } = task;
 
     const isCollapsed = collapsedTasks.includes(id);
 
@@ -19,8 +19,12 @@ const GanttTaskRow = ({
     }
 
     const allDates = [];
-    const startIndex = Math.round((taskStartDate - startDate) / (1000 * 60 * 60 * 24));
-    const endIndex = Math.round((taskEndDate - startDate) / (1000 * 60 * 60 * 24));
+    const startIndex = Math.round(
+        (new Date(taskStartDate) - startDate) / (1000 * 60 * 60 * 24)
+    );
+    const endIndex = Math.round(
+        (new Date(taskEndDate) - startDate) / (1000 * 60 *60 * 24)
+    );
 
     for (let i = 0; i < projectDurationInDays; i++) {
         if (i >= startIndex && i <= endIndex) {

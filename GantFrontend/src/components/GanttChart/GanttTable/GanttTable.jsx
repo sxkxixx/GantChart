@@ -9,14 +9,18 @@ const GanttTable = ({
                         collapsedTasks,
                         toggleTaskCollapse,
                     }) => {
-    const allStartDates = tasks.map((task) => task.startDate);
-    const allEndDates = tasks.map((task) => task.endDate);
+    const taskStartDates = tasks.map((task) =>
+        new Date(task.planned_start_date)
+    );
+    const taskEndDates = tasks.map((task) => new Date(task.planned_final_date));
 
-    const earliestDate = new Date(Math.min(...allStartDates));
-    const latestDate = new Date(Math.max(...allEndDates));
+    const earliestDate = new Date(Math.min(...taskStartDates));
+    const latestDate = new Date(Math.max(...taskEndDates));
 
     const projectDurationInDays =
-        Math.ceil((latestDate.getTime() - earliestDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+        Math.ceil(
+            (latestDate.getTime() - earliestDate.getTime()) / (1000 * 60 * 60 * 24)
+        ) + 1;
 
     const startDate = new Date(earliestDate);
     const endDate = new Date(startDate);
@@ -28,7 +32,7 @@ const GanttTable = ({
     }
 
     const groupedDates = dateArray.reduce((acc, date) => {
-        const monthString = date.toLocaleString('default', { month: 'long' });
+        const monthString = date.toLocaleString("default", { month: "long" });
         acc[monthString] = acc[monthString] || [];
         acc[monthString].push(date);
         return acc;

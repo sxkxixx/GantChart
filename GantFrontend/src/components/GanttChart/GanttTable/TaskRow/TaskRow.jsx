@@ -82,7 +82,7 @@ const TaskRow = ({
                         {task.name}
                     </Title>
                     <Right>
-                        {!hasChildren && <input type="checkbox" checked={task.completed} onChange={() => {}}/>}
+                        {!hasChildren && <input type="checkbox" checked={task.is_on_kanban} onChange={() => {}}/>}
                         <Buttons>
                             <button onClick={onAddButtonClick}><Add/></button>
                         </Buttons>
