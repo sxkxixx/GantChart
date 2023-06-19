@@ -18,13 +18,13 @@ const GanttChart = () => {
                     children: [
                         {
                             id: 3,
-                            name: 'Subtask 1.2',
+                            name: 'Subtask 1.1.1',
                             startDate: new Date('2023-06-16'),
                             endDate: new Date('2023-06-18'),
                             children: [
                                 {
                                     id: 4,
-                                    name: 'Subtask 1.1.1',
+                                    name: 'Subtask 1.1.1.1',
                                     startDate: new Date('2023-06-17'),
                                     endDate: new Date('2023-06-20'),
                                 },
@@ -32,13 +32,19 @@ const GanttChart = () => {
                         },
                     ],
                 },
+                {
+                    id: 6,
+                    name: 'Subtask 1.2',
+                    startDate: new Date('2023-06-17'),
+                    endDate: new Date('2023-06-30'),
+                }
             ],
         },
         {
             id: 5,
             name: 'Task 2',
-            startDate: new Date('2023-07-18'),
-            endDate: new Date('2023-08-30'),
+            startDate: new Date('2023-06-12'),
+            endDate: new Date('2023-06-14'),
         }
     ]);
 

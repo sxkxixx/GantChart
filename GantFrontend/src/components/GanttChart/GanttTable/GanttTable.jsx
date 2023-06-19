@@ -89,7 +89,6 @@ const GanttTable = ({
                                 projectDurationInDays={projectDurationInDays}
                                 startDate={startDate}
                                 collapsedTasks={collapsedTasks}
-                                toggleTaskCollapse={toggleTaskCollapse}
                             />
                         ))}
                         </tbody>

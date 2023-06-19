@@ -5,11 +5,10 @@ const GanttTaskRow = ({
                           task,
                           projectDurationInDays,
                           startDate,
-                          toggleTaskCollapse,
                           collapsedTasks,
                           indentLevel = 0,
                       }) => {
-    const {id, name, startDate: taskStartDate, endDate: taskEndDate, children} = task;
+    const {id, startDate: taskStartDate, endDate: taskEndDate, children} = task;
 
     const isCollapsed = collapsedTasks.includes(id);
 
@@ -29,10 +28,6 @@ const GanttTaskRow = ({
         }
     }
 
-    const handleCollapseToggle = () => {
-        toggleTaskCollapse(id);
-    };
-
     const allDates = [];
     const startIndex = Math.round((taskStartDate - startDate) / (1000 * 60 * 60 * 24));
     const endIndex = Math.round((taskEndDate - startDate) / (1000 * 60 * 60 * 24));
@@ -47,7 +42,7 @@ const GanttTaskRow = ({
 
     return (
         <>
-            <tr key={id} onClick={handleCollapseToggle}>
+            <tr key={id}>
                 {allDates.map((date, index) => {
                     const dateCellStyle = getCellStyle(date);
                     return (
@@ -70,7 +65,6 @@ const GanttTaskRow = ({
                         projectDurationInDays={projectDurationInDays}
                         startDate={startDate}
                         collapsedTasks={collapsedTasks}
-                        toggleTaskCollapse={toggleTaskCollapse}
                         indentLevel={currentIndentLevel}
                     />
                 ))}
