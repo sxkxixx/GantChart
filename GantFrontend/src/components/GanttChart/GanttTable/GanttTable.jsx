@@ -55,6 +55,7 @@ const GanttTable = ({
                             indentLevel={indentLevel}
                             collapsedTasks={collapsedTasks}
                             toggleTaskCollapse={toggleTaskCollapse}
+                            onAddButtonClick={() => console.log('Add button clicked')}
                         />
                     ))}
                     </tbody>

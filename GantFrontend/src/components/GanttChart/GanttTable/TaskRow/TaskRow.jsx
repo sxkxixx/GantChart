@@ -6,6 +6,7 @@ const TaskRow = ({
                      indentLevel = 0,
                      collapsedTasks = [],
                      toggleTaskCollapse,
+                     onAddButtonClick,
                  }) => {
     const hasChildren = task.children && task.children.length > 0;
 
@@ -17,13 +18,17 @@ const TaskRow = ({
                 className={`${s.taskRow}${isCollapsed ? ` ${s.collapsed}` : ''}`}
                 onClick={() => toggleTaskCollapse(task.id)}
             >
-                <td style={{ paddingLeft: `${indentLevel * 20}px` }}>
+                <td style={{paddingLeft: `${indentLevel * 20}px`}}>
                     {hasChildren && (
                         <span className={s.collapseButton}>
               {isCollapsed ? '▶' : '▼'}
             </span>
                     )}
                     {task.name}
+                    {!hasChildren &&
+                        <input type="checkbox"/>
+                    }
+                    <button onClick={onAddButtonClick}>Add</button>
                 </td>
             </tr>
 
@@ -36,6 +41,7 @@ const TaskRow = ({
                         indentLevel={indentLevel + 1}
                         collapsedTasks={collapsedTasks}
                         toggleTaskCollapse={toggleTaskCollapse}
+                        onAddButtonClick={onAddButtonClick}
                     />
                 ))}
         </>
