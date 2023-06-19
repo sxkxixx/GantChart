@@ -17,7 +17,6 @@ const GanttHeader = () => {
         getAllProjects()
             .then((response) => {
                 setProjectList(response);
-                console.log(response)
             })
             .catch((error) => {
                 console.log(error);
@@ -26,7 +25,6 @@ const GanttHeader = () => {
         getAllTeams ()
             .then((response) => {
                 setTeamsList(response);
-                console.log(response)
             })
             .catch((error) => {
                 console.log(error);
@@ -35,13 +33,15 @@ const GanttHeader = () => {
 
     return (
         <div className={s.container}>
-            <div className={s.selects}>
-                <Select options={projectList}/>
-                <Select options={projectList}/>
-                <Select options={teamList}/>
-            </div>
-            <div className={s.buttons}>
-                <Button children={"создать задачу"}/>
+            <div className={s.elements}>
+                <div className={s.selects}>
+                    <Select options={projectList}/>
+                    <Select options={projectList}/>
+                    <Select options={teamList}/>
+                </div>
+                <div className={s.buttons}>
+                    <Button children={"создать задачу"}/>
+                </div>
             </div>
         </div>
     );

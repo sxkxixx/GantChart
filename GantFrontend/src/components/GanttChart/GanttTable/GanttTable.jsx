@@ -9,9 +9,7 @@ const GanttTable = ({
                         collapsedTasks,
                         toggleTaskCollapse,
                     }) => {
-    const taskStartDates = tasks.map((task) =>
-        new Date(task.planned_start_date)
-    );
+    const taskStartDates = tasks.map((task) => new Date(task.planned_start_date));
     const taskEndDates = tasks.map((task) => new Date(task.planned_final_date));
 
     const earliestDate = new Date(Math.min(...taskStartDates));
