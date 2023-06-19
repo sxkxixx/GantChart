@@ -8,7 +8,7 @@ const GanttTaskRow = ({
                           collapsedTasks,
                           indentLevel = 0,
                       }) => {
-    const {id, startDate: taskStartDate, endDate: taskEndDate, children} = task;
+    const { id, startDate: taskStartDate, endDate: taskEndDate, children } = task;
 
     const isCollapsed = collapsedTasks.includes(id);
 
@@ -16,16 +16,6 @@ const GanttTaskRow = ({
 
     if (children && !isCollapsed) {
         currentIndentLevel++;
-    }
-
-    const getCellStyle = (date) => {
-        if (taskStartDate && taskEndDate) {
-            if (date >= taskStartDate && date <= taskEndDate) {
-                return s.cellActive;
-            } else {
-                return s.emptyCell;
-            }
-        }
     }
 
     const allDates = [];
@@ -40,22 +30,54 @@ const GanttTaskRow = ({
         }
     }
 
+    const getCellStyle = (dateIndex) => {
+        if (taskStartDate && taskEndDate) {
+            if (dateIndex >= startIndex && dateIndex <= endIndex) {
+                return s.cellActive;
+            }
+        }
+        return null;
+    };
+
+    const dateCells = [];
+    let currentStyle = null;
+    let currentColSpan = 0;
+    for (let i = 0; i < allDates.length; i++) {
+        const date = allDates[i];
+        const style = getCellStyle(i);
+        if (style !== currentStyle || date === null) {
+            if (currentColSpan > 0) {
+                dateCells.push(
+                    <td
+                        key={`${id}-${i - currentColSpan}`}
+                        colSpan={currentColSpan}
+                        className={`${currentStyle} ${
+                            currentIndentLevel > 0 ? s.ganttCellIndent : ''
+                        }`}
+                    ></td>
+                );
+            }
+            currentStyle = style;
+            currentColSpan = 1;
+        } else {
+            currentColSpan++;
+        }
+    }
+    if (currentColSpan > 0) {
+        dateCells.push(
+            <td
+                key={`${id}-${allDates.length - currentColSpan}`}
+                colSpan={currentColSpan}
+                className={`${currentStyle} ${
+                    currentIndentLevel > 0 ? s.ganttCellIndent : ''
+                }`}
+            ></td>
+        );
+    }
+
     return (
         <>
-            <tr key={id}>
-                {allDates.map((date, index) => {
-                    const dateCellStyle = getCellStyle(date);
-                    return (
-                        <td
-                            key={`${id}-${index}`}
-                            colSpan="1"
-                            className={`${dateCellStyle} ${currentIndentLevel > 0 ? s.ganttCellIndent : ''} ${date ? '' : s.emptyDateCell}`}
-                            style={{paddingLeft: undefined}}
-                        >
-                        </td>
-                    );
-                })}
-            </tr>
+            <tr key={id}>{dateCells}</tr>
             {children &&
                 !isCollapsed &&
                 children.map((childTask) => (

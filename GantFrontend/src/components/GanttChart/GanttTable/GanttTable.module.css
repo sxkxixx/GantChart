@@ -22,8 +22,8 @@
 }
 
 .table th{
-    padding: 32px 0;
-    height: 30px;
+    padding: 31.1px 0;
+    /*height: 28px;*/
     text-align: center;
     border: 1px solid black;
 }
