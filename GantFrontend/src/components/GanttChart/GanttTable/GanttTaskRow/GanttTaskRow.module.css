@@ -5,10 +5,17 @@
 }
 
 .cellActive {
-    background-color: #0070ff;
-    opacity: 0.5;
+    background-color: transparent;
     height: 42px;
     width: 30px;
+}
+
+.cellColor1 {
+    background-color: #4f89ff;
+}
+
+.cellColor2 {
+    background-color: #fab44c;
 }
 
 .cellMixed {

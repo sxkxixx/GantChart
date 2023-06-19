@@ -31,12 +31,20 @@ const GanttTaskRow = ({
     }
 
     const getCellStyle = (dateIndex) => {
+        let colorClass = '';
+        if (indentLevel === 0 || indentLevel === 1) {
+            colorClass = s.cellColor1;
+        } else {
+            colorClass = s.cellColor2;
+        }
+
         if (taskStartDate && taskEndDate) {
             if (dateIndex >= startIndex && dateIndex <= endIndex) {
-                return s.cellActive;
+                return `${s.cellActive} ${colorClass}`;
             }
         }
-        return null;
+
+        return colorClass;
     };
 
     const dateCells = [];
@@ -45,7 +53,7 @@ const GanttTaskRow = ({
     for (let i = 0; i < allDates.length; i++) {
         const date = allDates[i];
         const style = getCellStyle(i);
-        if (style !== currentStyle || date === null) {
+        if (style !== currentStyle) {
             if (currentColSpan > 0) {
                 dateCells.push(
                     <td
@@ -62,15 +70,25 @@ const GanttTaskRow = ({
         } else {
             currentColSpan++;
         }
+
+        if (date === null) {
+            dateCells.push(
+                <td
+                    key={`${id}-${i}`}
+                    colSpan="1"
+                    className={`${s.cell} ${currentIndentLevel > 0 ? s.ganttCellIndent : ''}`}
+                ></td>
+            );
+            currentColSpan = 0;
+        }
     }
+
     if (currentColSpan > 0) {
         dateCells.push(
             <td
                 key={`${id}-${allDates.length - currentColSpan}`}
                 colSpan={currentColSpan}
-                className={`${currentStyle} ${
-                    currentIndentLevel > 0 ? s.ganttCellIndent : ''
-                }`}
+                className={`${currentStyle} ${currentIndentLevel > 0 ? s.ganttCellIndent : ''}`}
             ></td>
         );
     }
