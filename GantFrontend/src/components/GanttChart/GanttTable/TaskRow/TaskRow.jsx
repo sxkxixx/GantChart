@@ -5,43 +5,57 @@ import {ReactComponent as Path} from '../../../../assets/img/path.svg'
 import {ReactComponent as Vector} from '../../../../assets/img/vector.svg'
 
 const StyledTaskRow = styled.tr`
-    & td {
-        display: flex;
-        justify-content: space-between;
-        height: 42px;
-        width: 100%;
-    }
+  & td {
+    display: flex;
+    justify-content: space-between;
+    height: 42px;
+    width: 100%;
+  }
 `;
 
 const Title = styled.div`
-    display: flex;
-    flex-direction: row;
-    padding-left: 8px;
+  display: flex;
+  flex-direction: row;
+  padding-left: 8px;
 `;
 
 const CollapseButton = styled.span`
-    margin-right: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
+  margin-right: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
 `;
 
 const Right = styled.div`
-    display: flex;
-    flex-direction: row;
-    height: 100%;
-    align-items: center;
-    justify-content: center;
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+
+  input[type=checkbox] {
+    position: relative;
+    width: 16px;
+    height: 16px;
+    border: 2px solid #AFBAC3;
+    border-radius: 5px;
+
+    &:checked {
+      background: #56C568;
+      border-radius: 5px;
+    }
+  }
 `;
 
+
 const Buttons = styled.div`
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-    width: 40px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 40px;
 `;
 
 const TaskRow = ({
@@ -68,7 +82,7 @@ const TaskRow = ({
                         {task.name}
                     </Title>
                     <Right>
-                        {!hasChildren && <input type="checkbox"/>}
+                        {!hasChildren && <input type="checkbox" checked={task.completed} onChange={() => {}}/>}
                         <Buttons>
                             <button onClick={onAddButtonClick}><Add/></button>
                         </Buttons>
