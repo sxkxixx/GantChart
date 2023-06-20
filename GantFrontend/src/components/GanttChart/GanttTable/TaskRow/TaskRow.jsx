@@ -5,6 +5,9 @@ import {ReactComponent as Path} from '../../../../assets/img/path.svg'
 import {ReactComponent as Vector} from '../../../../assets/img/vector.svg'
 import Check from '../../../../assets/img/check.svg'
 import Modal from "../../../TaskForm/Modal/Modal";
+import {kanbanView} from "../../../../services/task";
+import {useRecoilState, useRecoilValue} from "recoil";
+import {tasksState} from "../../../../store/atom";
 
 const StyledTaskRow = styled.tr`
   display: block;
@@ -103,7 +106,6 @@ const Right = styled.div`
 
 `;
 
-
 const Buttons = styled.div`
   display: flex;
   flex-direction: row;
@@ -121,15 +123,28 @@ const TaskRow = ({
                      onAddButtonClick,
                  }) => {
     const hasChildren = task.children && task.children.length > 0;
-
+    const parentId = task.id || null
     const isCollapsed = collapsedTasks.includes(task.id);
-
     const [formType, setFormType] = useState('')
     const [showModal, setShowModal] = useState(false)
+    const [tasks, setTasks] = useRecoilState(tasksState);
+
 
     const openForm = (type) => {
         setFormType(type);
         setShowModal(true);
+    };
+
+    const toggleKanbanView = async (id, isOnKanban) => {
+        try {
+            await kanbanView(id);
+            const updatedTasks = tasks.map((task) =>
+                task.id === id ? {...task, is_on_kanban: !isOnKanban} : task
+            );
+            setTasks(updatedTasks);
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     return (
@@ -145,10 +160,12 @@ const TaskRow = ({
                         <span style={{cursor: "pointer"}} onClick={()=>openForm('view')}>{task.name}</span>
                     </Title>
                     <Right>
-                        {!hasChildren && <input type="checkbox" checked={task.is_on_kanban} onChange={() => {}}/>}
+                        {!hasChildren && <input type="checkbox"
+                                                checked={task.is_on_kanban}
+                                                onChange={() => toggleKanbanView(task.id, task.is_on_kanban)}
+                        />}
                         <Buttons>
                             <button onClick={()=>openForm('create')}><Add/></button>
-                            <Modal showModal={showModal} setShowModal={setShowModal} formType={formType} setFormType={setFormType}/>
                         </Buttons>
                     </Right>
                 </td>
@@ -166,6 +183,7 @@ const TaskRow = ({
                         onAddButtonClick={onAddButtonClick}
                     />
                 ))}
+            <Modal parent={parentId} showModal={showModal} setShowModal={setShowModal} formType={formType} setFormType={setFormType}/>
         </>
     );
 };
