@@ -141,7 +141,6 @@ const TaskRow = ({
                      onAddButtonClick,
                  }) => {
     const hasChildren = task.children && task.children.length > 0;
-    const parentId = task.id || null
     const isCollapsed = collapsedTasks.includes(task.id);
     const [formType, setFormType] = useState('')
     const [showModal, setShowModal] = useState(false)
@@ -209,7 +208,7 @@ const TaskRow = ({
                         onAddButtonClick={onAddButtonClick}
                     />
                 ))}
-            <Modal id={task.id} parent={parentId} showModal={showModal} setShowModal={setShowModal} formType={formType} setFormType={setFormType}/>
+            <Modal parentId={task} showModal={showModal} setShowModal={setShowModal} formType={formType} setFormType={setFormType}/>
         </>
     );
 };

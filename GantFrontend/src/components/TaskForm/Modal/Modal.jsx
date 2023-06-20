@@ -3,9 +3,9 @@ import s from './Modal.module.css'
 import {ReactComponent as Close} from '../../../assets/img/closeModal.svg'
 import CreateForm from "../CreateForm/CreateForm";
 import EditForm from "../EditForm/EditForm";
-import ViewForm from "../UpdateForm/ViewForm";
+import ViewForm from "../ViewForm/ViewForm";
 
-const Modal = ({id, parentId , showModal, setShowModal, formType, setFormType}) => {
+const Modal = ({parentId, showModal, setShowModal, formType, setFormType}) => {
     const closeForm = () =>{
         setFormType('')
         setShowModal(false)
@@ -18,8 +18,8 @@ const Modal = ({id, parentId , showModal, setShowModal, formType, setFormType}) 
                     <div className={s.modal} onClick={e => e.stopPropagation()}>
                         <button className={s.close} onClick={closeForm}><Close/></button>
                         {formType === 'create' && (<CreateForm parentId={parentId}/>)}
-                        {formType === 'edit' && (<EditForm id={id} parentId={parentId}/>)}
-                        {formType === 'view' && (<ViewForm id={id} parentId={parentId}/>)}
+                        {formType === 'edit' && (<EditForm parentId={parentId}/>)}
+                        {formType === 'view' && (<ViewForm parentId={parentId}/>)}
                     </div>
                 </div>
             ) : null}

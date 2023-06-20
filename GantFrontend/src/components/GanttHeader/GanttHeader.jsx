@@ -10,6 +10,7 @@ import Modal from "../TaskForm/Modal/Modal";
 const GanttHeader = () => {
     const [formType, setFormType] = useState('')
     const [showModal, setShowModal] = useState(false)
+    const parentId = null
 
     const projectList = useRecoilValue(projectsList)
     const setProjectList = useSetRecoilState(projectsList)
@@ -52,7 +53,7 @@ const GanttHeader = () => {
                     <Button children={"создать задачу"} onClick={()=>openForm('create')}/>
                 </div>
             </div>
-            <Modal showModal={showModal} setShowModal={setShowModal} formType={formType} setFormType={setFormType}/>
+            <Modal parentId={parentId} showModal={showModal} setShowModal={setShowModal} formType={formType} setFormType={setFormType}/>
         </div>
     );
 };
