@@ -1,17 +1,26 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import s from './GanttHeader.module.css'
 import Select from "../UI/Select";
 import Button from "../UI/Button";
 import {useRecoilValue, useSetRecoilState} from "recoil";
 import {projectsList, teamsList} from "../../store/atom";
 import {getAllProjects, getAllTeams} from "../../services/list";
+import Modal from "../TaskForm/Modal/Modal";
 
 const GanttHeader = () => {
+    const [formType, setFormType] = useState('')
+    const [showModal, setShowModal] = useState(false)
+
     const projectList = useRecoilValue(projectsList)
     const setProjectList = useSetRecoilState(projectsList)
 
     const teamList = useRecoilValue(teamsList)
     const setTeamsList = useSetRecoilState(teamsList)
+
+    const openForm = (type) => {
+        setFormType(type);
+        setShowModal(true);
+    };
 
     useEffect(()=>{
         getAllProjects()
@@ -40,9 +49,10 @@ const GanttHeader = () => {
                     <Select options={teamList}/>
                 </div>
                 <div className={s.buttons}>
-                    <Button children={"создать задачу"}/>
+                    <Button children={"создать задачу"} onClick={()=>openForm('create')}/>
                 </div>
             </div>
+            <Modal showModal={showModal} setShowModal={setShowModal} formType={formType} setFormType={setFormType}/>
         </div>
     );
 };

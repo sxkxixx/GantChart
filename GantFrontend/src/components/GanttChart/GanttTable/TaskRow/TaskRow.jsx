@@ -1,8 +1,9 @@
-import React from 'react';
+import React, {useState} from 'react';
 import styled from 'styled-components';
 import {ReactComponent as Add} from '../../../../assets/img/addButton.svg'
 import {ReactComponent as Path} from '../../../../assets/img/path.svg'
 import {ReactComponent as Vector} from '../../../../assets/img/vector.svg'
+import Modal from "../../../TaskForm/Modal/Modal";
 
 const StyledTaskRow = styled.tr`
   & td {
@@ -69,6 +70,14 @@ const TaskRow = ({
 
     const isCollapsed = collapsedTasks.includes(task.id);
 
+    const [formType, setFormType] = useState('')
+    const [showModal, setShowModal] = useState(false)
+
+    const openForm = (type) => {
+        setFormType(type);
+        setShowModal(true);
+    };
+
     return (
         <>
             <StyledTaskRow>
@@ -79,12 +88,13 @@ const TaskRow = ({
                                 {isCollapsed ? <Path /> : <Vector />}
                             </CollapseButton>
                         )}
-                        {task.name}
+                        <span style={{cursor: "pointer"}} onClick={()=>openForm('view')}>{task.name}</span>
                     </Title>
                     <Right>
                         {!hasChildren && <input type="checkbox" checked={task.is_on_kanban} onChange={() => {}}/>}
                         <Buttons>
-                            <button onClick={onAddButtonClick}><Add/></button>
+                            <button onClick={()=>openForm('create')}><Add/></button>
+                            <Modal showModal={showModal} setShowModal={setShowModal} formType={formType} setFormType={setFormType}/>
                         </Buttons>
                     </Right>
                 </td>
