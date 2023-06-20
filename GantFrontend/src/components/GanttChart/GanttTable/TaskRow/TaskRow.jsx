@@ -3,20 +3,24 @@ import styled from 'styled-components';
 import {ReactComponent as Add} from '../../../../assets/img/addButton.svg'
 import {ReactComponent as Path} from '../../../../assets/img/path.svg'
 import {ReactComponent as Vector} from '../../../../assets/img/vector.svg'
+import Check from '../../../../assets/img/check.svg'
 import Modal from "../../../TaskForm/Modal/Modal";
 
 const StyledTaskRow = styled.tr`
+  display: block;
+  height: 42px;
   & td {
     display: flex;
     justify-content: space-between;
-    height: 42px;
-    width: 100%;
+    height: 100%;
+    padding: 0;
   }
 `;
 
 const Title = styled.div`
   display: flex;
   flex-direction: row;
+  align-items: center;
   padding-left: 8px;
 `;
 
@@ -31,22 +35,72 @@ const CollapseButton = styled.span`
 const Right = styled.div`
   display: flex;
   flex-direction: row;
-  height: 100%;
   align-items: center;
   justify-content: center;
+  width: 120px;
+  gap: 15px;
+  height: 100%;
+  
+  button{
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease-in-out;
+  }
 
-  input[type=checkbox] {
-    position: relative;
-    width: 16px;
-    height: 16px;
+  button:hover{
+    transform: scale(1.2);
+  }
+
+  button svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  input[type="checkbox"] {
+    appearance: none;
+    width: 18px;
+    height: 18px;
     border: 2px solid #AFBAC3;
     border-radius: 5px;
-
-    &:checked {
-      background: #56C568;
-      border-radius: 5px;
-    }
+    transition: all 0.2s ease-in-out;
   }
+
+  input[type="checkbox"]:checked {
+    border: transparent;
+  }
+
+  input[type="checkbox"]:checked::before {
+    padding: 0 2px;
+    content: url(${Check});
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+    color: #fff;
+    background-color: #56C568;
+    background-position: center;
+    transition: all 0.2s ease-in-out;
+  }
+  
+  input[type="checkbox"]:hover {
+    border-color: #56C568;
+  }
+
+  input[type="checkbox"]:hover:checked {
+    background-color: #56C568;
+  }
+
+  input[type="checkbox"]:hover:checked::before {
+    transform: scale(1.2);
+  }
+
+  input[type="checkbox"]:hover:not(:checked) {
+    transform: scale(1.2);
+  }
+
 `;
 
 

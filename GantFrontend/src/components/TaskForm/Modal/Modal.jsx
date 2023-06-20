@@ -16,7 +16,7 @@ const Modal = ({ showModal, setShowModal, formType, setFormType}) => {
             {showModal ? (
                 <div className={s.container} onClick={() => setShowModal(false)}>
                     <div className={s.modal} onClick={e => e.stopPropagation()}>
-                        <button onClick={closeForm}><Close/></button>
+                        <button className={s.close} onClick={closeForm}><Close/></button>
                         {formType === 'create' && (<CreateForm/>)}
                         {formType === 'edit' && (<EditForm/>)}
                         {formType === 'view' && (<ViewForm/>)}

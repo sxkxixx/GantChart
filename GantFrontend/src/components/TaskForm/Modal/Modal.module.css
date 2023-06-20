@@ -21,6 +21,12 @@
     border-radius: 5px;
     display: flex;
     flex-direction: column;
+    position: relative;
 }
 
+.close{
+    position: absolute;
+    top: 16px;
+    right: 24px;
+}
 
