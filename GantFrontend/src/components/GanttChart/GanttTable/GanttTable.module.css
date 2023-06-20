@@ -13,6 +13,10 @@
     overflow: auto;
 }
 
+.collapse{
+    border-collapse: collapse;
+}
+
 .table td{
     display: flex;
     flex-direction: row;
@@ -22,8 +26,7 @@
 }
 
 .table th{
-    padding: 31.1px 0;
-    /*height: 28px;*/
+    padding: 30px 0;
     text-align: center;
     border: 1px solid black;
 }

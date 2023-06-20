@@ -43,7 +43,7 @@ const GanttTable = ({
     return (
         <div className={s.container}>
             <div className={s.table}>
-                <table>
+                <table className={s.collapse}>
                     <thead>
                     <tr>
                         <th>Задачи</th>
@@ -66,7 +66,7 @@ const GanttTable = ({
 
             <div className={s.row}>
                 <div className={s.tableWrapper}>
-                    <table>
+                    <table className={s.collapse}>
                         <thead>
                         <tr>
                             {monthArrays.map((monthArray, index) => (
