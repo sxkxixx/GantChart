@@ -11,15 +11,6 @@ export const getAllTask = async () => {
     }
 }
 
-export const getIdTask = async (id) => {
-    try {
-        const response = await api.get(`/api/v1/gant/task/${id}`)
-        return response.data
-    } catch (e) {
-        console.log(e)
-    }
-}
-
 export const createTask = async (task, stages) => {
     const createTask = {
         parent_id: task.parent || null,
@@ -45,16 +36,33 @@ export const createTask = async (task, stages) => {
     }
 }
 
+export const getIdTask = async (id) => {
+    try {
+        const response = await api.get(`/api/v1/gant/task/${id}`)
+        return response.data
+    } catch (e) {
+        console.log(e)
+    }
+}
+
 export const updateIdTask = async (id, task, stages) => {
     const data = {
         task: task,
         stages: stages
     }
-    const response = await api.post(`/api/v1/gant/task/${id}/edit_dates`, data)
+    try {
+        await api.post(`/api/v1/gant/task/${id}/edit_dates`, data)
+    }catch (e){
+        console.log(e)
+    }
 }
 
 export const deleteIdTask = async (id) => {
-    const response = await api.delete(`/api/v1/gant/task/${id}/del`)
+    try {
+        await api.delete(`/api/v1/gant/task/${id}/del`)
+    }catch (e){
+        console.log(e)
+    }
 }
 
 

@@ -42,7 +42,7 @@ const Right = styled.div`
   justify-content: center;
   width: 120px;
   gap: 15px;
-  height: 100%;
+  height: 42px;
   
   button{
     width: 22px;
@@ -104,6 +104,24 @@ const Right = styled.div`
     transform: scale(1.2);
   }
 
+  .banner {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    right: 100%;
+    top: -20px;
+    left: -200px;
+    height: 30px;
+    background-color: #f8d7da;
+    color: #721c24;
+    font-size: 12px;
+    padding: 2px 4px;
+    border-radius: 5px;
+    white-space: nowrap;
+    z-index: 1;
+  }
+
 `;
 
 const Buttons = styled.div`
@@ -128,7 +146,7 @@ const TaskRow = ({
     const [formType, setFormType] = useState('')
     const [showModal, setShowModal] = useState(false)
     const [tasks, setTasks] = useRecoilState(tasksState);
-
+    const [isHovered, setIsHovered] = useState(false);
 
     const openForm = (type) => {
         setFormType(type);
@@ -160,10 +178,18 @@ const TaskRow = ({
                         <span style={{cursor: "pointer"}} onClick={()=>openForm('view')}>{task.name}</span>
                     </Title>
                     <Right>
-                        {!hasChildren && <input type="checkbox"
-                                                checked={task.is_on_kanban}
-                                                onChange={() => toggleKanbanView(task.id, task.is_on_kanban)}
-                        />}
+                        {!hasChildren && (
+                            <div style={{position: 'relative'}}>
+                                <input
+                                    type="checkbox"
+                                    checked={task.is_on_kanban}
+                                    onChange={() => toggleKanbanView(task.id, task.is_on_kanban)}
+                                    onMouseEnter={() => setIsHovered(true)}
+                                    onMouseLeave={() => setIsHovered(false)}
+                                />
+                                {isHovered && !task.is_on_kanban && <div className="banner">Отобразить на канбане</div>}
+                            </div>
+                        )}
                         <Buttons>
                             <button onClick={()=>openForm('create')}><Add/></button>
                         </Buttons>
@@ -183,7 +209,7 @@ const TaskRow = ({
                         onAddButtonClick={onAddButtonClick}
                     />
                 ))}
-            <Modal parent={parentId} showModal={showModal} setShowModal={setShowModal} formType={formType} setFormType={setFormType}/>
+            <Modal id={task.id} parent={parentId} showModal={showModal} setShowModal={setShowModal} formType={formType} setFormType={setFormType}/>
         </>
     );
 };

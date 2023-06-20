@@ -1,7 +1,7 @@
 import React from 'react';
 import s from './EditForm.module.css'
 
-const EditForm = () => {
+const EditForm = ({parentId,id}) => {
     return (
         <div>
             РЕДАКТИРОВАТЬ ЗАДАЧУ

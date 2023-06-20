@@ -1,7 +1,7 @@
 import React from 'react';
 import s from './ViewForm.module.css'
 
-const ViewForm = () => {
+const ViewForm = ({parentId,id}) => {
     return (
         <div>
             ОБЗОР ЗАДАЧИ
