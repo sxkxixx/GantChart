@@ -22,13 +22,14 @@ const InputField = styled.input`
   `}
 `;
 
-const Text = ({ width, height, disabled = false, ...rest }) => (
+const Text = ({ onChange ,width, height, disabled = false, ...rest }) => (
     <InputField
         width={width}
         height={height}
         disabled={disabled}
         {...rest}
         placeholder="Название задачи"
+        onChange={onChange}
     />
 );
 export default Text;

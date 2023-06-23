@@ -21,20 +21,27 @@ export const createTask = async (task, stages) => {
         planned_start_date: task.startDate,
         planned_final_date: task.finalDate,
         deadline: task.deadline,
-        executor_id: task.executorId
+        executor_id: task.executorId,
+    };
+
+    let stagesList = [];
+
+    if (Array.isArray(stages)) {
+        stagesList = stages.map((stage) => ({ description: stage }));
     }
+
     const data = {
         task: createTask,
-        stages: stages.map((stage) => ({
-            description: stage
-        }))
-    }
+        stages: stagesList,
+    };
+
     try {
-        await api.post('/api/v1/gant/task/create', data)
-    }catch (e){
-        console.log(e)
+        await api.post('/api/v1/gant/task/create', data);
+    } catch (e) {
+        console.log(e);
     }
-}
+};
+
 
 export const getIdTask = async (id) => {
     try {
