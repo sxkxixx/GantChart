@@ -8,130 +8,11 @@ import Modal from "../../../TaskForm/Modal/Modal";
 import {kanbanView} from "../../../../services/task";
 import {useRecoilState, useRecoilValue} from "recoil";
 import {tasksState} from "../../../../store/atom";
-
-const StyledTaskRow = styled.tr`
-  display: block;
-  height: 42px;
-  & td {
-    display: flex;
-    justify-content: space-between;
-    height: 100%;
-    padding: 0;
-  }
-`;
-
-const Title = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  padding-left: 8px;
-`;
-
-const CollapseButton = styled.span`
-  margin-right: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-`;
-
-const Right = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  width: 120px;
-  gap: 15px;
-  height: 42px;
-  
-  button{
-    width: 22px;
-    height: 22px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s ease-in-out;
-  }
-
-  button:hover{
-    transform: scale(1.2);
-  }
-
-  button svg {
-    width: 22px;
-    height: 22px;
-  }
-
-  input[type="checkbox"] {
-    appearance: none;
-    width: 18px;
-    height: 18px;
-    border: 2px solid #AFBAC3;
-    border-radius: 5px;
-    transition: all 0.2s ease-in-out;
-  }
-
-  input[type="checkbox"]:checked {
-    border: transparent;
-  }
-
-  input[type="checkbox"]:checked::before {
-    padding: 0 2px;
-    content: url(${Check});
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 5px;
-    color: #fff;
-    background-color: #56C568;
-    background-position: center;
-    transition: all 0.2s ease-in-out;
-  }
-  
-  input[type="checkbox"]:hover {
-    border-color: #56C568;
-  }
-
-  input[type="checkbox"]:hover:checked {
-    background-color: #56C568;
-  }
-
-  input[type="checkbox"]:hover:checked::before {
-    transform: scale(1.2);
-  }
-
-  input[type="checkbox"]:hover:not(:checked) {
-    transform: scale(1.2);
-  }
-
-  .banner {
-    position: absolute;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    right: 100%;
-    top: -20px;
-    left: -200px;
-    height: 30px;
-    background-color: #f8d7da;
-    color: #721c24;
-    font-size: 12px;
-    padding: 2px 4px;
-    border-radius: 5px;
-    white-space: nowrap;
-    z-index: 1;
-  }
-
-`;
-
-const Buttons = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  width: 40px;
-`;
+import {StyledTaskRow} from "./UI/StyledTaskRow";
+import {Title} from "./UI/Title";
+import {CollapseButton} from "./UI/CollapseButton";
+import {Right} from "./UI/Right";
+import {Buttons} from './UI/Buttons';
 
 const TaskRow = ({
                      task,
@@ -158,11 +39,33 @@ const TaskRow = ({
             const updatedTasks = tasks.map((task) =>
                 task.id === id ? {...task, is_on_kanban: !isOnKanban} : task
             );
-            setTasks(updatedTasks);
+            setTasks(updatedTasks)
+
+            const updateChildTasks = (parentTask) => {
+                if (parentTask.children && parentTask.children.length > 0) {
+                    const updatedChildTasks = parentTask.children.map((childTask) =>
+                        childTask.id === id ? {...childTask, is_on_kanban: !isOnKanban} : childTask
+                    );
+                    return {...parentTask, children: updatedChildTasks};
+                } else {
+                    return parentTask;
+                }
+            };
+
+            const updatedTasksWithChildren = updatedTasks.map((task) => {
+                if (task.id === id) {
+                    return task;
+                } else {
+                    return updateChildTasks(task);
+                }
+            });
+
+            setTasks(updatedTasksWithChildren);
         } catch (error) {
             console.log(error);
         }
     };
+
 
     return (
         <>
