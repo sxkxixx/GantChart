@@ -1,5 +1,154 @@
 .container{
     display: flex;
     width: 90%;
-    height: 95%;
+    height: 80%;
+}
+
+.title{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 5px;
+    width: 100%;
+    height: 10%;
+}
+
+.project{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 5px;
+    width: 184px;
+    height: 10%;
+}
+
+.elements{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    gap: 8px;
+    height: 10%;
+}
+
+.description{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 20%;
+}
+
+.important{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 8px;
+    width: 100%;
+    height: 10%;
+}
+
+.unimportant{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 8px;
+    width: 100%;
+    height: 20%;
+    overflow-y: scroll;
+}
+
+.unimportantTop{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 5px;
+}
+
+.unimportantTop button{
+    display: flex;
+    align-items: center;
+}
+
+.unimportantList{
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    align-items: center;
+}
+
+.checklist{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 8px;
+    width: 100%;
+    height: 20%;
+    overflow-y: scroll;
+}
+
+.checklistTop{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 5px;
+}
+
+.checklistTop button{
+    display: flex;
+    align-items: center;
+}
+
+.checkList{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 5px;
+    height: 40px;
+}
+
+.buttons{
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 8px;
+    width: 100%;
+    height: 10%;
+    bottom: 0;
+}
+
+.form{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    gap: 16px;
+}
+
+.dates{
+    display: flex;
+    flex-direction: column;
+}
+
+.dates span{
+    color: #000;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.date{
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    padding: 0 8px;
+    border-radius: 5px;
+    border: 1px solid #AFBAC3;
+    background: #FFF;
+    align-items: center;
+    width: 247px;
+    height: 32px;
 }
