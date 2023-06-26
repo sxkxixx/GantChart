@@ -3,18 +3,23 @@
     flex-direction: row;
     width: 100%;
     height: 100%;
+    overflow-y: scroll;
+    overflow-x: scroll;
 }
 
-.table{
+.table {
     display: flex;
     flex-direction: column;
-    width: 30%;
-    height: 100%;
-    overflow: auto;
+    position: sticky;
+    left: 0;
+    background-color: white;
+    z-index: 121;
 }
 
 .collapse{
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 0;
+    background-color: white;
 }
 
 .table td{
@@ -25,36 +30,67 @@
     border: 1px solid black;
 }
 
+.table thead{
+    position: sticky;
+    top: 0;
+    background-color: white;
+    border: 1px solid black;
+    height: 80px;
+    z-index: 123;
+}
+
+
+
 .table th{
-    padding: 30px 0;
     text-align: center;
     border: 1px solid black;
 }
 
-.row{
+.row {
     display: flex;
     flex-direction: column;
-    width: 70%;
-    height: 100%;
+}
+
+.row thead{
+    position: sticky;
+    top: 0;
+    background-color: white;
+    height: 80px;
 }
 
 .row td{
-    padding: 10px;
     text-align: center;
     border: 1px solid black;
 }
 
 .row th{
-    padding: 10px;
     text-align: center;
     border: 1px solid black;
 }
 
 .tableWrapper {
-    overflow-x: auto;
     height: 100%;
 }
 
 table {
-    width: 100%;
+    width: max-content;
+    height: max-content;
+    border-collapse: separate;
 }
+
+.ganttTable {
+    flex-grow: 1;
+}
+
+.fixedHeader {
+    position: sticky;
+    top: 0;
+    z-index: 120;
+}
+
+.fixedHeader th {
+    position: sticky;
+    top: 0;
+    border: 1px solid black;
+}
+

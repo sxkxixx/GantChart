@@ -64,7 +64,7 @@ const GanttTable = ({
                 </table>
             </div>
 
-            <div className={s.row}>
+            <div className={`${s.row} ${s.ganttTable}`}>
                 <div className={s.tableWrapper}>
                     <table className={s.collapse}>
                         <thead>
