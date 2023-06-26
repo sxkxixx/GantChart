@@ -19,7 +19,7 @@ const Modal = ({id, parentId, showModal, setShowModal, formType, setFormType}) =
                         <button className={s.close} onClick={closeForm}><Close/></button>
                         {formType === 'create' && (<CreateForm setShowModal={setShowModal} parentId={parentId}/>)}
                         {formType === 'edit' && (<EditForm setShowModal={setShowModal} parentId={parentId}/>)}
-                        {formType === 'view' && (<ViewForm id={id} setShowModal={setShowModal} parentId={parentId}/>)}
+                        {formType === 'view' && (<ViewForm setFormType={setFormType} id={id} parentId={parentId}/>)}
                     </div>
                 </div>
             ) : null}

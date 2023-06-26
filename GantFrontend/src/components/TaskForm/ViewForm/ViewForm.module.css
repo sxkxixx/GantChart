@@ -152,3 +152,25 @@
     width: 247px;
     height: 32px;
 }
+
+.time{
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.timer{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.timeElements{
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+}
+
+.timeSpent{}
+
+.timeSpentElements{}

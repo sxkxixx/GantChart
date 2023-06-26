@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import s from './ViewForm.module.css'
 import {useRecoilState, useRecoilValue, useSetRecoilState} from "recoil";
 import {projectsList, taskIdState, teamsList} from "../../../store/atom";
-import {createTask, getIdTask} from "../../../services/task";
+import {createTask, deleteIdTask, getIdTask} from "../../../services/task";
 import Text from "../UI/Text";
 import Select from "../UI/Select";
 import {ReactComponent as Project} from '../../../assets/img/projects.svg'
@@ -11,7 +11,7 @@ import {ReactComponent as Del} from '../../../assets/img/delButtForm.svg'
 import InputDate1 from "../UI/InputDate1";
 import ButtonForm from "../UI/Button";
 
-const ViewForm = ({id, parentId, setShowModal}) => {
+const ViewForm = ({id, parentId, setFormType}) => {
     const taskId = useRecoilValue(taskIdState)
     const setTaskId = useSetRecoilState(taskIdState)
 
@@ -38,7 +38,7 @@ const ViewForm = ({id, parentId, setShowModal}) => {
             <form className={s.form}>
                 <div className={s.title}>
                     <Text width={"606px"} height={"36px"} value={taskId.task && taskId.task.name}/>
-                    <span>Базовая задача: {taskId.task && taskId.task.parent_id ? parentId.name : "Отсутствует"}</span>
+                    <span>Базовая задача: {taskId.task && taskId.task.parent_id !== null ? parentId.name : "Отсутствует"}</span>
                 </div>
                 <div className={s.project}>
                     <Select
@@ -63,7 +63,7 @@ const ViewForm = ({id, parentId, setShowModal}) => {
                         <div className={s.date}>
                             <input type="date" value={taskId.task &&  taskId.task.planned_start_date}/>
                             <span> - </span>
-                            <input type="date" value={taskId.task &&  taskId.task.planned_start_date}/>
+                            <input type="date" value={taskId.task &&  taskId.task.planned_final_date}/>
                         </div>
                     </div>
                 </div>
@@ -103,14 +103,39 @@ const ViewForm = ({id, parentId, setShowModal}) => {
                     </div>
                     {taskId.stages && taskId.stages.map((stage, index) => (
                         <div className={s.checkList} key={index}>
-                            <input type="checkbox"/>
-                            <Text width={"60%"} height={"21px"} value={taskId.stages && taskId.stages.description}/>
+                            <input type="checkbox" checked={stage.is_ready}/>
+                            <Text width={"60%"} height={"21px"} value={stage.description}/>
                         </div>
                     ))}
                 </div>
+                {/*<div className={s.time}>*/}
+                {/*    <div className={s.timer}>*/}
+                {/*        <span>Таймер</span>*/}
+                {/*        <div className={s.timeElements}>*/}
+                {/*            <div>*/}
+                {/*                <span>00:00:00</span>*/}
+                {/*            </div>*/}
+                {/*        </div>*/}
+                {/*        <div>*/}
+                {/*            <ButtonForm>Play</ButtonForm>*/}
+                {/*            <ButtonForm>Сохранить</ButtonForm>*/}
+                {/*            <ButtonForm status='notActive'>Delete</ButtonForm>*/}
+                {/*        </div>*/}
+                {/*    </div>*/}
+                {/*    <div className={s.timeSpent}>*/}
+                {/*        <span>Затраченное время</span>*/}
+                {/*        <div className={s.timeSpentElements}>*/}
+                {/*            <span>00:00:00</span>*/}
+                {/*            <div>*/}
+                {/*                <span>ФИО</span>*/}
+                {/*            </div>*/}
+                {/*        </div>*/}
+                {/*    </div>*/}
+                {/*</div>*/}
                 <div className={s.buttons}>
-                    <ButtonForm type="submit">Сохранить</ButtonForm>
-                    <ButtonForm status='notActive' onClick={() => setShowModal(false)}>Отменить</ButtonForm>
+                    <ButtonForm onClick={() => setFormType('edit')}>Редактировать</ButtonForm>
+                    <ButtonForm onClick={() => setFormType('create')}>Создать подзадачу</ButtonForm>
+                    <ButtonForm status='notActive' onClick={() => deleteIdTask(taskId.task.id)}>Удалить задачу</ButtonForm>
                 </div>
             </form>
         </div>
