@@ -5,7 +5,7 @@ import CreateForm from "../CreateForm/CreateForm";
 import EditForm from "../EditForm/EditForm";
 import ViewForm from "../ViewForm/ViewForm";
 
-const Modal = ({parentId, showModal, setShowModal, formType, setFormType}) => {
+const Modal = ({id, parentId, showModal, setShowModal, formType, setFormType}) => {
     const closeForm = () =>{
         setFormType('')
         setShowModal(false)
@@ -19,7 +19,7 @@ const Modal = ({parentId, showModal, setShowModal, formType, setFormType}) => {
                         <button className={s.close} onClick={closeForm}><Close/></button>
                         {formType === 'create' && (<CreateForm setShowModal={setShowModal} parentId={parentId}/>)}
                         {formType === 'edit' && (<EditForm setShowModal={setShowModal} parentId={parentId}/>)}
-                        {formType === 'view' && (<ViewForm setShowModal={setShowModal} parentId={parentId}/>)}
+                        {formType === 'view' && (<ViewForm id={id} setShowModal={setShowModal} parentId={parentId}/>)}
                     </div>
                 </div>
             ) : null}
