@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import s from './CreateForm.module.css'
 import {useRecoilState, useRecoilValue, useSetRecoilState} from "recoil";
 import {projectsList, tasksState, teamsList} from "../../../store/atom";
-import {createTask} from "../../../services/task";
+import {createTask, getAllTask} from "../../../services/task";
 import Text from "../UI/Text";
 import Select from "../UI/Select";
 import {ReactComponent as Project} from  '../../../assets/img/projects.svg'
@@ -24,7 +24,6 @@ const CreateForm = ({parentId, setShowModal}) => {
     const [executorId, setExecutorId] = useState(0)
     const [stages, setStages] = useState([])
     const [performers, setPerformers] = useState([]);
-    const newTask = useRecoilValue(tasksState);
     const setTasks = useSetRecoilState(tasksState);
 
     const options = [
@@ -73,8 +72,9 @@ const CreateForm = ({parentId, setShowModal}) => {
         }
         try {
             await createTask(taskList, stagesList)
-            setTasks((oldTasks) => [...oldTasks, newTask])
             setShowModal(false)
+            const updatedTasks = await getAllTask();
+            setTasks(updatedTasks);
         } catch (e) {
             console.log(e);
         }

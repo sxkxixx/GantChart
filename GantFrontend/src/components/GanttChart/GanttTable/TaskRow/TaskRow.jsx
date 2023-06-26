@@ -1,9 +1,7 @@
 import React, {useState} from 'react';
-import styled from 'styled-components';
 import {ReactComponent as Add} from '../../../../assets/img/addButton.svg'
 import {ReactComponent as Path} from '../../../../assets/img/path.svg'
 import {ReactComponent as Vector} from '../../../../assets/img/vector.svg'
-import Check from '../../../../assets/img/check.svg'
 import Modal from "../../../TaskForm/Modal/Modal";
 import {kanbanView} from "../../../../services/task";
 import {useRecoilState, useRecoilValue} from "recoil";

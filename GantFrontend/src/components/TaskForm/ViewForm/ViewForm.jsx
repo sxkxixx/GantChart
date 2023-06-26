@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import s from './ViewForm.module.css'
 import {useRecoilState, useRecoilValue, useSetRecoilState} from "recoil";
-import {projectsList, taskIdState, teamsList} from "../../../store/atom";
-import {createTask, deleteIdTask, getIdTask} from "../../../services/task";
+import {projectsList, taskIdState, tasksState, teamsList} from "../../../store/atom";
+import {createTask, deleteIdTask, getAllTask, getIdTask} from "../../../services/task";
 import Text from "../UI/Text";
 import Select from "../UI/Select";
 import {ReactComponent as Project} from '../../../assets/img/projects.svg'
@@ -11,9 +11,10 @@ import {ReactComponent as Del} from '../../../assets/img/delButtForm.svg'
 import InputDate1 from "../UI/InputDate1";
 import ButtonForm from "../UI/Button";
 
-const ViewForm = ({id, parentId, setFormType}) => {
+const ViewForm = ({id, parentId, setFormType, setShowModal}) => {
     const taskId = useRecoilValue(taskIdState)
     const setTaskId = useSetRecoilState(taskIdState)
+    const setTasks = useSetRecoilState(tasksState);
 
     const options = [
         {id: 1, label: 'Option 1'},
@@ -32,6 +33,17 @@ const ViewForm = ({id, parentId, setFormType}) => {
             })
     }, [setTaskId])
 
+
+    const Delete = async () =>{
+        try {
+            await deleteIdTask(taskId.task.id)
+            setShowModal(false)
+            const updatedTasks = await getAllTask();
+            setTasks(updatedTasks);
+        } catch (e) {
+            console.log(e);
+        }
+    }
 
     return (
         <div className={s.container}>
@@ -135,7 +147,7 @@ const ViewForm = ({id, parentId, setFormType}) => {
                 <div className={s.buttons}>
                     <ButtonForm onClick={() => setFormType('edit')}>Редактировать</ButtonForm>
                     <ButtonForm onClick={() => setFormType('create')}>Создать подзадачу</ButtonForm>
-                    <ButtonForm status='notActive' onClick={() => deleteIdTask(taskId.task.id)}>Удалить задачу</ButtonForm>
+                    <ButtonForm status='notActive' onClick={Delete}>Удалить задачу</ButtonForm>
                 </div>
             </form>
         </div>

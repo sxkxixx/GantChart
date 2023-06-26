@@ -6,4 +6,5 @@ export const CollapseButton = styled.span`
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  height: 100%;
 `;

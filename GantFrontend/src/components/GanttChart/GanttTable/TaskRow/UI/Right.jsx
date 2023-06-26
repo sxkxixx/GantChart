@@ -4,10 +4,11 @@ export const Right = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: center;
-  width: 120px;
+  justify-content: flex-end;
+  width: 200px;
   gap: 15px;
   height: 42px;
+  padding-right: 20px;
   
   button{
     width: 22px;
@@ -75,11 +76,11 @@ export const Right = styled.div`
     align-items: center;
     justify-content: center;
     right: 100%;
-    top: -20px;
+    top: -40px;
     left: -200px;
-    height: 30px;
-    background-color: #f8d7da;
-    color: #721c24;
+    height: 40px;
+    background-color: #2870FF;
+    color: white;
     font-size: 12px;
     padding: 2px 4px;
     border-radius: 5px;
