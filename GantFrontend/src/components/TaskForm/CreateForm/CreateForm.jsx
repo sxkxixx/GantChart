@@ -27,9 +27,10 @@ const CreateForm = ({parentId, setShowModal}) => {
     const setTasks = useSetRecoilState(tasksState);
 
     const options = [
-        { id: 1, label: 'Option 1' },
-        { id: 2, label: 'Option 2' },
-        { id: 3, label: 'Option 3' },
+        { id: 1, name: 'Название проекта' },
+        { id: 21, name: 'ЛК оценка' },
+        { id: 22, name: 'ЛК Гант' },
+        { id: 23, name: 'ЛК Канбан' }
     ];
 
     const handleAddPerformer = () => {
@@ -42,8 +43,14 @@ const CreateForm = ({parentId, setShowModal}) => {
         setPerformers(newData);
     };
 
-    const handleAddStages = () => {
-        setStages([...stages, {id: stages.length + 1, checked: false, name: ""}]);
+    const handleAddStages = (description) => {
+        const newStage = {
+            id: stages.length + 1,
+            checked: false,
+            description: description
+        };
+        const updatedStages = [...stages, newStage];
+        setStages(updatedStages);
     };
 
 
@@ -64,12 +71,10 @@ const CreateForm = ({parentId, setShowModal}) => {
             description,
             startDate,
             finalDate,
-            deadline,
+            deadline: deadline ? deadline : finalDate,
             executorId
         }
-        const stagesList = {
-            stages
-        }
+        const stagesList = stages.map((stage) => (stage.description));
         try {
             await createTask(taskList, stagesList)
             setShowModal(false)
@@ -84,14 +89,14 @@ const CreateForm = ({parentId, setShowModal}) => {
         <div className={s.container}>
             <form className={s.form} onSubmit={handleSubmit}>
                 <div className={s.title}>
-                    <Text width={"606px"} height={"36px"} onChange={(event) => setName(event.target.value)}/>
+                    <Text optional={true} width={"606px"} height={"36px"} onChange={(event) => setName(event.target.value)}/>
                     <span>Базовая задача:{parentId !== null? parentId.name : "Отсувствует"}</span>
                 </div>
                 <div className={s.project}>
                     <Select
                         label="Проекты"
                         icon={<Project/>}
-                        options={options.map(opt => ({value: opt.id, label: opt.label}))}
+                        options={options.map(opt => ({value: opt.id, name: opt.name}))}
                         onChange={(event) => setProjectId(event.target.value)}
                     />
                 </div>
@@ -102,7 +107,7 @@ const CreateForm = ({parentId, setShowModal}) => {
                     <Select
                         label="Тег Команды"
                         icon={<Project/>}
-                        options={options.map(opt => ({value: opt.id, label: opt.label}))}
+                        options={options.map(opt => ({value: opt.id, name: opt.name}))}
                         onChange={(event) => setTeamId(event.target.value)}
                     />
                     <div className={s.dates}>
@@ -125,14 +130,13 @@ const CreateForm = ({parentId, setShowModal}) => {
                     <Select
                         label="Постановщик"
                         icon={<Project/>}
-                        options={options}
-                        selectedValue={'1'}
+                        options={options.map(opt => ({value: opt.id, name: opt.name}))}
                         onChange={(e) => console.log(e.target.value)}
                     />
                     <Select
                         label="Ответственный"
                         icon={<Project/>}
-                        options={options}
+                        options={options.map(opt => ({value: opt.id, name: opt.name}))}
                         onChange={(event) => setExecutorId(event.target.value)}
                     />
                 </div>
@@ -145,7 +149,7 @@ const CreateForm = ({parentId, setShowModal}) => {
                     </div>
                     {performers.map((performer, index) => (
                         <div className={s.unimportantList} key={index}>
-                            <Select options={performer} selectedValue={'1'} onChange={() => {}} />
+                            <Select  options={options.map(opt => ({value: opt.id, name: opt.name}))}/>
                             <button type="button" onClick={() => handleDeletePerformer(index)}>
                                 <Del />
                             </button>
@@ -159,11 +163,19 @@ const CreateForm = ({parentId, setShowModal}) => {
                             <Add />
                         </button>
                     </div>
-                    {stages.map((stages, index) => (
+                    {stages.map((stage, index) => (
                         <div className={s.checkList} key={index}>
                             <input type="checkbox"/>
-                            <Text width={"60%"} height={"21px"}/>
-                            <button type="button" onClick={() => handleDeleteStages(index)}>
+                            <Text
+                                width={"60%"}
+                                height={"21px"}
+                                onChange={(event) => {
+                                    const newData = [...stages];
+                                    newData[index].description = event.target.value;
+                                    setStages(newData);
+                                }}
+                            />
+                            <button type="button" onClick={() => handleDeleteStages(index, stage.description)}>
                                 <Del />
                             </button>
                         </div>

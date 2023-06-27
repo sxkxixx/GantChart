@@ -41,7 +41,7 @@ const Select = ({ label, icon, options, selectedValue, onChange }) => {
             <SelectItem value={selectedValue} onChange={onChange}>
                 {options.map((option) => (
                     <Option key={option.value} value={option.value}>
-                        {option.label}
+                        {option.name}
                     </Option>
                 ))}
             </SelectItem>

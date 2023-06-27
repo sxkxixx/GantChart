@@ -11,16 +11,17 @@ import {ReactComponent as Del} from '../../../assets/img/delButtForm.svg'
 import InputDate1 from "../UI/InputDate1";
 import ButtonForm from "../UI/Button";
 
-const ViewForm = ({id, parentId, setFormType, setShowModal}) => {
+const ViewForm = ({id, setFormType, setShowModal}) => {
     const taskId = useRecoilValue(taskIdState)
     const setTaskId = useSetRecoilState(taskIdState)
     const setTasks = useSetRecoilState(tasksState)
     const tasks = useRecoilValue(tasksState)
 
     const options = [
-        {id: 1, label: 'Option 1'},
-        {id: 2, label: 'Option 2'},
-        {id: 3, label: 'Option 3'},
+        {id: 1, name: 'Название проекта'},
+        {id: 21, name: 'ЛК оценка'},
+        {id: 22, name: 'ЛК Гант'},
+        {id: 23, name: 'ЛК Канбан'}
     ];
 
     useEffect(() => {
@@ -35,7 +36,7 @@ const ViewForm = ({id, parentId, setFormType, setShowModal}) => {
     }, [setTaskId])
 
 
-    const Delete = async () =>{
+    const Delete = async () => {
         try {
             await deleteIdTask(taskId.task.id)
             setShowModal(false)
@@ -46,37 +47,44 @@ const ViewForm = ({id, parentId, setFormType, setShowModal}) => {
         }
     }
 
+
     return (
         <div className={s.container}>
             <form className={s.form}>
                 <div className={s.title}>
                     <Text width={"606px"} height={"36px"} value={taskId.task && taskId.task.name}/>
-                    <span>Базовая задача: {taskId.task && taskId.task.parent_id !== null ? parentId.name : "Отсутствует"}</span>
+                    <span>
+                        Базовая задача: {
+                        taskId.task &&
+                        taskId.task.parent_id !== null ?
+                            tasks.find(task => task.id === taskId.task.parent_id)?.name : "Отсутствует"
+                    }
+                    </span>
                 </div>
                 <div className={s.project}>
                     <Select
                         label="Проекты"
                         icon={<Project/>}
-                        options={options}
-                        selectedValue={taskId.task &&  taskId.task.project_id}
+                        options={options.map(opt => ({value: opt.id, name: opt.name}))}
+                        selectedValue={taskId.task && taskId.task.project_id}
                     />
                 </div>
                 <div className={s.elements}>
                     <InputDate1
-                        value={taskId.task &&  taskId.task.deadline}
+                        value={taskId.task && taskId.task.deadline}
                     />
                     <Select
                         label="Тег Команды"
                         icon={<Project/>}
-                        options={options}
+                        options={options.map(opt => ({value: opt.id, name: opt.name}))}
                         selectedValue={taskId.task && taskId.task.team_id}
                     />
                     <div className={s.dates}>
                         <span>Планируемые сроки выполнения</span>
                         <div className={s.date}>
-                            <input type="date" value={taskId.task &&  taskId.task.planned_start_date}/>
+                            <input type="date" value={taskId.task && taskId.task.planned_start_date}/>
                             <span> - </span>
-                            <input type="date" value={taskId.task &&  taskId.task.planned_final_date}/>
+                            <input type="date" value={taskId.task && taskId.task.planned_final_date}/>
                         </div>
                     </div>
                 </div>
@@ -93,14 +101,12 @@ const ViewForm = ({id, parentId, setFormType, setShowModal}) => {
                         icon={<Project/>}
                         options={options}
                     />
-                    {taskId.executor &&
-                        <Select
-                            label="Ответственный"
-                            icon={<Project/>}
-                            options={options}
-                            selectedValue={taskId.executor.user_id}
-                        />
-                    }
+                    <Select
+                        label="Ответственный"
+                        icon={<Project/>}
+                        options={options.map(opt => ({value: opt.id, name: opt.name}))}
+                        selectedValue={taskId.executor && taskId.executor.user_id}
+                    />
                 </div>
                 <div className={s.unimportant}>
                     <div className={s.unimportantTop}>
