@@ -78,7 +78,7 @@ const GanttTable = ({
                         </tr>
                         <tr>
                             {dateArray.map((date, index) => (
-                                <th key={index} colSpan="1">
+                                <th className={s.date} key={index} colSpan="1">
                                     {date.getDate()}
                                 </th>
                             ))}

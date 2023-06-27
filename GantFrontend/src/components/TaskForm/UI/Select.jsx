@@ -33,12 +33,12 @@ const Option = styled.option`
   font-size: 1rem;
 `;
 
-const Select = ({ label, icon, options, selectedValue, onChange }) => {
+const Select = ({ label, icon, options, selectedValue, onChange, disabled }) => {
     return (
         <Wrapper>
             {label && <Label>{label}</Label>}
             {/*<IconWrapper>{icon}</IconWrapper>*/}
-            <SelectItem value={selectedValue} onChange={onChange}>
+            <SelectItem value={selectedValue} onChange={onChange} disabled={disabled}>
                 {options.map((option) => (
                     <Option key={option.value} value={option.value}>
                         {option.name}

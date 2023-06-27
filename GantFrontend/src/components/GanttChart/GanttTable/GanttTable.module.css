@@ -65,6 +65,10 @@
     border: 1px solid black;
 }
 
+.date{
+    width: 100px;
+}
+
 .tableWrapper {
     height: 100%;
 }

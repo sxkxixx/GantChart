@@ -52,7 +52,7 @@ const ViewForm = ({id, setFormType, setShowModal}) => {
         <div className={s.container}>
             <form className={s.form}>
                 <div className={s.title}>
-                    <Text width={"606px"} height={"36px"} value={taskId.task && taskId.task.name}/>
+                    <Text width={"606px"} height={"36px"} value={taskId.task && taskId.task.name} disabled/>
                     <span>
                         Базовая задача: {
                         taskId.task &&
@@ -67,10 +67,12 @@ const ViewForm = ({id, setFormType, setShowModal}) => {
                         icon={<Project/>}
                         options={options.map(opt => ({value: opt.id, name: opt.name}))}
                         selectedValue={taskId.task && taskId.task.project_id}
+                        disabled
                     />
                 </div>
                 <div className={s.elements}>
                     <InputDate1
+                        disabled
                         value={taskId.task && taskId.task.deadline}
                     />
                     <Select
@@ -78,13 +80,14 @@ const ViewForm = ({id, setFormType, setShowModal}) => {
                         icon={<Project/>}
                         options={options.map(opt => ({value: opt.id, name: opt.name}))}
                         selectedValue={taskId.task && taskId.task.team_id}
+                        disabled
                     />
                     <div className={s.dates}>
                         <span>Планируемые сроки выполнения</span>
                         <div className={s.date}>
-                            <input type="date" value={taskId.task && taskId.task.planned_start_date}/>
+                            <input disabled type="date" value={taskId.task && taskId.task.planned_start_date}/>
                             <span> - </span>
-                            <input type="date" value={taskId.task && taskId.task.planned_final_date}/>
+                            <input disabled type="date" value={taskId.task && taskId.task.planned_final_date}/>
                         </div>
                     </div>
                 </div>
@@ -93,6 +96,7 @@ const ViewForm = ({id, setFormType, setShowModal}) => {
                         value={taskId.task && taskId.task.description}
                         width={"606px"}
                         height={"128px"}
+                        disabled
                     />
                 </div>
                 <div className={s.important}>
@@ -100,12 +104,13 @@ const ViewForm = ({id, setFormType, setShowModal}) => {
                         label="Постановщик"
                         icon={<Project/>}
                         options={options}
+                        disabled
                     />
                     <Select
                         label="Ответственный"
                         icon={<Project/>}
                         options={options.map(opt => ({value: opt.id, name: opt.name}))}
-                        selectedValue={taskId.executor && taskId.executor.user_id}
+                        disabled
                     />
                 </div>
                 <div className={s.unimportant}>
@@ -126,7 +131,7 @@ const ViewForm = ({id, setFormType, setShowModal}) => {
                     {taskId.stages && taskId.stages.map((stage, index) => (
                         <div className={s.checkList} key={index}>
                             <input type="checkbox" checked={stage.is_ready}/>
-                            <Text width={"60%"} height={"21px"} value={stage.description}/>
+                            <Text width={"60%"} height={"21px"} value={stage.description} disabled/>
                         </div>
                     ))}
                 </div>
@@ -155,9 +160,9 @@ const ViewForm = ({id, setFormType, setShowModal}) => {
                 {/*    </div>*/}
                 {/*</div>*/}
                 <div className={s.buttons}>
-                    <ButtonForm onClick={() => setFormType('edit')}>Редактировать</ButtonForm>
-                    <ButtonForm onClick={() => setFormType('create')}>Создать подзадачу</ButtonForm>
-                    <ButtonForm status='notActive' onClick={Delete}>Удалить задачу</ButtonForm>
+                    <ButtonForm width={147} height={32} onClick={() => setFormType('edit')}>Редактировать</ButtonForm>
+                    <ButtonForm width={179} height={32}  onClick={() => setFormType('create')}>Создать подзадачу</ButtonForm>
+                    <ButtonForm width={170} height={32}  status='notActive' onClick={Delete}>Удалить задачу</ButtonForm>
                 </div>
             </form>
         </div>
