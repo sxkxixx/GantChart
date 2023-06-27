@@ -14,7 +14,8 @@ import ButtonForm from "../UI/Button";
 const ViewForm = ({id, parentId, setFormType, setShowModal}) => {
     const taskId = useRecoilValue(taskIdState)
     const setTaskId = useSetRecoilState(taskIdState)
-    const setTasks = useSetRecoilState(tasksState);
+    const setTasks = useSetRecoilState(tasksState)
+    const tasks = useRecoilValue(tasksState)
 
     const options = [
         {id: 1, label: 'Option 1'},
@@ -92,11 +93,14 @@ const ViewForm = ({id, parentId, setFormType, setShowModal}) => {
                         icon={<Project/>}
                         options={options}
                     />
-                    <Select
-                        label="Ответственный"
-                        icon={<Project/>}
-                        options={options}
-                    />
+                    {taskId.executor &&
+                        <Select
+                            label="Ответственный"
+                            icon={<Project/>}
+                            options={options}
+                            selectedValue={taskId.executor.user_id}
+                        />
+                    }
                 </div>
                 <div className={s.unimportant}>
                     <div className={s.unimportantTop}>

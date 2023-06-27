@@ -6,7 +6,7 @@ export const Right = styled.div`
   align-items: center;
   justify-content: flex-end;
   width: 200px;
-  gap: 15px;
+  gap: 8px;
   height: 42px;
   padding-right: 20px;
   
@@ -35,6 +35,9 @@ export const Right = styled.div`
     border: 2px solid #AFBAC3;
     border-radius: 5px;
     transition: all 0.2s ease-in-out;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
   input[type="checkbox"]:checked {
@@ -48,10 +51,13 @@ export const Right = styled.div`
     justify-content: center;
     align-items: center;
     border-radius: 5px;
+    width: 18px;
+    height: 18px;
     color: #fff;
     background-color: #56C568;
     background-position: center;
     transition: all 0.2s ease-in-out;
+    
   }
   
   input[type="checkbox"]:hover {

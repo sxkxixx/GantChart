@@ -132,7 +132,7 @@ const CreateForm = ({parentId, setShowModal}) => {
                     <Select
                         label="Ответственный"
                         icon={<Project/>}
-                        options={options.map(opt => ({value: opt.id, label: opt.label}))}
+                        options={options}
                         onChange={(event) => setExecutorId(event.target.value)}
                     />
                 </div>

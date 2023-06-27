@@ -43,7 +43,7 @@ const TaskRow = ({
                 if (parentTask.children && parentTask.children.length > 0) {
                     const updatedChildTasks = parentTask.children.map((childTask) =>
                         childTask.id === id ? {...childTask, is_on_kanban: !isOnKanban} : childTask
-                    );
+                    ).map(childTask => updateChildTasks(childTask));
                     return {...parentTask, children: updatedChildTasks};
                 } else {
                     return parentTask;
