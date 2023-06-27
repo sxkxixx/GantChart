@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import s from './ViewForm.module.css'
 import {useRecoilState, useRecoilValue, useSetRecoilState} from "recoil";
 import {projectsList, taskIdState, tasksState, teamsList} from "../../../store/atom";
@@ -6,8 +6,6 @@ import {createTask, deleteIdTask, getAllTask, getIdTask} from "../../../services
 import Text from "../UI/Text";
 import Select from "../UI/Select";
 import {ReactComponent as Project} from '../../../assets/img/projects.svg'
-import {ReactComponent as Add} from '../../../assets/img/addButtForm.svg'
-import {ReactComponent as Del} from '../../../assets/img/delButtForm.svg'
 import InputDate1 from "../UI/InputDate1";
 import ButtonForm from "../UI/Button";
 
@@ -73,7 +71,7 @@ const ViewForm = ({id, setFormType, setShowModal}) => {
                 <div className={s.elements}>
                     <InputDate1
                         disabled
-                        value={taskId.task && taskId.task.deadline}
+                        selectedValue={taskId.task && taskId.task.deadline}
                     />
                     <Select
                         label="Тег Команды"
@@ -85,9 +83,17 @@ const ViewForm = ({id, setFormType, setShowModal}) => {
                     <div className={s.dates}>
                         <span>Планируемые сроки выполнения</span>
                         <div className={s.date}>
-                            <input disabled type="date" value={taskId.task && taskId.task.planned_start_date}/>
+                            <input
+                                disabled
+                                type="date"
+                                value={taskId.task && taskId.task.planned_start_date}
+                            />
                             <span> - </span>
-                            <input disabled type="date" value={taskId.task && taskId.task.planned_final_date}/>
+                            <input
+                                disabled
+                                type="date"
+                                value={taskId.task && taskId.task.planned_final_date}
+                            />
                         </div>
                     </div>
                 </div>
@@ -110,6 +116,7 @@ const ViewForm = ({id, setFormType, setShowModal}) => {
                         label="Ответственный"
                         icon={<Project/>}
                         options={options.map(opt => ({value: opt.id, name: opt.name}))}
+                        selectedValue={taskId.executor && taskId.executor[0].user_id}
                         disabled
                     />
                 </div>

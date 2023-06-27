@@ -53,12 +53,30 @@ export const getIdTask = async (id) => {
 }
 
 export const updateIdTask = async (id, task, stages) => {
-    const data = {
-        task: task,
-        stages: stages
+    const updateTask = {
+        parent_id: task.parent || null,
+        project_id: task.projectId,
+        team_id: task.teamId,
+        name: task.name,
+        description: task.description,
+        planned_start_date: task.startDate,
+        planned_final_date: task.finalDate,
+        deadline: task.deadline,
+        executor_id: task.executorId,
+    };
+
+    let stagesList = [];
+
+    if (Array.isArray(stages)) {
+        stagesList = stages.map((stage) => ({ description: stage }));
     }
+
+    const data = {
+        task: updateTask,
+        stages: stagesList,
+    };
     try {
-        await api.post(`/api/v1/gant/task/${id}/edit_dates`, data)
+        await api.post(`/api/v1/gant/task/${id}/edit`, data)
     }catch (e){
         console.log(e)
     }

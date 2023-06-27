@@ -38,7 +38,7 @@ const Select = ({ label, icon, options, selectedValue, onChange, disabled }) => 
         <Wrapper>
             {label && <Label>{label}</Label>}
             {/*<IconWrapper>{icon}</IconWrapper>*/}
-            <SelectItem value={selectedValue} onChange={onChange} disabled={disabled}>
+            <SelectItem defaultValue={selectedValue} onChange={onChange} disabled={disabled}>
                 {options.map((option) => (
                     <Option key={option.value} value={option.value}>
                         {option.name}
