@@ -9,6 +9,7 @@ import {ReactComponent as Project} from '../../../assets/img/projects.svg'
 import InputDate1 from "../UI/InputDate1";
 import ButtonForm from "../UI/Button";
 import TextArea from "../UI/TextArea";
+import {toast} from "react-toastify";
 
 const ViewForm = ({id, setFormType, setShowModal}) => {
     const taskId = useRecoilValue(taskIdState)
@@ -41,6 +42,16 @@ const ViewForm = ({id, setFormType, setShowModal}) => {
             setShowModal(false)
             const updatedTasks = await getAllTask();
             setTasks(updatedTasks);
+            toast.success('Задача удалена!', {
+                position: "top-right",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
         } catch (e) {
             console.log(e);
         }

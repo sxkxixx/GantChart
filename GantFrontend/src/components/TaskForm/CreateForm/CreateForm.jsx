@@ -62,6 +62,24 @@ const CreateForm = ({parentId, setShowModal}) => {
         setStages(newData);
     };
 
+    const validateDates = () => {
+        if (!parentId) {
+            return true;
+        }
+
+        const parentStartDate = Date.parse(parentId.planned_start_date);
+        const parentFinalDate = Date.parse(parentId.planned_final_date);
+
+        if (Date.parse(startDate) === parentStartDate || Date.parse(finalDate) === parentFinalDate) {
+            return true;
+        } else if (Date.parse(startDate) < parentStartDate || Date.parse(finalDate) > parentFinalDate) {
+            return false;
+        }
+
+        return true;
+    };
+
+
     const handleSubmit = async (event) => {
         event.preventDefault();
         const missingData = [];
@@ -90,6 +108,12 @@ const CreateForm = ({parentId, setShowModal}) => {
             alert(message);
             return;
         }
+
+        if (!validateDates()) {
+            alert("Подзадача не может выходить за отрезок времени базовой задачи.");
+            return
+        }
+
         const parent = parentId ? parentId.id : null;
         const taskList = {
             parent,
@@ -156,9 +180,13 @@ const CreateForm = ({parentId, setShowModal}) => {
                     <div className={s.dates}>
                         <span>Планируемые сроки выполнения</span>
                         <div className={s.date}>
-                            <input type="date" value={startDate} onChange={(event) => setStartDate(event.target.value)} />
+                            <input type="date"
+                                   value={startDate}
+                                   onChange={(event) => setStartDate(event.target.value)} />
                             <span> - </span>
-                            <input type="date" value={finalDate} onChange={(event) => setFinalDate(event.target.value)} />
+                            <input type="date"
+                                   value={finalDate}
+                                   onChange={(event) => setFinalDate(event.target.value)} />
                         </div>
                     </div>
                 </div>

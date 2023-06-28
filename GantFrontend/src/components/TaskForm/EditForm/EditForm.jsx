@@ -11,6 +11,7 @@ import {ReactComponent as Del} from  '../../../assets/img/delButtForm.svg'
 import InputDate1 from "../UI/InputDate1";
 import ButtonForm from "../UI/Button";
 import TextArea from "../UI/TextArea";
+import {toast} from "react-toastify";
 
 const EditForm = ({id ,parentId, setFormType, setShowModal}) => {
     // const [projectId, setProjectId] = useRecoilState(projectsList)
@@ -71,8 +72,30 @@ const EditForm = ({id ,parentId, setFormType, setShowModal}) => {
         }
     };
 
+    const validateDates = () => {
+        if (!parentId) {
+            return true;
+        }
+
+        const parentStartDate = Date.parse(parentId.planned_start_date);
+        const parentFinalDate = Date.parse(parentId.planned_final_date);
+
+        if (Date.parse(startDate) === parentStartDate || Date.parse(finalDate) === parentFinalDate) {
+            return true;
+        } else if (Date.parse(startDate) < parentStartDate || Date.parse(finalDate) > parentFinalDate) {
+            return false;
+        }
+
+        return true;
+    };
+
     const handleSubmit = async (event) => {
         event.preventDefault();
+
+        if (!validateDates()) {
+            alert("Подзадача не может выходить за отрезок времени базовой задачи.");
+            return
+        }
 
         const parent = parentId ? parentId.id : null;
 
@@ -95,6 +118,16 @@ const EditForm = ({id ,parentId, setFormType, setShowModal}) => {
             setShowModal(false);
             const updatedTasks = await getAllTask();
             setTasks(updatedTasks);
+            toast.success('Задача изменена!', {
+                position: "top-right",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
         } catch (e) {
             console.log(e);
         }
@@ -106,6 +139,16 @@ const EditForm = ({id ,parentId, setFormType, setShowModal}) => {
             setShowModal(false)
             const updatedTasks = await getAllTask();
             setTasks(updatedTasks);
+            toast.success('Задача удалена!', {
+                position: "top-right",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
         } catch (e) {
             console.log(e);
         }
