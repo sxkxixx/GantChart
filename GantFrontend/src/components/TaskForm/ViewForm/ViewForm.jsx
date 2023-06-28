@@ -8,6 +8,7 @@ import Select from "../UI/Select";
 import {ReactComponent as Project} from '../../../assets/img/projects.svg'
 import InputDate1 from "../UI/InputDate1";
 import ButtonForm from "../UI/Button";
+import TextArea from "../UI/TextArea";
 
 const ViewForm = ({id, setFormType, setShowModal}) => {
     const taskId = useRecoilValue(taskIdState)
@@ -52,11 +53,11 @@ const ViewForm = ({id, setFormType, setShowModal}) => {
                 <div className={s.title}>
                     <Text width={"606px"} height={"36px"} value={taskId.task && taskId.task.name} disabled/>
                     <span>
-                        Базовая задача: {
-                        taskId.task &&
-                        taskId.task.parent_id !== null ?
-                            tasks.find(task => task.id === taskId.task.parent_id)?.name : "Отсутствует"
-                    }
+                        Базовая задача:
+                        <span style={{textDecoration:'underline'}}>
+                        {taskId.task && taskId.task.parent_id !== null ?
+                            tasks.find(task => task.id === taskId.task.parent_id)?.name : "Отсутствует"}
+                        </span>
                     </span>
                 </div>
                 <div className={s.project}>
@@ -98,7 +99,7 @@ const ViewForm = ({id, setFormType, setShowModal}) => {
                     </div>
                 </div>
                 <div className={s.description}>
-                    <Text
+                    <TextArea
                         value={taskId.task && taskId.task.description}
                         width={"606px"}
                         height={"128px"}
@@ -124,6 +125,9 @@ const ViewForm = ({id, setFormType, setShowModal}) => {
                     <div className={s.unimportantTop}>
                         <span>Исполнители</span>
                     </div>
+                    <div className={s.unimportantLists}>
+
+                    </div>
                     {/*{taskId.executor.map((performer, index) => (*/}
                     {/*    <div className={s.unimportantList} key={index}>*/}
                     {/*        <Select options={options} selectedValue={'1'} onChange={() => {*/}
@@ -135,12 +139,14 @@ const ViewForm = ({id, setFormType, setShowModal}) => {
                     <div className={s.checklistTop}>
                         <span>Чек-лист</span>
                     </div>
-                    {taskId.stages && taskId.stages.map((stage, index) => (
-                        <div className={s.checkList} key={index}>
-                            <input type="checkbox" checked={stage.is_ready}/>
-                            <Text width={"60%"} height={"21px"} value={stage.description} disabled/>
-                        </div>
-                    ))}
+                    <div className={s.checkLists}>
+                        {taskId.stages && taskId.stages.map((stage, index) => (
+                            <div className={s.checkList} key={index}>
+                                <input type="checkbox" checked={stage.is_ready}/>
+                                <Text width={"60%"} height={"21px"} value={stage.description} disabled/>
+                            </div>
+                        ))}
+                    </div>
                 </div>
                 {/*<div className={s.time}>*/}
                 {/*    <div className={s.timer}>*/}

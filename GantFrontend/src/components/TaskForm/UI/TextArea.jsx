@@ -9,6 +9,7 @@ const TextAreaField = styled.textarea`
   border-radius: 4px;
   font-size: 16px;
   background: #FFFFFF;
+  resize:none;
   
   &::placeholder{
     text-align: left;

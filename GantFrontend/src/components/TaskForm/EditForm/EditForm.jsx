@@ -10,6 +10,7 @@ import {ReactComponent as Add} from  '../../../assets/img/addButtForm.svg'
 import {ReactComponent as Del} from  '../../../assets/img/delButtForm.svg'
 import InputDate1 from "../UI/InputDate1";
 import ButtonForm from "../UI/Button";
+import TextArea from "../UI/TextArea";
 
 const EditForm = ({id ,parentId, setFormType, setShowModal}) => {
     // const [projectId, setProjectId] = useRecoilState(projectsList)
@@ -105,11 +106,11 @@ const EditForm = ({id ,parentId, setFormType, setShowModal}) => {
                 <div className={s.title}>
                     <Text defaultValue={taskId.task && taskId.task.name}  optional={true} width={"606px"} height={"36px"} onChange={(event) => setName(event.target.value)}/>
                     <span>
-                        Базовая задача: {
-                        taskId.task &&
-                        taskId.task.parent_id !== null ?
-                            tasks.find(task => task.id === taskId.task.parent_id)?.name : "Отсутствует"
-                    }
+                        Базовая задача:
+                        <span style={{textDecoration:'underline'}}>
+                        {taskId.task && taskId.task.parent_id !== null ?
+                            tasks.find(task => task.id === taskId.task.parent_id)?.name : "Отсутствует"}
+                        </span>
                     </span>
                 </div>
                 <div className={s.project}>
@@ -151,7 +152,7 @@ const EditForm = ({id ,parentId, setFormType, setShowModal}) => {
                     </div>
                 </div>
                 <div className={s.description}>
-                    <Text
+                    <TextArea
                         width={"606px"}
                         height={"128px"}
                         defaultValue={taskId.task && taskId.task.description}
