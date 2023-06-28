@@ -22,7 +22,6 @@ const InputField = styled.input`
   }
 
   ${props => props.disabled && `
-    opacity: 0.6;
     cursor: not-allowed;
   `}
 `;

@@ -26,7 +26,6 @@ const EditForm = ({id ,parentId, setFormType, setShowModal}) => {
     const [stages, setStages] = useState([])
     const [performers, setPerformers] = useState([]);
     const taskId = useRecoilValue(taskIdState)
-    const setTaskId = useSetRecoilState(taskIdState)
     const setTasks = useSetRecoilState(tasksState)
     const tasks = useRecoilValue(tasksState)
 
@@ -51,12 +50,11 @@ const EditForm = ({id ,parentId, setFormType, setShowModal}) => {
         const newStage = {
             id: stages.length + 1,
             checked: false,
-            description: description
+            description: description,
         };
         const updatedStages = [...stages, newStage];
         setStages(updatedStages);
     };
-
 
     const handleDeleteStages = (index) => {
         const newData = [...stages];
@@ -78,7 +76,11 @@ const EditForm = ({id ,parentId, setFormType, setShowModal}) => {
             deadline: deadline ? deadline : finalDate,
             executorId
         }
-        const stagesList = stages.map((stage) => (stage.description));
+        const stagesList = stages.map((stage) => ({
+            id: stage.id,
+            is_ready: stage.checked,
+            description: stage.description,
+        }));
         try {
             await updateIdTask(id.id, taskList, stagesList)
             setShowModal(false)
@@ -87,6 +89,12 @@ const EditForm = ({id ,parentId, setFormType, setShowModal}) => {
         } catch (e) {
             console.log(e);
         }
+    };
+
+    const handleStageDescriptionChange = (index, description) => {
+        const updatedStages = [...stages];
+        updatedStages[index].description = description;
+        setStages(updatedStages);
     };
 
     const Delete = async () => {
@@ -194,24 +202,25 @@ const EditForm = ({id ,parentId, setFormType, setShowModal}) => {
                 <div className={s.checklist}>
                     <div className={s.checklistTop}>
                         <span>Чек-лист</span>
-                        <button type="button"  onClick={handleAddStages}>
+                        <button type="button"  onClick={() => handleAddStages('')}>
                             <Add />
                         </button>
                     </div>
                     {taskId.stages && taskId.stages.map((stage, index) => (
                         <div className={s.checkList} key={index}>
-                            <input type="checkbox" checked={stage.is_ready}/>
+                            <input type="checkbox" defaultChecked={stage.is_ready}/>
                             <Text
                                 width={"60%"}
                                 height={"21px"}
                                 defaultValue={stage.description}
-                                onChange={(event) => {
-                                    const newData = [...stages];
-                                    newData[index].description = event.target.value;
-                                    setStages(newData);
-                                }}
+                                onChange={(event) =>
+                                    handleStageDescriptionChange(
+                                        index,
+                                        event.target.value
+                                    )
+                                }
                             />
-                            <button type="button" onClick={() => handleDeleteStages(index, stage.description)}>
+                            <button type="button" onClick={() => handleDeleteStages(index)}>
                                 <Del />
                             </button>
                         </div>

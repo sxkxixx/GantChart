@@ -23,7 +23,6 @@ const TextAreaField = styled.textarea`
   }
 
   ${props => props.disabled && `
-    opacity: 0.6;
     cursor: not-allowed;
   `}
 `;

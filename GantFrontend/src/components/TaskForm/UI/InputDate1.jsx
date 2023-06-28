@@ -12,6 +12,10 @@ const StyledInput = styled.input`
   border: 1px solid var(--basic-grey, #AFBAC3);
   background: #FFF;
   font-size: 14px;
+
+  ${props => props.disabled && `
+    cursor: not-allowed;
+  `}
 `;
 
 const StyledSpan = styled.span`
