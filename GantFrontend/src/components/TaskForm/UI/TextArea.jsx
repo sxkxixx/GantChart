@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const InputField = styled.input`
+const TextAreaField = styled.textarea`
   width: ${props => props.width ? props.width : '100%'};
-  height: ${props => props.height ? props.height : '40px'};
+  height: ${props => props.height ? props.height : '80px'};
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -27,15 +27,16 @@ const InputField = styled.input`
   `}
 `;
 
-const Text = ({ value, onChange ,width, height, disabled = false, ...rest }) => (
-    <InputField
+const TextArea = ({ value, onChange ,width, height, disabled = false, ...rest }) => (
+    <TextAreaField
         width={width}
         height={height}
         disabled={disabled}
         {...rest}
-        placeholder="Название задачи"
+        placeholder="Введите описание"
         value={value}
         onChange={onChange}
     />
 );
-export default Text;
+
+export default TextArea;

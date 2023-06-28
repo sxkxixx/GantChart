@@ -58,7 +58,6 @@
     gap: 8px;
     width: 100%;
     height: 20%;
-    overflow-y: scroll;
 }
 
 .unimportantTop{
@@ -71,6 +70,15 @@
 .unimportantTop button{
     display: flex;
     align-items: center;
+}
+
+.unimportantLists{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+    height: 100%;
+    overflow-y: scroll;
 }
 
 .unimportantList{
@@ -87,7 +95,6 @@
     gap: 8px;
     width: 100%;
     height: 20%;
-    overflow-y: scroll;
 }
 
 .checklistTop{
@@ -100,6 +107,15 @@
 .checklistTop button{
     display: flex;
     align-items: center;
+}
+
+.checkLists{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+    height: 100%;
+    overflow-y: scroll;
 }
 
 .checkList{
@@ -132,6 +148,7 @@
 .dates{
     display: flex;
     flex-direction: column;
+    width: 100%;
 }
 
 .dates span{
@@ -149,6 +166,7 @@
     border: 1px solid #AFBAC3;
     background: #FFF;
     align-items: center;
-    width: 247px;
+    width: 224px;
     height: 32px;
+    font-size: 14px;
 }

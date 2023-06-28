@@ -10,6 +10,7 @@ import {ReactComponent as Add} from  '../../../assets/img/addButtForm.svg'
 import {ReactComponent as Del} from  '../../../assets/img/delButtForm.svg'
 import InputDate1 from "../UI/InputDate1";
 import ButtonForm from "../UI/Button";
+import TextArea from "../UI/TextArea";
 
 const CreateForm = ({parentId, setShowModal}) => {
     // const [projectId, setProjectId] = useRecoilState(projectsList)
@@ -90,7 +91,12 @@ const CreateForm = ({parentId, setShowModal}) => {
             <form className={s.form} onSubmit={handleSubmit}>
                 <div className={s.title}>
                     <Text optional={true} width={"606px"} height={"36px"} onChange={(event) => setName(event.target.value)}/>
-                    <span>Базовая задача:{parentId !== null? parentId.name : "Отсувствует"}</span>
+                    <span>
+                        Базовая задача:
+                        <span style={{textDecoration:'underline'}}>
+                            {parentId !== null ? parentId.name : "Отсутствует"}
+                        </span>
+                    </span>
                 </div>
                 <div className={s.project}>
                     <Select
@@ -120,7 +126,7 @@ const CreateForm = ({parentId, setShowModal}) => {
                     </div>
                 </div>
                 <div className={s.description}>
-                    <Text
+                    <TextArea
                         width={"606px"}
                         height={"128px"}
                         onChange={(event) => setDescription(event.target.value)}
@@ -147,14 +153,16 @@ const CreateForm = ({parentId, setShowModal}) => {
                             <Add />
                         </button>
                     </div>
-                    {performers.map((performer, index) => (
-                        <div className={s.unimportantList} key={index}>
-                            <Select  options={options.map(opt => ({value: opt.id, name: opt.name}))}/>
-                            <button type="button" onClick={() => handleDeletePerformer(index)}>
-                                <Del />
-                            </button>
-                        </div>
-                    ))}
+                    <div className={s.unimportantLists}>
+                        {performers.map((performer, index) => (
+                            <div className={s.unimportantList} key={index}>
+                                <Select  options={options.map(opt => ({value: opt.id, name: opt.name}))}/>
+                                <button type="button" onClick={() => handleDeletePerformer(index)}>
+                                    <Del />
+                                </button>
+                            </div>
+                        ))}
+                    </div>
                 </div>
                 <div className={s.checklist}>
                     <div className={s.checklistTop}>
@@ -163,23 +171,25 @@ const CreateForm = ({parentId, setShowModal}) => {
                             <Add />
                         </button>
                     </div>
-                    {stages.map((stage, index) => (
-                        <div className={s.checkList} key={index}>
-                            <input type="checkbox"/>
-                            <Text
-                                width={"60%"}
-                                height={"21px"}
-                                onChange={(event) => {
-                                    const newData = [...stages];
-                                    newData[index].description = event.target.value;
-                                    setStages(newData);
-                                }}
-                            />
-                            <button type="button" onClick={() => handleDeleteStages(index, stage.description)}>
-                                <Del />
-                            </button>
-                        </div>
-                    ))}
+                    <div className={s.checkLists}>
+                        {stages.map((stage, index) => (
+                            <div className={s.checkList} key={index}>
+                                <input type="checkbox"/>
+                                <Text
+                                    width={"60%"}
+                                    height={"21px"}
+                                    onChange={(event) => {
+                                        const newData = [...stages];
+                                        newData[index].description = event.target.value;
+                                        setStages(newData);
+                                    }}
+                                />
+                                <button type="button" onClick={() => handleDeleteStages(index, stage.description)}>
+                                    <Del />
+                                </button>
+                            </div>
+                        ))}
+                    </div>
                 </div>
                 <div className={s.buttons}>
                     <ButtonForm type="submit">Сохранить</ButtonForm>

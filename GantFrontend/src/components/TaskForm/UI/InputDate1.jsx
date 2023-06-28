@@ -11,6 +11,7 @@ const StyledInput = styled.input`
   border-radius: 5px;
   border: 1px solid var(--basic-grey, #AFBAC3);
   background: #FFF;
+  font-size: 14px;
 `;
 
 const StyledSpan = styled.span`
