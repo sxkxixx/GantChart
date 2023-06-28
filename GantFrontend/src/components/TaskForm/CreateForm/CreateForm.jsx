@@ -11,6 +11,7 @@ import {ReactComponent as Del} from  '../../../assets/img/delButtForm.svg'
 import InputDate1 from "../UI/InputDate1";
 import ButtonForm from "../UI/Button";
 import TextArea from "../UI/TextArea";
+import {toast} from "react-toastify";
 
 const CreateForm = ({parentId, setShowModal}) => {
     // const [projectId, setProjectId] = useRecoilState(projectsList)
@@ -63,6 +64,32 @@ const CreateForm = ({parentId, setShowModal}) => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+        const missingData = [];
+
+        if (!name) {
+            missingData.push('Название задачи');
+        }
+        if (!projectId) {
+            missingData.push('Проект');
+        }
+        if (!teamId) {
+            missingData.push('Тег Команды');
+        }
+        if (!startDate) {
+            missingData.push('Дата начала');
+        }
+        if (!finalDate) {
+            missingData.push('Дата окончания');
+        }
+        if (!executorId) {
+            missingData.push('Ответственный');
+        }
+
+        if (missingData.length > 0) {
+            const message = `Вы не ввели следующие обязательные данные:\n${missingData.join('\n')}`;
+            alert(message);
+            return;
+        }
         const parent = parentId ? parentId.id : null;
         const taskList = {
             parent,
@@ -81,6 +108,16 @@ const CreateForm = ({parentId, setShowModal}) => {
             setShowModal(false)
             const updatedTasks = await getAllTask();
             setTasks(updatedTasks);
+            toast.success('Задача создана!', {
+                position: "top-right",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
         } catch (e) {
             console.log(e);
         }
