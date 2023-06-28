@@ -20,10 +20,7 @@ const InputField = styled.input`
     border-color: #007bff;
     box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
   }
-
-  ${props => props.disabled && `
-    cursor: not-allowed;
-  `}
+  
 `;
 
 const Text = ({ value, onChange ,width, height, disabled = false, ...rest }) => (

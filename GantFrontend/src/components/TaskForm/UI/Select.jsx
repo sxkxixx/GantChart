@@ -27,9 +27,6 @@ const SelectItem = styled.select`
   background: #FFFFFF;
   border-radius: 5px;
   font-size: 14px;
-  ${props => props.disabled && `
-    cursor: not-allowed;
-  `}
 `;
 
 const Option = styled.option`

@@ -22,9 +22,9 @@ const TextAreaField = styled.textarea`
     box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
   }
 
-  ${props => props.disabled && `
-    cursor: not-allowed;
-  `}
+  // ${props => props.disabled && `
+  //   cursor: not-allowed;
+  // `}
 `;
 
 const TextArea = ({ value, onChange ,width, height, disabled = false, ...rest }) => (
