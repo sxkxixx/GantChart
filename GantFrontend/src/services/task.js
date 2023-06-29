@@ -11,6 +11,15 @@ export const getAllTask = async () => {
     }
 }
 
+export const getAllTaskFilter = async (id) => {
+    try {
+        const response = await api.get(`/api/v1/gant/tasks?project_id=${id}`);
+        return response.data;
+    } catch (e) {
+        console.log(e);
+    }
+};
+
 export const createTask = async (task, stages) => {
     const createTask = {
         parent_id: task.parent || null,
