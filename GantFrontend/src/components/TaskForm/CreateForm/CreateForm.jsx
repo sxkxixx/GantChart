@@ -109,6 +109,11 @@ const CreateForm = ({parentId, setShowModal}) => {
             return;
         }
 
+        if(startDate > finalDate ){
+            alert("Дата начала не может быть больше Даты окончания");
+            return
+        }
+
         if (!validateDates()) {
             alert("Подзадача не может выходить за отрезок времени базовой задачи.");
             return

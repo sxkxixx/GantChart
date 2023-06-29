@@ -4,6 +4,7 @@ import GanttTable from './GanttTable/GanttTable';
 import {useRecoilValue, useSetRecoilState} from 'recoil';
 import {tasksState} from '../../store/atom';
 import {getAllTask} from '../../services/task';
+import TasksZero from "./TasksZero/TasksZero";
 
 const GanttChart = () => {
     const [collapsedTasks, setCollapsedTasks] = useState([]);
@@ -29,6 +30,10 @@ const GanttChart = () => {
                 : [...prevCollapsedTasks, taskId]
         );
     };
+
+    if (tasks.length === 0) {
+        return <TasksZero />
+    }
 
     return (
         <div className={s.container}>

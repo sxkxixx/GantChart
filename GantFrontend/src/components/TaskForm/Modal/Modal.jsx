@@ -18,8 +18,8 @@ const Modal = ({id, parentId, showModal, setShowModal, formType, setFormType}) =
                     <div className={s.modal} onClick={e => e.stopPropagation()}>
                         <button className={s.close} onClick={closeForm}><Close/></button>
                         {formType === 'create' && (<CreateForm setShowModal={setShowModal} parentId={parentId}/>)}
-                        {formType === 'edit' && (<EditForm setShowModal={setShowModal} setFormType={setFormType} id={id} parentId={parentId}/>)}
-                        {formType === 'view' && (<ViewForm setShowModal={setShowModal}  setFormType={setFormType} id={id} parentId={parentId}/>)}
+                        {formType === 'edit' && (<EditForm setShowModal={setShowModal} setFormType={setFormType} id={id}/>)}
+                        {formType === 'view' && (<ViewForm setShowModal={setShowModal}  setFormType={setFormType} id={id}/>)}
                     </div>
                 </div>
             ) : null}

@@ -38,8 +38,25 @@ const ViewForm = ({id, setFormType, setShowModal}) => {
 
     const Delete = async () => {
         try {
-            await deleteIdTask(taskId.task.id)
-            setShowModal(false)
+
+            const taskChild = findTaskById(tasks, taskId.task.id);
+
+            if (taskChild.children.length !== 0 && taskChild.children.length > 0) {
+                toast.error('Невозможно удалить задачу с подзадачами!', {
+                    position: "top-right",
+                    autoClose: 2000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                });
+                return
+            }
+
+            await deleteIdTask(taskId.task.id);
+            setShowModal(false);
             const updatedTasks = await getAllTask();
             setTasks(updatedTasks);
             toast.success('Задача удалена!', {
@@ -72,7 +89,6 @@ const ViewForm = ({id, setFormType, setShowModal}) => {
         }
         return null;
     }
-
 
     return (
         <div className={s.container}>
