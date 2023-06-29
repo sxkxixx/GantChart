@@ -57,6 +57,22 @@ const ViewForm = ({id, setFormType, setShowModal}) => {
         }
     }
 
+    const findTaskById = (tasks, taskId) =>{
+        for (let i = 0; i < tasks.length; i++) {
+            const task = tasks[i];
+            if (task.id === taskId) {
+                return task;
+            }
+            if (task.children && task.children.length > 0) {
+                const foundTask = findTaskById(task.children, taskId);
+                if (foundTask) {
+                    return foundTask;
+                }
+            }
+        }
+        return null;
+    }
+
 
     return (
         <div className={s.container}>
@@ -67,7 +83,7 @@ const ViewForm = ({id, setFormType, setShowModal}) => {
                         Базовая задача:
                         <span style={{textDecoration:'underline'}}>
                         {taskId.task && taskId.task.parent_id !== null ?
-                            tasks.find(task => task.id === taskId.task.parent_id)?.name : "Отсутствует"}
+                            findTaskById(tasks, taskId.task.parent_id)?.name : "Отсутствует"}
                         </span>
                     </span>
                 </div>

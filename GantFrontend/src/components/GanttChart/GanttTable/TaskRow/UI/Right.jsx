@@ -91,6 +91,6 @@ export const Right = styled.div`
     padding: 2px 4px;
     border-radius: 5px;
     white-space: nowrap;
-    z-index: 1;
+    z-index: 9999;
   }
 `;

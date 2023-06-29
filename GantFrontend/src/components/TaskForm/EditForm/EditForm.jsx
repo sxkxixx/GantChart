@@ -13,7 +13,7 @@ import ButtonForm from "../UI/Button";
 import TextArea from "../UI/TextArea";
 import {toast} from "react-toastify";
 
-const EditForm = ({id ,parentId, setFormType, setShowModal}) => {
+const EditForm = ({id, setFormType, setShowModal}) => {
     // const [projectId, setProjectId] = useRecoilState(projectsList)
     const [projectId, setProjectId] = useState(0)
     // const [teamId, setTeamId] = useRecoilState(teamsList)
@@ -73,12 +73,12 @@ const EditForm = ({id ,parentId, setFormType, setShowModal}) => {
     };
 
     const validateDates = () => {
-        if (!parentId) {
+        if (!taskId.task.parent_id) {
             return true;
         }
 
-        const parentStartDate = Date.parse(parentId.planned_start_date);
-        const parentFinalDate = Date.parse(parentId.planned_final_date);
+        const parentStartDate = Date.parse(findTaskById(tasks, taskId.task.parent_id)?.planned_start_date);
+        const parentFinalDate = Date.parse(findTaskById(tasks, taskId.task.parent_id)?.planned_final_date);
 
         if (Date.parse(startDate) === parentStartDate || Date.parse(finalDate) === parentFinalDate) {
             return true;
@@ -97,10 +97,8 @@ const EditForm = ({id ,parentId, setFormType, setShowModal}) => {
             return
         }
 
-        const parent = parentId ? parentId.id : null;
-
         const taskList = {
-            parent,
+            parent: taskId.task.parent_id !== null ? taskId.task.parent_id : null,
             projectId: projectId !== 0 ? projectId : taskId.task.project_id,
             teamId: teamId !== 0 ? teamId : taskId.task.team_id,
             name: name !== '' ? name : taskId.task.name,
@@ -154,6 +152,22 @@ const EditForm = ({id ,parentId, setFormType, setShowModal}) => {
         }
     }
 
+    const findTaskById = (tasks, taskId) =>{
+        for (let i = 0; i < tasks.length; i++) {
+            const task = tasks[i];
+            if (task.id === taskId) {
+                return task;
+            }
+            if (task.children && task.children.length > 0) {
+                const foundTask = findTaskById(task.children, taskId);
+                if (foundTask) {
+                    return foundTask;
+                }
+            }
+        }
+        return null;
+    }
+
     return (
         <div className={s.container}>
             <form className={s.form} onSubmit={handleSubmit}>
@@ -163,7 +177,7 @@ const EditForm = ({id ,parentId, setFormType, setShowModal}) => {
                         Базовая задача:
                         <span style={{textDecoration:'underline'}}>
                         {taskId.task && taskId.task.parent_id !== null ?
-                            tasks.find(task => task.id === taskId.task.parent_id)?.name : "Отсутствует"}
+                            findTaskById(tasks, taskId.task.parent_id)?.name : "Отсутствует"}
                         </span>
                     </span>
                 </div>
