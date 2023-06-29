@@ -115,7 +115,7 @@ const CreateForm = ({parentId, setShowModal}) => {
         }
 
         if (!validateDates()) {
-            alert("Подзадача не может выходить за отрезок времени базовой задачи.");
+            alert("Подзадача не может выходить за отрезок времени базовой задачи");
             return
         }
 

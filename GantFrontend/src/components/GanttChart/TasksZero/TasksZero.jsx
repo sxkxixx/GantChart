@@ -4,7 +4,7 @@ import s from './TasksZero.module.css'
 const TasksZero = () => {
     return (
         <div className={s.container}>
-            Список задач отсувствует
+            Список задач отсутствует
         </div>
     );
 };

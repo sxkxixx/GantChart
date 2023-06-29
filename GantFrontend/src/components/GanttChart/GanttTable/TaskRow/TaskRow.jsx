@@ -87,7 +87,7 @@ const TaskRow = ({
                                     onMouseEnter={() => setIsHovered(true)}
                                     onMouseLeave={() => setIsHovered(false)}
                                 />
-                                {isHovered && !task.is_on_kanban && <div className="banner">Отобразить на канбане</div>}
+                                {isHovered && !task.is_on_kanban && <div className="banner">Отображать на канбане</div>}
                             </div>
                         )}
                         <Buttons>
