@@ -28,7 +28,6 @@ const ViewForm = ({id, setFormType, setShowModal}) => {
         getIdTask(id.id)
             .then((response) => {
                 setTaskId(response)
-                console.log(response)
             })
             .catch((error) => {
                 console.log(error)
@@ -108,20 +107,20 @@ const ViewForm = ({id, setFormType, setShowModal}) => {
                         label="Проекты"
                         icon={<Project/>}
                         options={options.map(opt => ({value: opt.id, name: opt.name}))}
-                        selectedValue={taskId.task && taskId.task.project_id}
+                        value={taskId.task && taskId.task.project_id}
                         disabled
                     />
                 </div>
                 <div className={s.elements}>
                     <InputDate1
+                        value={taskId.task && taskId.task.deadline}
                         disabled
-                        selectedValue={taskId.task && taskId.task.deadline}
                     />
                     <Select
                         label="Тег Команды"
                         icon={<Project/>}
                         options={options.map(opt => ({value: opt.id, name: opt.name}))}
-                        selectedValue={taskId.task && taskId.task.team_id}
+                        value={taskId.task && taskId.task.team_id}
                         disabled
                     />
                     <div className={s.dates}>
@@ -160,7 +159,7 @@ const ViewForm = ({id, setFormType, setShowModal}) => {
                         label="Ответственный"
                         icon={<Project/>}
                         options={options.map(opt => ({value: opt.id, name: opt.name}))}
-                        selectedValue={taskId.executor && taskId.executor[0].user_id}
+                        value={taskId.executor && taskId.executor[0].user_id}
                         disabled
                     />
                 </div>

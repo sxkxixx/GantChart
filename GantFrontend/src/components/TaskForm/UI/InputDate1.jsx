@@ -20,10 +20,10 @@ const StyledSpan = styled.span`
   font-weight: bold;
 `;
 
-const InputDate1 = ({ selectedValue, onChange, disabled }) => (
+const InputDate1 = ({ value, onChange, disabled, defaultValue }) => (
     <div>
         <StyledSpan>Дедлайн</StyledSpan>
-        <StyledInput type="date" defaultValue={selectedValue} onChange={onChange} disabled={disabled}/>
+        <StyledInput type="date" defaultValue={defaultValue} value={value} onChange={onChange} disabled={disabled}/>
     </div>
 )
 

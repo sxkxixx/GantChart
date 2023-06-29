@@ -105,8 +105,8 @@ const EditForm = ({id, setFormType, setShowModal}) => {
             description: description !== '' ? description : taskId.task.description,
             startDate: startDate !== '' ? startDate : taskId.task.planned_start_date,
             finalDate: finalDate !== '' ? finalDate : taskId.task.planned_final_date,
-            deadline: deadline !== '' ? deadline : taskId.task.deadline ? taskId.task.deadline : taskId.task.planned_final_date,
-            executorId: executorId !== 0 ? executorId : taskId.executor && taskId.executor[0].user_id,
+            deadline: deadline !== '' ? deadline : taskId.task.deadline,
+            // executorId: executorId !== 0 ? executorId : taskId.executor && taskId.executor[0].user_id,
         };
 
         const stagesList = taskId.stages.map((stage) => stage.description);
@@ -202,20 +202,20 @@ const EditForm = ({id, setFormType, setShowModal}) => {
                     <Select
                         label="Проекты"
                         icon={<Project/>}
-                        selectedValue={taskId.task && taskId.task.project_id}
+                        defaultValue={taskId.task && taskId.task.project_id}
                         options={options.map(opt => ({value: opt.id, name: opt.name}))}
                         onChange={(event) => setProjectId(event.target.value)}
                     />
                 </div>
                 <div className={s.elements}>
                     <InputDate1
-                        selectedValue={taskId.task && taskId.task.deadline}
+                        defaultValue={taskId.task && taskId.task.deadline}
                         onChange={(event) => setDeadline(event.target.value)}
                     />
                     <Select
                         label="Тег Команды"
                         icon={<Project/>}
-                        selectedValue={taskId.task && taskId.task.team_id}
+                        defaultValue={taskId.task && taskId.task.team_id}
                         options={options.map(opt => ({value: opt.id, name: opt.name}))}
                         onChange={(event) => setTeamId(event.target.value)}
                     />
@@ -255,7 +255,7 @@ const EditForm = ({id, setFormType, setShowModal}) => {
                         label="Ответственный"
                         icon={<Project/>}
                         disabled
-                        selectedValue={taskId.executor && taskId.executor[0].user_id}
+                        defaultValue={taskId.executor && taskId.executor[0].user_id}
                         options={options.map(opt => ({value: opt.id, name: opt.name}))}
                         onChange={(event) => setExecutorId(event.target.value)}
                     />

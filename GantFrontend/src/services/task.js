@@ -86,6 +86,7 @@ export const updateIdTask = async (id, task, stages) => {
     };
     try {
         await api.post(`/api/v1/gant/task/${id}/edit`, data)
+        console.log(data)
     }catch (e){
         console.log(e)
     }
