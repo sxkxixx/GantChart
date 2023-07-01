@@ -30,7 +30,7 @@ const GanttTable = ({
     }
 
     const groupedDates = dateArray.reduce((acc, date) => {
-        const monthString = date.toLocaleString("default", { month: "long" });
+        const monthString = date.toLocaleString("default", {month: "long"});
         acc[monthString] = acc[monthString] || [];
         acc[monthString].push(date);
         return acc;
@@ -39,63 +39,58 @@ const GanttTable = ({
     const monthArrays = Object.keys(groupedDates).map(
         (month) => groupedDates[month]
     );
-
     return (
         <div className={s.container}>
             <div className={s.table}>
-                <table className={s.collapse}>
-                    <thead>
-                    <tr>
-                        <th>Задачи</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {tasks.map((task) => (
-                        <TaskRow
-                            key={task.id}
-                            task={task}
-                            indentLevel={indentLevel}
-                            collapsedTasks={collapsedTasks}
-                            toggleTaskCollapse={toggleTaskCollapse}
-                            onAddButtonClick={() => console.log('Add button clicked')}
-                        />
-                    ))}
-                    </tbody>
-                </table>
+                <div className={s.collapse}>
+                    <div className={s.titleRow}>
+                        <span>Задачи</span>
+                    </div>
+                    <div>
+                        {tasks.map((task) => (
+                            <TaskRow
+                                key={task.id}
+                                task={task}
+                                indentLevel={indentLevel}
+                                collapsedTasks={collapsedTasks}
+                                toggleTaskCollapse={toggleTaskCollapse}
+                                onAddButtonClick={() => console.log('Add button clicked')}
+                            />
+                        ))}
+                    </div>
+                </div>
             </div>
 
             <div className={`${s.row} ${s.ganttTable}`}>
                 <div className={s.tableWrapper}>
-                    <table className={s.collapse}>
-                        <thead>
-                        <tr>
-                            {monthArrays.map((monthArray, index) => (
-                                <th colSpan={monthArray.length} key={index}>
-                                    {monthArray[0].toLocaleString('default', { month: 'long' })}{' '}
-                                    {monthArray[0].getFullYear()}
-                                </th>
-                            ))}
-                        </tr>
-                        <tr>
-                            {dateArray.map((date, index) => (
-                                <th className={s.date} key={index} colSpan="1">
-                                    {date.getDate()}
-                                </th>
-                            ))}
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {tasks.map((task) => (
-                            <GanttTaskRow
-                                key={task.id}
-                                task={task}
-                                projectDurationInDays={projectDurationInDays}
-                                startDate={startDate}
-                                collapsedTasks={collapsedTasks}
-                            />
+                    <div className={s.tableHeader}>
+                        {monthArrays.map((monthArray, index) => (
+                            <div className={s.tableMonth} key={index}>
+                                {monthArray[0].toLocaleString('default', {
+                                    month: 'long',
+                                })}{' '}
+                                {monthArray[0].getFullYear()}
+                            </div>
                         ))}
-                        </tbody>
-                    </table>
+                    </div>
+                    <div className={s.tableBody}>
+                        {dateArray.map((date, index) => (
+                            <div className={s.dateCell} key={index}>
+                                {date.getDate()}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+                <div className={s.tasksContainer}>
+                    {tasks.map((task) => (
+                        <GanttTaskRow
+                            key={task.id}
+                            task={task}
+                            projectDurationInDays={projectDurationInDays}
+                            startDate={startDate}
+                            collapsedTasks={collapsedTasks}
+                        />
+                    ))}
                 </div>
             </div>
         </div>

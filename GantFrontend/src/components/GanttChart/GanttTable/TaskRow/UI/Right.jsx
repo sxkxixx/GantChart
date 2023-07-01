@@ -8,7 +8,7 @@ export const Right = styled.div`
   width: 200px;
   gap: 8px;
   height: 42px;
-  padding-right: 20px;
+  //padding-right: 20px;
   
   button{
     width: 22px;

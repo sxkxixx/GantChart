@@ -4,10 +4,12 @@ export const StyledTaskRow = styled.tr`
   display: block;
   height: 42px;
   width: 100%;
-  & td {
+  border-right: 1px solid black;
+  border-left: 1px solid black;
+  border-bottom: 1px solid black;
+  & div {
     display: flex;
-    justify-content: space-between;
-    height: 100%;
+    flex-direction: row;
     padding: 0;
   }
 `;

@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import s from './GanttTaskRow.module.css';
+import { editDates } from '../../../../services/task';
 
 const GanttTaskRow = ({
                           task,
@@ -8,100 +9,108 @@ const GanttTaskRow = ({
                           collapsedTasks,
                           indentLevel = 0,
                       }) => {
-    const { id, planned_start_date: taskStartDate, planned_final_date: taskEndDate, children } = task;
+    const {
+        id,
+        planned_start_date: taskStartDate,
+        planned_final_date: taskEndDate,
+        children,
+    } = task;
 
     const isCollapsed = collapsedTasks.includes(id);
+    const currentIndentLevel = indentLevel;
 
-    let currentIndentLevel = indentLevel;
-
-    if (children && !isCollapsed) {
-        currentIndentLevel++;
-    }
-
-    const allDates = [];
-    const startIndex = Math.round(
-        (new Date(taskStartDate) - startDate) / (1000 * 60 * 60 * 24)
+    const [startIndex, setStartIndex] = useState(
+        Math.round((new Date(taskStartDate) - startDate) / (1000 * 60 * 60 * 24))
     );
-    const endIndex = Math.round(
-        (new Date(taskEndDate) - startDate) / (1000 * 60 *60 * 24)
+    const [endIndex, setEndIndex] = useState(
+        Math.round((new Date(taskEndDate) - startDate) / (1000 * 60 * 60 * 24))
     );
-
-    for (let i = 0; i < projectDurationInDays; i++) {
-        if (i >= startIndex && i <= endIndex) {
-            allDates.push(new Date(startDate.getTime() + i * 24 * 60 * 60 * 1000));
-        } else {
-            allDates.push(null);
-        }
-    }
-
-    const getCellStyle = (dateIndex) => {
-        let colorClass = '';
-        if (indentLevel === 0 || indentLevel === 1) {
-            colorClass = s.cellColor1;
-        } else {
-            colorClass = s.cellColor2;
-        }
-
-        if (taskStartDate && taskEndDate) {
-            if (dateIndex >= startIndex && dateIndex <= endIndex) {
-                return `${s.cellActive} ${colorClass}`;
-            }
-        }
-
-        return colorClass;
-    };
 
     const dateCells = [];
-    let currentStyle = null;
-    let currentColSpan = 0;
-    for (let i = 0; i < allDates.length; i++) {
-        const date = allDates[i];
-        const style = getCellStyle(i);
-        if (style !== currentStyle) {
-            if (currentColSpan > 0) {
-                dateCells.push(
-                    <td
-                        key={`${id}-${i - currentColSpan}`}
-                        colSpan={currentColSpan}
-                        className={`${currentStyle} ${
-                            currentIndentLevel > 0 ? s.ganttCellIndent : ''
-                        }`}
-                    ></td>
-                );
-            }
-            currentStyle = style;
-            currentColSpan = 1;
-        } else {
-            currentColSpan++;
+    const activeCellIndex = new Set();
+    for (let i = 0; i < projectDurationInDays; i++) {
+        const isActiveCell = i >= startIndex && i <= endIndex;
+        if (isActiveCell) {
+            activeCellIndex.add(i);
         }
-
-        if (date === null) {
-            dateCells.push(
-                <td
-                    key={`${id}-${i}`}
-                    colSpan="1"
-                    className={`${s.cell} ${currentIndentLevel > 0 ? s.ganttCellIndent : ''}`}
-                ></td>
-            );
-            currentColSpan = 0;
-        }
-    }
-
-    if (currentColSpan > 0) {
+        const style = `${s.cell} ${
+            isActiveCell ? getCellStyle(currentIndentLevel) : ''
+        }`;
+        const cellClassName =
+            i === startIndex
+                ? `${style} ${s.startCell}`
+                : i === endIndex
+                    ? `${style} ${s.endCell}`
+                    : i > startIndex && i < endIndex
+                        ? `${style} ${s.middleCell}`
+                        : style;
         dateCells.push(
-            <td
-                key={`${id}-${allDates.length - currentColSpan}`}
-                colSpan={currentColSpan}
-                className={`${currentStyle} ${currentIndentLevel > 0 ? s.ganttCellIndent : ''}`}
-            ></td>
+            <div className={cellClassName} key={`${id}-${i}`}>
+                {isActiveCell && <div className={s.isActiveCellOverlay} />}
+            </div>
         );
     }
 
+    const handleDragStartIndex = (event) => {
+        handleDragIndex(event, startIndex, setStartIndex);
+    };
+
+    const handleDragEndIndex = (event) => {
+        handleDragIndex(event, endIndex, setEndIndex);
+    };
+
+    const handleDragIndex = (event, currentIndex, setCurrentIndex) => {
+        const initialMouseX = event.clientX;
+        const initialIndex = currentIndex;
+
+        const handleMouseMove = (event) => {
+            const deltaX = event.clientX - initialMouseX;
+            const currentIndexDelta = Math.round(
+                (deltaX / event.target.offsetWidth) * projectDurationInDays
+            );
+
+            const newStartIndex = Math.max(
+                Math.min(initialIndex + currentIndexDelta, endIndex),
+                0
+            );
+            const newEndIndex = Math.min(
+                Math.max(endIndex + currentIndexDelta, startIndex),
+                projectDurationInDays - 1
+            );
+
+            setCurrentIndex(currentIndex === startIndex ? newStartIndex : newEndIndex);
+        };
+
+        const handleMouseUp = () => {
+            document.removeEventListener('mousemove', handleMouseMove);
+            document.removeEventListener('mouseup', handleMouseUp);
+        };
+
+        document.addEventListener('mousemove', handleMouseMove);
+        document.addEventListener('mouseup', handleMouseUp);
+    };
+
     return (
         <>
-            <tr key={id}>{dateCells}</tr>
-            {children &&
-                !isCollapsed &&
+            <div className={s.row} key={id}>
+                {dateCells.map((cell, index) => (
+                    <div
+                        className={s.cellWrapper}
+                        key={`${id}-cell-${index}`}
+                        onMouseDown={
+                            index === startIndex
+                                ? handleDragStartIndex
+                                : index === endIndex
+                                    ? handleDragEndIndex
+                                    : undefined
+                        }
+                    >
+                        {cell}
+                    </div>
+                ))}
+            </div>
+            {!isCollapsed &&
+                children &&
                 children.map((childTask) => (
                     <GanttTaskRow
                         key={childTask.id}
@@ -109,11 +118,22 @@ const GanttTaskRow = ({
                         projectDurationInDays={projectDurationInDays}
                         startDate={startDate}
                         collapsedTasks={collapsedTasks}
-                        indentLevel={currentIndentLevel}
+                        indentLevel={currentIndentLevel + 1}
                     />
                 ))}
         </>
     );
+};
+
+const getCellStyle = (indentLevel) => {
+    let colorClass;
+    if (indentLevel === 0 || indentLevel === 1) {
+        colorClass = s.cellColor1;
+    } else {
+        colorClass = s.cellColor2;
+    }
+
+    return `${colorClass}`;
 };
 
 export default GanttTaskRow;

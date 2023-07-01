@@ -41,6 +41,7 @@ const GanttChart = () => {
                 tasks={tasks}
                 collapsedTasks={collapsedTasks}
                 toggleTaskCollapse={toggleTaskCollapse}
+                setTasks={setTasks}
             />
         </div>
     );

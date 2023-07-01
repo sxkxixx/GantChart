@@ -68,7 +68,7 @@ const TaskRow = ({
     return (
         <>
             <StyledTaskRow>
-                <td style={{paddingLeft: `${indentLevel * 20}px`}}>
+                <div style={{paddingLeft: `${indentLevel * 20}px`}}>
                     <Title>
                         {hasChildren && (
                             <CollapseButton onClick={() => toggleTaskCollapse(task.id)}>
@@ -94,7 +94,7 @@ const TaskRow = ({
                             <button onClick={()=>openForm('create')}><Add/></button>
                         </Buttons>
                     </Right>
-                </td>
+                </div>
             </StyledTaskRow>
 
             {hasChildren &&

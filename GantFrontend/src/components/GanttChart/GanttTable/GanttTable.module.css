@@ -20,20 +20,24 @@
     background-color: white;
 }
 
+.titleRow{
+    position: sticky;
+    top: 0;
+    background-color: white;
+    height: 80px;
+    z-index: 123;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid black;
+}
+
 .table td{
     display: flex;
     flex-direction: row;
     padding: 10px;
     text-align: center;
     border: 1px solid black;
-}
-
-.table thead{
-    position: sticky;
-    top: 0;
-    background-color: white;
-    height: 80px;
-    z-index: 123;
 }
 
 
@@ -71,6 +75,9 @@
 
 .tableWrapper {
     height: 100%;
+    position: sticky;
+    top: 0;
+    z-index: 7;
 }
 
 table {
@@ -94,3 +101,40 @@ table {
     top: 0;
 }
 
+.tableHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 40px;
+    padding: 0 10px;
+    background-color: white;
+    border-top: 1px solid black;
+}
+
+.tableMonth {
+    font-weight: bold;
+}
+
+.tableBody {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 40px;
+    background-color: white;
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+}
+
+.dateCell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100px;
+    height: 100%;
+    border-right: 1px solid black;
+}
+
+.tasksContainer {
+    width: 100%;
+    height: 100%;
+}

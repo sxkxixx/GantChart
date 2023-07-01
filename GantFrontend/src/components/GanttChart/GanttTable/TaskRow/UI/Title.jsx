@@ -4,5 +4,8 @@ export const Title = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding-left: 8px;
+  width: 50%;
+  & span {
+    padding-left: 8px;
+  }
 `;

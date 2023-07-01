@@ -1,8 +1,8 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import s from './CreateForm.module.css'
 import {useRecoilState, useRecoilValue, useSetRecoilState} from "recoil";
-import {projectsList, tasksState, teamsList} from "../../../store/atom";
-import {createTask, getAllTask} from "../../../services/task";
+import {projectsList, tasksState, teamsList, usersList} from "../../../store/atom";
+import {createTask, getAllTask, getIdTask} from "../../../services/task";
 import Text from "../UI/Text";
 import Select from "../UI/Select";
 import {ReactComponent as Project} from  '../../../assets/img/projects.svg'
@@ -12,18 +12,20 @@ import InputDate1 from "../UI/InputDate1";
 import ButtonForm from "../UI/Button";
 import TextArea from "../UI/TextArea";
 import {toast} from "react-toastify";
+import {getAllProjects, getAllTeams, getAllUsers} from "../../../services/list";
 
 const CreateForm = ({parentId, setShowModal}) => {
     // const [projectId, setProjectId] = useRecoilState(projectsList)
-    const [projectId, setProjectId] = useState(0)
     // const [teamId, setTeamId] = useRecoilState(teamsList)
+    // const [userId, setUserId] = useRecoilState(usersList)
+    const [projectId, setProjectId] = useState(0)
     const [teamId, setTeamId] = useState(0)
+    const [executorId, setExecutorId] = useState(0)
     const [name, setName] = useState('')
     const [description, setDescription] = useState('')
     const [startDate, setStartDate] = useState('')
     const [finalDate, setFinalDate] = useState('')
     const [deadline, setDeadline] = useState('')
-    const [executorId, setExecutorId] = useState(0)
     const [stages, setStages] = useState([])
     const [performers, setPerformers] = useState([]);
     const setTasks = useSetRecoilState(tasksState);
@@ -34,6 +36,32 @@ const CreateForm = ({parentId, setShowModal}) => {
         { id: 22, name: 'ЛК Гант' },
         { id: 23, name: 'ЛК Канбан' }
     ];
+
+    // useEffect(() => {
+    //     getAllUsers()
+    //         .then((response) => {
+    //             setUserId(response)
+    //         })
+    //         .catch((error) => {
+    //             console.log(error)
+    //         })
+    //
+    //     getAllProjects()
+    //         .then((response) => {
+    //             setProjectId(response)
+    //         })
+    //         .catch((error) => {
+    //             console.log(error)
+    //         })
+    //
+    //     getAllTeams()
+    //         .then((response) => {
+    //             setTeamId(response)
+    //         })
+    //         .catch((error) => {
+    //             console.log(error)
+    //         })
+    // }, [])
 
     const handleAddPerformer = () => {
         setPerformers([...performers, options])
