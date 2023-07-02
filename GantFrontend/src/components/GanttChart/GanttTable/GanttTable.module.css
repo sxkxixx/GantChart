@@ -15,8 +15,6 @@
 }
 
 .collapse{
-    border-collapse: separate;
-    border-spacing: 0;
     background-color: white;
 }
 
@@ -57,7 +55,6 @@
 }
 
 .tableWrapper {
-    height: 100%;
     position: sticky;
     top: 0;
     z-index: 7;
