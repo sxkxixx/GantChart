@@ -623,23 +623,23 @@ INSERT INTO uralapi_eventuts (id, title, start_date, end_date) VALUES (1, 'Пр�
 INSERT INTO uralapi_eventuts (id, title, start_date, end_date) VALUES (2, 'Практикум УрФУ', '2023-05-01', '2023-07-31');
 
 -- Таблица: uralapi_roleinteam
-INSERT INTO uralapi_roleinteam (id, title) VALUES (1, 'тимлид');
-INSERT INTO uralapi_roleinteam (id, title) VALUES (2, 'аналитик');
-INSERT INTO uralapi_roleinteam (id, title) VALUES (3, 'дизайнер');
-INSERT INTO uralapi_roleinteam (id, title) VALUES (4, 'нет роли');
+INSERT INTO uralapi_roleinteam (id, title) VALUES (1, 'LEAD');
+INSERT INTO uralapi_roleinteam (id, title) VALUES (2, 'ANALYTIC');
+INSERT INTO uralapi_roleinteam (id, title) VALUES (3, 'DESIGNER');
+INSERT INTO uralapi_roleinteam (id, title) VALUES (4, 'NO ROLE');
 
 -- Таблица: uralapi_user
-INSERT INTO uralapi_user (id, password, last_login, is_superuser, first_name, last_name, is_staff, is_active, date_joined, username, email, patronymic, image) VALUES (1, 'pbkdf2_sha256$260000$rjBTi3v7f2rIxBEXfQvd4N$y45c4qAPANHEmwmF2ySSuBTeEBK6yLvXvUzeTI/l09o=', '2023-05-22 08:54:17.448098', 1, 'Елена', 'Засыпкина', 1, 1, '2023-04-23 11:43:13.171915', NULL, 'qwerty@list.ru', 'Юрьевна', 'photos/user1.jpg');
-INSERT INTO uralapi_user (id, password, last_login, is_superuser, first_name, last_name, is_staff, is_active, date_joined, username, email, patronymic, image) VALUES (2, 'pbkdf2_sha256$260000$uoCDtyUhI3QozhPaPlsu26$q6ryPg1KdMljlhWoi3kPkm3LL3h+d5ByyZ7FqqCmZn8=', '2023-05-22 08:53:45.020126', 0, 'Иван', 'Иванов', 1, 1, '2023-04-23 11:58:07.097756', NULL, 'qwerty1@list.ru', NULL, '');
-INSERT INTO uralapi_user (id, password, last_login, is_superuser, first_name, last_name, is_staff, is_active, date_joined, username, email, patronymic, image) VALUES (3, 'pbkdf2_sha256$260000$HRghlCLmWP7hdpM3zOyL8K$X9XekckGe08HaSCypvvg2ZL4IP2hEd5wiUUTBFFSoP0=', NULL, 0, 'Пётр', 'Петров', 0, 1, '2023-04-23 11:58:56.316580', NULL, 'qwerty2@list.ru', 'Николаевич', '');
-INSERT INTO uralapi_user (id, password, last_login, is_superuser, first_name, last_name, is_staff, is_active, date_joined, username, email, patronymic, image) VALUES (4, 'pbkdf2_sha256$260000$5UmTC6BJ8y2BzdwfBY3BzR$B+ycSv91eZeVS8p5TQ6mU+7mflxK1nlaTNsbB1O3x40=', NULL, 0, 'Миша', 'Сидоров', 0, 1, '2023-04-23 11:59:23.864978', NULL, 'qwerty3@list.ru', NULL, '');
-INSERT INTO uralapi_user (id, password, last_login, is_superuser, first_name, last_name, is_staff, is_active, date_joined, username, email, patronymic, image) VALUES (5, 'pbkdf2_sha256$260000$EdOdANxocI51WfzXQzw4oU$D708bn8AbsGncqbIInLiTJl8+f7xRjQDVupsNd+PrMk=', NULL, 0, 'Мария', 'Колотушкина', 0, 1, '2023-04-23 11:59:51.340289', NULL, 'qwerty4@list.ru', NULL, '');
-INSERT INTO uralapi_user (id, password, last_login, is_superuser, first_name, last_name, is_staff, is_active, date_joined, username, email, patronymic, image) VALUES (7, 'pbkdf2_sha256$260000$DFKCTBTYA8zdrizTLVVit8$zD9B0FOA9JWGCxYJjsf8BcCXkHRu8azcSVzWYbJhPng=', NULL, 0, 'Лев', 'Толстой', 0, 1, '2023-05-04 08:13:51.784287', NULL, 'qwerty6@list.ru', 'Николаевич', '');
-INSERT INTO uralapi_user (id, password, last_login, is_superuser, first_name, last_name, is_staff, is_active, date_joined, username, email, patronymic, image) VALUES (10, 'pbkdf2_sha256$260000$sDpSKXhrhpsGEshXQaeIzn$BPZQb+GoAi7DBP5UbXgbb42mvo+6fxHQXoOQgUYGgCM=', NULL, 0, 'Иван', 'Шишкин', 0, 1, '2023-05-10 17:23:37.694857', NULL, 'qwerty5@list.ru', 'Романович', '');
-INSERT INTO uralapi_user (id, password, last_login, is_superuser, first_name, last_name, is_staff, is_active, date_joined, username, email, patronymic, image) VALUES (14, 'pbkdf2_sha256$260000$jiB0yhtqW5CSqHcojFjZir$IOYAF94YwNonxONdiluYyG++sxCuCwfCkXIBZDKahEU=', NULL, 0, 'Николь', 'Коновалова', 0, 1, '2023-05-14 11:43:42.870197', NULL, 'qwerty7@list.ru', 'Викторовна', '');
-INSERT INTO uralapi_user (id, password, last_login, is_superuser, first_name, last_name, is_staff, is_active, date_joined, username, email, patronymic, image) VALUES (34, 'pbkdf2_sha256$260000$QijnXVvEpXdENcIALx6m0m$+ZqtLb1LMEpdJhWa5kgSS3QMMikF38ktL9rfmMV8cDY=', NULL, 0, 'Али', 'Зуев', 0, 1, '2023-05-14 16:07:57.295051', NULL, 'qwerty11@list.ru', 'Тимурович', '');
-INSERT INTO uralapi_user (id, password, last_login, is_superuser, first_name, last_name, is_staff, is_active, date_joined, username, email, patronymic, image) VALUES (39, 'pbkdf2_sha256$260000$qktuh7zrIEa7GYLMuz5pJT$eL+RrwzIfG6flF2if6qLSadvbl4hUTZFP6IVgiV7rn4=', NULL, 1, 'Георгий', 'Маслов', 0, 1, '2023-05-14 16:31:27.899519', NULL, 'qwerty12@list.ru', 'Арсентьевич', '');
-INSERT INTO uralapi_user (id, password, last_login, is_superuser, first_name, last_name, is_staff, is_active, date_joined, username, email, patronymic, image) VALUES (40, 'pbkdf2_sha256$260000$puKoNdAlOZNG5HVSmCPtnA$iH4JrD0//mB+igKL/aJFb56Os5W98Wv0vPVTb40ERso=', NULL, 0, 'Алия', 'Щербакова', 0, 1, '2023-05-14 16:39:12.960251', NULL, 'qwerty13@list.ru', 'Арсентьевна', '');
+INSERT INTO uralapi_user (id, password, last_login, is_superuser, first_name, last_name, is_staff, is_active, date_joined, username, email, patronymic, image) VALUES (1, 'pbkdf2_sha256$260000$rjBTi3v7f2rIxBEXfQvd4N$y45c4qAPANHEmwmF2ySSuBTeEBK6yLvXvUzeTI/l09o=', '2023-05-22 08:54:17.448098', 1, 'Elena', 'Zasypkina', 1, 1, '2023-04-23 11:43:13.171915', NULL, 'qwerty@list.ru', 'Юрьевна', 'photos/user1.jpg');
+INSERT INTO uralapi_user (id, password, last_login, is_superuser, first_name, last_name, is_staff, is_active, date_joined, username, email, patronymic, image) VALUES (2, 'pbkdf2_sha256$260000$uoCDtyUhI3QozhPaPlsu26$q6ryPg1KdMljlhWoi3kPkm3LL3h+d5ByyZ7FqqCmZn8=', '2023-05-22 08:53:45.020126', 0, 'Ivan', 'Ivanov', 1, 1, '2023-04-23 11:58:07.097756', NULL, 'qwerty1@list.ru', NULL, '');
+INSERT INTO uralapi_user (id, password, last_login, is_superuser, first_name, last_name, is_staff, is_active, date_joined, username, email, patronymic, image) VALUES (3, 'pbkdf2_sha256$260000$HRghlCLmWP7hdpM3zOyL8K$X9XekckGe08HaSCypvvg2ZL4IP2hEd5wiUUTBFFSoP0=', NULL, 0, 'Petr', 'Petrov', 0, 1, '2023-04-23 11:58:56.316580', NULL, 'qwerty2@list.ru', 'Николаевич', '');
+INSERT INTO uralapi_user (id, password, last_login, is_superuser, first_name, last_name, is_staff, is_active, date_joined, username, email, patronymic, image) VALUES (4, 'pbkdf2_sha256$260000$5UmTC6BJ8y2BzdwfBY3BzR$B+ycSv91eZeVS8p5TQ6mU+7mflxK1nlaTNsbB1O3x40=', NULL, 0, 'Michael', 'Sidorov', 0, 1, '2023-04-23 11:59:23.864978', NULL, 'qwerty3@list.ru', NULL, '');
+INSERT INTO uralapi_user (id, password, last_login, is_superuser, first_name, last_name, is_staff, is_active, date_joined, username, email, patronymic, image) VALUES (5, 'pbkdf2_sha256$260000$EdOdANxocI51WfzXQzw4oU$D708bn8AbsGncqbIInLiTJl8+f7xRjQDVupsNd+PrMk=', NULL, 0, 'Masha', 'Kolotushkina', 0, 1, '2023-04-23 11:59:51.340289', NULL, 'qwerty4@list.ru', NULL, '');
+INSERT INTO uralapi_user (id, password, last_login, is_superuser, first_name, last_name, is_staff, is_active, date_joined, username, email, patronymic, image) VALUES (7, 'pbkdf2_sha256$260000$DFKCTBTYA8zdrizTLVVit8$zD9B0FOA9JWGCxYJjsf8BcCXkHRu8azcSVzWYbJhPng=', NULL, 0, 'Lev', 'Tolstoy', 0, 1, '2023-05-04 08:13:51.784287', NULL, 'qwerty6@list.ru', 'Николаевич', '');
+INSERT INTO uralapi_user (id, password, last_login, is_superuser, first_name, last_name, is_staff, is_active, date_joined, username, email, patronymic, image) VALUES (10, 'pbkdf2_sha256$260000$sDpSKXhrhpsGEshXQaeIzn$BPZQb+GoAi7DBP5UbXgbb42mvo+6fxHQXoOQgUYGgCM=', NULL, 0, 'Ivan', 'Shishkin', 0, 1, '2023-05-10 17:23:37.694857', NULL, 'qwerty5@list.ru', 'Романович', '');
+INSERT INTO uralapi_user (id, password, last_login, is_superuser, first_name, last_name, is_staff, is_active, date_joined, username, email, patronymic, image) VALUES (14, 'pbkdf2_sha256$260000$jiB0yhtqW5CSqHcojFjZir$IOYAF94YwNonxONdiluYyG++sxCuCwfCkXIBZDKahEU=', NULL, 0, 'Nicolay', 'Konovalov', 0, 1, '2023-05-14 11:43:42.870197', NULL, 'qwerty7@list.ru', 'Викторовна', '');
+INSERT INTO uralapi_user (id, password, last_login, is_superuser, first_name, last_name, is_staff, is_active, date_joined, username, email, patronymic, image) VALUES (34, 'pbkdf2_sha256$260000$QijnXVvEpXdENcIALx6m0m$+ZqtLb1LMEpdJhWa5kgSS3QMMikF38ktL9rfmMV8cDY=', NULL, 0, 'Ali', 'Zuev', 0, 1, '2023-05-14 16:07:57.295051', NULL, 'qwerty11@list.ru', 'Тимурович', '');
+INSERT INTO uralapi_user (id, password, last_login, is_superuser, first_name, last_name, is_staff, is_active, date_joined, username, email, patronymic, image) VALUES (39, 'pbkdf2_sha256$260000$qktuh7zrIEa7GYLMuz5pJT$eL+RrwzIfG6flF2if6qLSadvbl4hUTZFP6IVgiV7rn4=', NULL, 1, 'Georgy', 'Maslov', 0, 1, '2023-05-14 16:31:27.899519', NULL, 'qwerty12@list.ru', 'Арсентьевич', '');
+INSERT INTO uralapi_user (id, password, last_login, is_superuser, first_name, last_name, is_staff, is_active, date_joined, username, email, patronymic, image) VALUES (40, 'pbkdf2_sha256$260000$puKoNdAlOZNG5HVSmCPtnA$iH4JrD0//mB+igKL/aJFb56Os5W98Wv0vPVTb40ERso=', NULL, 0, 'Aliya', 'Scherbakova', 0, 1, '2023-05-14 16:39:12.960251', NULL, 'qwerty13@list.ru', 'Арсентьевна', '');
 INSERT INTO uralapi_user (id, password, last_login, is_superuser, first_name, last_name, is_staff, is_active, date_joined, username, email, patronymic, image) VALUES (71, 'pbkdf2_sha256$260000$CiwXi5QSesTWhRcQJApJJN$0z4V9ff6/R1glLIqno9nDJmQy9ckKmqkBbNATVAbE4k=', NULL, 0, 'AAAAAAA', 'CCCCCCCC', 0, 1, '2023-05-22 09:20:22.521122', NULL, 'ezasypkina03@gmail.com', NULL, '');
 INSERT INTO uralapi_user (id, password, last_login, is_superuser, first_name, last_name, is_staff, is_active, date_joined, username, email, patronymic, image) VALUES (72, 'pbkdf2_sha256$260000$MHMOBgqo9RNYKXsSHAqX56$rS17/p1JBcHWCFt3ygV40MyjNkYiSqq5ZJSX9IUQT6I=', NULL, 0, 'qqqqqqqq', 'qqqqq', 0, 1, '2023-05-22 09:20:24.485187', NULL, 'elena.zasypkina@urfu.me', NULL, '');
 
@@ -719,9 +719,9 @@ INSERT INTO auth_group_permissions (id, group_id, permission_id) VALUES (2, 1, 3
 INSERT INTO auth_group_permissions (id, group_id, permission_id) VALUES (3, 1, 36);
 
 -- Таблица: uralapi_project
-INSERT INTO uralapi_project (id, title, start_date, end_date, id_director_id, id_event_id) VALUES (1, 'Пробный проект', NULL, NULL, 1, 1);
-INSERT INTO uralapi_project (id, title, start_date, end_date, id_director_id, id_event_id) VALUES (2, 'Пробный проект1', NULL, NULL, 1, 1);
-INSERT INTO uralapi_project (id, title, start_date, end_date, id_director_id, id_event_id) VALUES (3, 'ЛК Стажёра', '2023-05-01', '2023-07-17', 71, 2);
+INSERT INTO uralapi_project (id, title, start_date, end_date, id_director_id, id_event_id) VALUES (1, 'PROJECT 1', NULL, NULL, 1, 1);
+INSERT INTO uralapi_project (id, title, start_date, end_date, id_director_id, id_event_id) VALUES (2, 'Project 2', NULL, NULL, 1, 1);
+INSERT INTO uralapi_project (id, title, start_date, end_date, id_director_id, id_event_id) VALUES (3, 'Intern personal account', '2023-05-01', '2023-07-17', 71, 2);
 
 -- Таблица: uralapi_project_evaluation_criteria
 INSERT INTO uralapi_project_evaluation_criteria (id, project_id, evaluationcriteria_id) VALUES (4, 1, 1);
@@ -736,9 +736,9 @@ INSERT INTO uralapi_team (id, title, team_chat, teg, id_project_id, id_tutor_id)
 INSERT INTO uralapi_team (id, title, team_chat, teg, id_project_id, id_tutor_id) VALUES (13, 'Dream-team4', 'http://localhost:8080/view-all-lists', 'dt4', 1, 1);
 INSERT INTO uralapi_team (id, title, team_chat, teg, id_project_id, id_tutor_id) VALUES (14, 'Dream-team7', NULL, 'dt7', 1, 3);
 INSERT INTO uralapi_team (id, title, team_chat, teg, id_project_id, id_tutor_id) VALUES (16, 'Dream-team8', NULL, 'dt8', 1, 3);
-INSERT INTO uralapi_team (id, title, team_chat, teg, id_project_id, id_tutor_id) VALUES (21, 'ЛК Стажёра.Оценка', NULL, 'оценка', 3, 10);
-INSERT INTO uralapi_team (id, title, team_chat, teg, id_project_id, id_tutor_id) VALUES (22, 'ЛК Стажёра.Гант', NULL, 'гант', 3, 10);
-INSERT INTO uralapi_team (id, title, team_chat, teg, id_project_id, id_tutor_id) VALUES (23, 'ЛК Стажёра.Канбан', NULL, 'канбан', 3, 10);
+INSERT INTO uralapi_team (id, title, team_chat, teg, id_project_id, id_tutor_id) VALUES (21, 'ESTIMATION TEAM', NULL, 'estimate', 3, 10);
+INSERT INTO uralapi_team (id, title, team_chat, teg, id_project_id, id_tutor_id) VALUES (22, 'GANT TEAM', NULL, 'gant', 3, 10);
+INSERT INTO uralapi_team (id, title, team_chat, teg, id_project_id, id_tutor_id) VALUES (23, 'KANBAN TEAM', NULL, 'kanban', 3, 10);
 
 -- Таблица: uralapi_user_groups
 INSERT INTO uralapi_user_groups (id, user_id, group_id) VALUES (1, 1, 1);
@@ -763,7 +763,7 @@ INSERT INTO uralapi_user_groups (id, user_id, group_id) VALUES (93, 71, 3);
 INSERT INTO uralapi_user_groups (id, user_id, group_id) VALUES (94, 72, 2);
 
 -- Таблица: uralapi_userinfo
-INSERT INTO uralapi_userinfo (id_user_id, educational_institution, specialization, academic_degree, course, telephone, telegram, vk) VALUES (1, 'УрФУ', NULL, 'бакалавр', '2', NULL, NULL, NULL);
+INSERT INTO uralapi_userinfo (id_user_id, educational_institution, specialization, academic_degree, course, telephone, telegram, vk) VALUES (1, 'UrFU', NULL, 'Bachelor', '2', NULL, NULL, NULL);
 INSERT INTO uralapi_userinfo (id_user_id, educational_institution, specialization, academic_degree, course, telephone, telegram, vk) VALUES (2, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 INSERT INTO uralapi_userinfo (id_user_id, educational_institution, specialization, academic_degree, course, telephone, telegram, vk) VALUES (3, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 INSERT INTO uralapi_userinfo (id_user_id, educational_institution, specialization, academic_degree, course, telephone, telegram, vk) VALUES (4, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
@@ -791,14 +791,14 @@ INSERT INTO uralapi_internteam (id, id_intern_id, id_team_id, role_id) VALUES (3
 INSERT INTO uralapi_internteam (id, id_intern_id, id_team_id, role_id) VALUES (43, 1, 21, 3);
 
 -- Таблица: uralapi_stage
-INSERT INTO uralapi_stage (id, title, description, is_active, start_date, end_date, end_estimation_date, id_team_id) VALUES (1, 'Анализ', '', 1, '2023-04-02', '2023-04-29', '2023-05-16', 1);
-INSERT INTO uralapi_stage (id, title, description, is_active, start_date, end_date, end_estimation_date, id_team_id) VALUES (2, 'Пробный этап', '', 0, '2023-04-02', '2023-04-09', '2023-04-30', 2);
-INSERT INTO uralapi_stage (id, title, description, is_active, start_date, end_date, end_estimation_date, id_team_id) VALUES (3, 'Проектирование', '', 1, '2023-04-03', '2023-04-17', '2023-04-30', 1);
-INSERT INTO uralapi_stage (id, title, description, is_active, start_date, end_date, end_estimation_date, id_team_id) VALUES (4, 'Анализ ЛК', '', 1, '2023-04-25', '2023-04-26', '2023-04-30', 3);
-INSERT INTO uralapi_stage (id, title, description, is_active, start_date, end_date, end_estimation_date, id_team_id) VALUES (14, 'Планиерование2', NULL, 1, '2023-04-02', '2023-04-29', '2023-05-16', 1);
-INSERT INTO uralapi_stage (id, title, description, is_active, start_date, end_date, end_estimation_date, id_team_id) VALUES (15, 'Защита', NULL, 1, '2023-04-02', '2023-04-29', '2023-05-16', 1);
-INSERT INTO uralapi_stage (id, title, description, is_active, start_date, end_date, end_estimation_date, id_team_id) VALUES (16, 'Тестирование', '', 1, '2023-04-02', '2023-04-29', '2023-05-16', 2);
-INSERT INTO uralapi_stage (id, title, description, is_active, start_date, end_date, end_estimation_date, id_team_id) VALUES (18, 'Проектарование бд', '', 1, '2023-02-14', '2023-02-28', '2023-03-15', 21);
+INSERT INTO uralapi_stage (id, title, description, is_active, start_date, end_date, end_estimation_date, id_team_id) VALUES (1, 'Analyze', '', 1, '2023-04-02', '2023-04-29', '2023-05-16', 1);
+INSERT INTO uralapi_stage (id, title, description, is_active, start_date, end_date, end_estimation_date, id_team_id) VALUES (2, 'Stage', '', 0, '2023-04-02', '2023-04-09', '2023-04-30', 2);
+INSERT INTO uralapi_stage (id, title, description, is_active, start_date, end_date, end_estimation_date, id_team_id) VALUES (3, 'Designing', '', 1, '2023-04-03', '2023-04-17', '2023-04-30', 1);
+INSERT INTO uralapi_stage (id, title, description, is_active, start_date, end_date, end_estimation_date, id_team_id) VALUES (4, 'Analyzing LK', '', 1, '2023-04-25', '2023-04-26', '2023-04-30', 3);
+INSERT INTO uralapi_stage (id, title, description, is_active, start_date, end_date, end_estimation_date, id_team_id) VALUES (14, 'Designing 2', NULL, 1, '2023-04-02', '2023-04-29', '2023-05-16', 1);
+INSERT INTO uralapi_stage (id, title, description, is_active, start_date, end_date, end_estimation_date, id_team_id) VALUES (15, 'Protection', NULL, 1, '2023-04-02', '2023-04-29', '2023-05-16', 1);
+INSERT INTO uralapi_stage (id, title, description, is_active, start_date, end_date, end_estimation_date, id_team_id) VALUES (16, 'Testing', '', 1, '2023-04-02', '2023-04-29', '2023-05-16', 2);
+INSERT INTO uralapi_stage (id, title, description, is_active, start_date, end_date, end_estimation_date, id_team_id) VALUES (18, 'Designing database', '', 1, '2023-02-14', '2023-02-28', '2023-03-15', 21);
 
 -- Таблица: uralapi_stage_evaluation_criteria
 INSERT INTO uralapi_stage_evaluation_criteria (id, stage_id, evaluationcriteria_id) VALUES (16, 1, 1);
