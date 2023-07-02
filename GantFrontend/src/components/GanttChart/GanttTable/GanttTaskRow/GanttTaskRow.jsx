@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import s from './GanttTaskRow.module.css';
-import { editDates } from '../../../../services/task';
 
 const GanttTaskRow = ({
                           task,
@@ -19,12 +18,72 @@ const GanttTaskRow = ({
     const isCollapsed = collapsedTasks.includes(id);
     const currentIndentLevel = indentLevel;
 
-    const [startIndex, setStartIndex] = useState(
+    // const [startIndex, setStartIndex] = useState(
+    //     Math.round((new Date(taskStartDate) - startDate) / (1000 * 60 * 60 * 24))
+    // );
+    // const [endIndex, setEndIndex] = useState(
+    //     Math.round((new Date(taskEndDate) - startDate) / (1000 * 60 * 60 * 24))
+    // );
+
+    const startIndex = (
         Math.round((new Date(taskStartDate) - startDate) / (1000 * 60 * 60 * 24))
-    );
-    const [endIndex, setEndIndex] = useState(
+    )
+
+    const endIndex = (
         Math.round((new Date(taskEndDate) - startDate) / (1000 * 60 * 60 * 24))
-    );
+    )
+
+    const getCellStyle = (indentLevel) => {
+        let colorClass;
+        if (indentLevel === 0 || indentLevel === 1) {
+            colorClass = s.cellColor1;
+        } else {
+            colorClass = s.cellColor2;
+        }
+
+        return `${colorClass}`;
+    }
+
+    // const handleDragStartIndex = (event) => {
+    //     handleDragIndex(event, startIndex, setStartIndex);
+    // };
+    //
+    // const handleDragEndIndex = (event) => {
+    //     handleDragIndex(event, endIndex, setEndIndex);
+    // };
+    //
+    // const handleDragIndex = (event, currentIndex, setCurrentIndex) => {
+    //     const initialMouseX = event.pageX
+    //     const initialIndex = currentIndex
+    //
+    //     const handleMouseMove = (event) => {
+    //         const deltaX = event.pageX - initialMouseX
+    //
+    //         const currentIndexDelta = Math.round(
+    //             (deltaX / event.target.offsetWidth) * projectDurationInDays
+    //         );
+    //
+    //         const newStartIndex = Math.max(
+    //             Math.min(initialIndex + currentIndexDelta, endIndex),
+    //             0
+    //         )
+    //
+    //         const newEndIndex = Math.min(
+    //             Math.max(endIndex + currentIndexDelta, startIndex),
+    //             projectDurationInDays - 1
+    //         )
+    //
+    //         setCurrentIndex(currentIndex === startIndex ? newStartIndex : newEndIndex);
+    //     };
+    //
+    //     const handleMouseUp = () => {
+    //         document.removeEventListener('mousemove', handleMouseMove);
+    //         document.removeEventListener('mouseup', handleMouseUp);
+    //     };
+    //
+    //     document.addEventListener('mousemove', handleMouseMove);
+    //     document.addEventListener('mouseup', handleMouseUp,  { once: true });
+    // };
 
     const dateCells = [];
     const activeCellIndex = new Set();
@@ -46,49 +105,21 @@ const GanttTaskRow = ({
                         : style;
         dateCells.push(
             <div className={cellClassName} key={`${id}-${i}`}>
-                {isActiveCell && <div className={s.isActiveCellOverlay} />}
+                {isActiveCell && <div
+                    className={s.isActiveCellOverlay}
+                    // onMouseDown={
+                    //     i === startIndex
+                    //         ? handleDragStartIndex
+                    //         : i === endIndex
+                    //             ? handleDragEndIndex
+                    //             : undefined
+                    // }
+                />
+                }
             </div>
         );
     }
 
-    const handleDragStartIndex = (event) => {
-        handleDragIndex(event, startIndex, setStartIndex);
-    };
-
-    const handleDragEndIndex = (event) => {
-        handleDragIndex(event, endIndex, setEndIndex);
-    };
-
-    const handleDragIndex = (event, currentIndex, setCurrentIndex) => {
-        const initialMouseX = event.clientX;
-        const initialIndex = currentIndex;
-
-        const handleMouseMove = (event) => {
-            const deltaX = event.clientX - initialMouseX;
-            const currentIndexDelta = Math.round(
-                (deltaX / event.target.offsetWidth) * projectDurationInDays
-            );
-
-            const newStartIndex = Math.max(
-                Math.min(initialIndex + currentIndexDelta, endIndex),
-                0
-            );
-            const newEndIndex = Math.min(
-                Math.max(endIndex + currentIndexDelta, startIndex),
-                projectDurationInDays - 1
-            );
-
-            setCurrentIndex(currentIndex === startIndex ? newStartIndex : newEndIndex);
-        };
-
-        const handleMouseUp = () => {
-            document.removeEventListener('mousemove', handleMouseMove);
-            document.removeEventListener('mouseup', handleMouseUp);
-        };
-
-        document.addEventListener('mousemove', handleMouseMove);
-        document.addEventListener('mouseup', handleMouseUp);
-    };
 
     return (
         <>
@@ -97,13 +128,6 @@ const GanttTaskRow = ({
                     <div
                         className={s.cellWrapper}
                         key={`${id}-cell-${index}`}
-                        onMouseDown={
-                            index === startIndex
-                                ? handleDragStartIndex
-                                : index === endIndex
-                                    ? handleDragEndIndex
-                                    : undefined
-                        }
                     >
                         {cell}
                     </div>
@@ -123,17 +147,6 @@ const GanttTaskRow = ({
                 ))}
         </>
     );
-};
-
-const getCellStyle = (indentLevel) => {
-    let colorClass;
-    if (indentLevel === 0 || indentLevel === 1) {
-        colorClass = s.cellColor1;
-    } else {
-        colorClass = s.cellColor2;
-    }
-
-    return `${colorClass}`;
 };
 
 export default GanttTaskRow;

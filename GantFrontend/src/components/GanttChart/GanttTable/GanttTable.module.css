@@ -29,7 +29,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    border: 1px solid black;
+    border: 1px solid #AFBAC3;
 }
 
 .table td{
@@ -37,36 +37,19 @@
     flex-direction: row;
     padding: 10px;
     text-align: center;
-    border: 1px solid black;
+    border: 1px solid #AFBAC3;
 }
 
 
 
 .table th{
     text-align: center;
-    border: 1px solid black;
+    border: 1px solid #AFBAC3;
 }
 
 .row {
     display: flex;
     flex-direction: column;
-}
-
-.row thead{
-    position: sticky;
-    top: 0;
-    background-color: white;
-    height: 80px;
-}
-
-.row td{
-    text-align: center;
-    border: 1px solid black;
-}
-
-.row th{
-    text-align: center;
-    border: 1px solid black;
 }
 
 .date{
@@ -78,12 +61,6 @@
     position: sticky;
     top: 0;
     z-index: 7;
-}
-
-table {
-    width: max-content;
-    height: max-content;
-    border-collapse: separate;
 }
 
 .ganttTable {
@@ -108,7 +85,7 @@ table {
     height: 40px;
     padding: 0 10px;
     background-color: white;
-    border-top: 1px solid black;
+    border-top: 1px solid #AFBAC3;
 }
 
 .tableMonth {
@@ -121,8 +98,8 @@ table {
     justify-content: space-between;
     height: 40px;
     background-color: white;
-    border-top: 1px solid black;
-    border-bottom: 1px solid black;
+    border-top: 1px solid #AFBAC3;
+    border-bottom: 1px solid #AFBAC3;
 }
 
 .dateCell {
@@ -131,7 +108,7 @@ table {
     justify-content: center;
     width: 100px;
     height: 100%;
-    border-right: 1px solid black;
+    border-right: 1px solid #AFBAC3;
 }
 
 .tasksContainer {
