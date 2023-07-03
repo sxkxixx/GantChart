@@ -1,0 +1,8 @@
+{
+  "/tasks": "/taskFull",
+  "/tasks/:id": "/taskFull/:id",
+  "/employee?projectId=:id": "/employeeProject:id",
+  "/projects": "/project",
+  "/user/current": "/currentUser",
+  "/teams": "/tags"
+}

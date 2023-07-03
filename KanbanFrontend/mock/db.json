@@ -1,0 +1,323 @@
+{
+  "taskFull": [
+    {
+      "id": 1,
+      "title": "сделать api",
+      "description": "Ебись оно в рот",
+      "status": {
+        "id": 2,
+        "name": "Выполняются"
+      },
+      "project": {
+        "id": 1,
+        "name": "Канбан"
+      },
+      "tag": {
+        "id": 1,
+        "label": "Канбан"
+      },
+      "author": {
+        "id": 1,
+        "name": "Евгений",
+        "surname": "Шинкарев",
+        "patronymic": "Геннадьевич"
+      },
+      "contractors": [
+        {
+          "id": 1,
+          "name": "Евгений",
+          "surname": "Шинкарев",
+          "patronymic": "Геннадьевич"
+        }
+      ],
+      "deadline": 1684165790,
+      "parentTask": null,
+      "plannedDates": {
+        "begin": 1682957630,
+        "end": 1684599230
+      },
+      "checkList": [
+        {
+          "id": 1,
+          "title": "Пинать хуи",
+          "isCompleted": false
+        },
+        {
+          "id": 2,
+          "title": "Плакать",
+          "isCompleted": false
+        },
+        {
+          "id": 3,
+          "title": "Ничего не сделать",
+          "isCompleted": false
+        }
+      ],
+      "wastedTimes": [
+        {
+          "time": 18000,
+          "contractor": {
+            "id": 1,
+            "name": "Евгений",
+            "surname": "Шинкарев",
+            "patronymic": "Геннадьевич"
+          }
+        }
+      ],
+      "comments": []
+    },
+    {
+      "id": 2,
+      "title": "Создать контроллеры",
+      "description": "Когда этим заниматься",
+      "status": {
+        "id": 1,
+        "name": "В работу"
+      },
+      "project": {
+        "id": 1,
+        "name": "Канбан"
+      },
+      "tag": {
+        "id": 1,
+        "label": "Канбан"
+      },
+      "author": {
+        "id": 2,
+        "name": "Илья",
+        "surname": "Сотников",
+        "patronymic": "Александрович"
+      },
+      "contractors": [
+        {
+          "id": 2,
+          "name": "Илья",
+          "surname": "Сотников",
+          "patronymic": "Александрович"
+        }
+      ],
+      "deadline": 1684165790,
+      "parentTask": null,
+      "plannedDates": {
+        "begin": 1682957630,
+        "end": 1684599230
+      },
+      "checkList": [
+        {
+          "id": 4,
+          "title": "Сздать Dto",
+          "isCompleted": false
+        },
+        {
+          "id": 5,
+          "title": "создать контролееры",
+          "isCompleted": false
+        },
+        {
+          "id": 6,
+          "title": "добавить авторизацию",
+          "isCompleted": false
+        }
+      ],
+      "wastedTimes": [
+        {
+          "time": 18000,
+          "contractor": {
+            "id": 2,
+            "name": "Сотников",
+            "surname": "Илья",
+            "patronymic": "Александрович"
+          }
+        }
+      ],
+      "comments": [
+        {
+          "author": {
+            "id": 3,
+            "name": "Елизавета",
+            "surname": "Осипова",
+            "patronymic": "Сергеевна"
+          },
+          "content": "Текст комментария",
+          "time": null
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Нарисовать макеты",
+      "description": "в figma",
+      "status": {
+        "id": 3,
+        "name": "Проверка"
+      },
+      "project": {
+        "id": 2,
+        "name": "Гант"
+      },
+      "tag": {
+        "id": 2,
+        "label": "Гант"
+      },
+      "author": {
+        "id": 3,
+        "name": "Елизавета",
+        "surname": "Осипова",
+        "patronymic": "Сергеевна"
+      },
+      "contractors": [
+        {
+          "id": 3,
+          "name": "Елизавета",
+          "surname": "Осипова",
+          "patronymic": "Сергеевна"
+        }
+      ],
+      "deadline": 1684165790,
+      "parentTask": null,
+      "plannedDates": {
+        "begin": 1682957630,
+        "end": 1684599230
+      },
+      "checkList": [
+        {
+          "id": 7,
+          "title": "Выбрать цвета",
+          "isCompleted": false
+        },
+        {
+          "id": 8,
+          "title": "Выбрать шрифты",
+          "isCompleted": false
+        },
+        {
+          "id": 9,
+          "title": "Создать компоненты",
+          "isCompleted": false
+        }
+      ],
+      "wastedTimes": [
+        {
+          "time": 18000,
+          "contractor": {
+            "id": 3,
+            "name": "Елизавета",
+            "surname": "Осипова",
+            "patronymic": "Сергеевна"
+          }
+        }
+      ],
+      "comments": []
+    }
+  ],
+  "employeeProject1": [
+    {
+      "id": 1,
+      "name": "Евгений",
+      "surname": "Шинкарев",
+      "patronymic": "Геннадьевич"
+    },
+    {
+      "id": 2,
+      "name": "Илья",
+      "surname": "Сотников",
+      "patronymic": "Александрович"
+    }
+  ],
+  "employeeProject2": [
+    {
+      "id": 3,
+      "name": "Елизавета",
+      "surname": "Осипова",
+      "patronymic": "Сергеевна"
+    }
+  ],
+  "project": [
+    {
+      "id": 1,
+      "name": "Канбан"
+    },
+    {
+      "id": 2,
+      "name": "Гант"
+    },
+    {
+      "id": 3,
+      "name": "Оценка"
+    }
+  ],
+  "currentUser": {
+    "id": 1,
+    "name": "Евгений",
+    "surname": "Шинкарев",
+    "patronymic": "Геннадьевич"
+  },
+  "users": [
+    {
+      "id": 1,
+      "name": "Евгений",
+      "surname": "Шинкарев",
+      "patronymic": "Геннадьевич"
+    },
+    {
+      "id": 2,
+      "name": "Илья",
+      "surname": "Сотников",
+      "patronymic": "Александрович"
+    },
+    {
+      "id": 3,
+      "name": "Елизавета",
+      "surname": "Осипова",
+      "patronymic": "Сергеевна"
+    },
+    {
+      "id": 4,
+      "name": "Башков",
+      "surname": "Данил",
+      "patronymic": "Андреевич"
+    },
+    {
+      "id": 5,
+      "name": "Гайнутдинов",
+      "surname": "Артур",
+      "patronymic": "Леонидович"
+    }
+  ],
+  "tags": [
+    {
+      "id": 1,
+      "tag": "Канбан"
+    },
+    {
+      "id": 2,
+      "tag": "Гант"
+    },
+    {
+      "id": 3,
+      "tag": "Оценка"
+    }
+  ],
+  "statuses": [
+    {
+      "id": 1,
+      "name": "В работу"
+    },
+    {
+      "id": 2,
+      "name": "Выполняются"
+    },
+    {
+      "id": 3,
+      "name": "Проверка"
+    },
+    {
+      "id": 4,
+      "name": "Тестирование"
+    },
+    {
+      "id": 5,
+      "name": "Завершенные"
+    }
+  ]
+}

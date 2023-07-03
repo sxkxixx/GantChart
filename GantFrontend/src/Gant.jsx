@@ -4,15 +4,18 @@ import theme from "./styles/theme";
 import Main from "./pages/main/main";
 import {ThemeProvider} from "styled-components";
 import GlobalStyles from "./styles/GlobalStyles";
+import {RecoilRoot} from "recoil";
 
-const App = () => {
+const Gant = () => {
     return (
+        <RecoilRoot>
         <ThemeProvider theme={theme}>
             <GlobalStyles />
             <Main/>
             <ToastContainer/>
         </ThemeProvider>
+        </RecoilRoot>
     )
 }
 
-export default App
+export default Gant
