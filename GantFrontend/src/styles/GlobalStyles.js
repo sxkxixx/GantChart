@@ -16,7 +16,6 @@ const GlobalStyles = createGlobalStyle`
 
   :focus,
   :active {
-    /*outline: none;*/
   }
 
   a:focus,

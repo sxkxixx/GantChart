@@ -168,28 +168,29 @@ const ViewForm = ({id, setFormType, setShowModal}) => {
                         <span>Исполнители</span>
                     </div>
                     <div className={s.unimportantLists}>
-
-                    </div>
-                    {/*{taskId.executor.map((performer, index) => (*/}
-                    {/*    <div className={s.unimportantList} key={index}>*/}
-                    {/*        <Select options={options} selectedValue={'1'} onChange={() => {*/}
-                    {/*        }}/>*/}
-                    {/*    </div>*/}
-                    {/*))}*/}
-                </div>
-                <div className={s.checklist}>
-                    <div className={s.checklistTop}>
-                        <span>Чек-лист</span>
-                    </div>
-                    <div className={s.checkLists}>
-                        {taskId.stages && taskId.stages.map((stage, index) => (
-                            <div className={s.checkList} key={index}>
-                                <input type="checkbox" checked={stage.is_ready}/>
-                                <Text width={"60%"} height={"21px"} value={stage.description} disabled/>
-                            </div>
-                        ))}
+                        {/*{taskId.executor.map((performer, index) => (*/}
+                        {/*    <div className={s.unimportantList} key={index}>*/}
+                        {/*        <Select disabled options={options} selectedValue={'1'} onChange={() => {*/}
+                        {/*        }}/>*/}
+                        {/*    </div>*/}
+                        {/*))}*/}
                     </div>
                 </div>
+                { taskId.stages?.length === 0 ? null :
+                    <div className={s.checklist}>
+                        <div className={s.checklistTop}>
+                            <span>Чек-лист</span>
+                        </div>
+                        <div className={s.checkLists}>
+                            {taskId.stages && taskId.stages.map((stage, index) => (
+                                <div className={s.checkList} key={index}>
+                                    <input type="checkbox" checked={stage.is_ready}/>
+                                    <Text width={"60%"} height={"21px"} value={stage.description} disabled/>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                }
                 {/*<div className={s.time}>*/}
                 {/*    <div className={s.timer}>*/}
                 {/*        <span>Таймер</span>*/}

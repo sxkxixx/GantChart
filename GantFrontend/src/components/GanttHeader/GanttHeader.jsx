@@ -69,7 +69,7 @@ const GanttHeader = () => {
         { id: '', name: 'Название проекта' },
         { id: 21, name: 'ЛК оценка' },
         { id: 22, name: 'ЛК Гант' },
-        { id: 23, name: 'ЛК Канбан' }
+        { id: 23, name: 'ЛК Канбан' },
     ];
 
     return (
@@ -77,10 +77,10 @@ const GanttHeader = () => {
             <div className={s.elements}>
                 <div className={s.selects}>
                     <Select options={projectList}/>
-                    <Select
-                        options={options.map(opt => ({value: opt.id, name: opt.name}))}
-                        onChange={(event) => setProjectId(event.target.value)}
-                    />
+                    {/*<Select*/}
+                    {/*    options={options.map(opt => ({value: opt.id, name: opt.name}))}*/}
+                    {/*    onChange={(event) => setProjectId(event.target.value)}*/}
+                    {/*/>*/}
                     <Select options={teamList}/>
                 </div>
                 <div className={s.buttons}>

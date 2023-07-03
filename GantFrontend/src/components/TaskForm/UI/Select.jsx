@@ -26,7 +26,9 @@ const SelectItem = styled.select`
   border: 1px solid #AFBAC3;
   background: #FFFFFF;
   border-radius: 5px;
+  padding: 0 5px;
   font-size: 14px;
+  text-overflow: ellipsis;
 `;
 
 const Option = styled.option`

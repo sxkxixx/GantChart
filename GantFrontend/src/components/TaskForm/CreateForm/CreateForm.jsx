@@ -34,7 +34,8 @@ const CreateForm = ({parentId, setShowModal}) => {
         { id: 1, name: 'Название проекта' },
         { id: 21, name: 'ЛК оценка' },
         { id: 22, name: 'ЛК Гант' },
-        { id: 23, name: 'ЛК Канбан' }
+        { id: 23, name: 'ЛК Канбан' },
+        { id: 24, name: 'ЛК Канбан fefe hththt  htht' }
     ];
 
     // useEffect(() => {
