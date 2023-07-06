@@ -17,7 +17,6 @@ const GanttChart = () => {
         getAllTask()
             .then((response) => {
                 setTasks(response);
-                setItem('response',response)
             })
             .catch((error) => {
                 console.log(error);

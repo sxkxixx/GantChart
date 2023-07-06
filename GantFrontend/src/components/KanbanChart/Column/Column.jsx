@@ -57,17 +57,21 @@ const Column = ({ boards, setBoards }) => {
                     onDrop={(e) => dropCardHandler(e, board)}
                 >
                     <div className={s.boardTitle}>{board.title}</div>
-                    {board.items.map(item => (
-                        <Card
-                            items={item}
-                            key={item.id}
-                            board={board}
-                            dragOverHandler={dragOverHandler}
-                            dragStartHandler={dragStartHandler}
-                            dropHandler={dropHandler}
-                            className={s.item}
-                        />
-                    ))}
+                    <div className={s.boardItems}>
+                        <div className={s.itemsWrapper}>
+                            {board.items.map(item => (
+                                <Card
+                                    items={item}
+                                    key={item.id}
+                                    board={board}
+                                    dragOverHandler={dragOverHandler}
+                                    dragStartHandler={dragStartHandler}
+                                    dropHandler={dropHandler}
+                                    className={s.item}
+                                />
+                            ))}
+                        </div>
+                    </div>
                 </div>
             ))}
         </>

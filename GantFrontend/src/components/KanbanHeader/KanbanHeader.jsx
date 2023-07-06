@@ -13,7 +13,7 @@ const KanbanHeader = () => {
                     <Select/>
                 </div>
                 <div className={s.buttons}>
-                    <Button children={"Убрать завершенные задачи"}/>
+                    <Button children={"Убрать завершенные задачи"} width={250}/>
                 </div>
             </div>
         </div>

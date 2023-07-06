@@ -8,13 +8,13 @@ const StyledButton = styled.button`
   padding: 0 16px;
   background: #004CE3;
   border-radius: 5px;
-  width: 248px;
-  height: 32px;
+  width: ${(props) => props.width}px;
+  height: ${(props) => props.height}px;
   color: white;
 `;
 
-const Button = ({children, type = "button", onClick}) => (
-    <StyledButton type={type} onClick={onClick}>
+const Button = ({children, type = "button", onClick, width = 248, height = 32}) => (
+    <StyledButton type={type} onClick={onClick} width={width} height={height}>
         {children}
     </StyledButton>
 )
