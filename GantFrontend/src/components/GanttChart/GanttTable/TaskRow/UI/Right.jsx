@@ -5,7 +5,7 @@ export const Right = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: flex-end;
-  width: 200px;
+  width: 50%;
   gap: 8px;
   height: 42px;
   //padding-right: 20px;

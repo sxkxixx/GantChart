@@ -1,7 +1,7 @@
-import { BaseStatuses, Status } from "@kanban/data/Status";
 import { useRef } from "react";
 import styled from "styled-components";
 import { Column } from "./Column/Column";
+import {BaseStatuses} from "../data/Status";
 
 const Columns = styled.div`
     display: flex;

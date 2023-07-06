@@ -118,7 +118,7 @@ const EditForm = ({id, setFormType, setShowModal}) => {
             setTasks(updatedTasks);
             toast.success('Задача изменена!', {
                 position: "top-right",
-                autoClose: 2000,
+                autoClose: 1000,
                 hideProgressBar: false,
                 closeOnClick: true,
                 pauseOnHover: true,
@@ -139,7 +139,7 @@ const EditForm = ({id, setFormType, setShowModal}) => {
             if (taskChild.children.length !== 0 && taskChild.children.length > 0) {
                 toast.error('Невозможно удалить задачу с подзадачами!', {
                     position: "top-right",
-                    autoClose: 2000,
+                    autoClose: 1000,
                     hideProgressBar: false,
                     closeOnClick: true,
                     pauseOnHover: true,
@@ -156,7 +156,7 @@ const EditForm = ({id, setFormType, setShowModal}) => {
             setTasks(updatedTasks);
             toast.success('Задача удалена!', {
                 position: "top-right",
-                autoClose: 2000,
+                autoClose: 1000,
                 hideProgressBar: false,
                 closeOnClick: true,
                 pauseOnHover: true,
@@ -208,17 +208,6 @@ const EditForm = ({id, setFormType, setShowModal}) => {
                     />
                 </div>
                 <div className={s.elements}>
-                    <InputDate1
-                        defaultValue={taskId.task && taskId.task.deadline}
-                        onChange={(event) => setDeadline(event.target.value)}
-                    />
-                    <Select
-                        label="Тег Команды"
-                        icon={<Project/>}
-                        defaultValue={taskId.task && taskId.task.team_id}
-                        options={options.map(opt => ({value: opt.id, name: opt.name}))}
-                        onChange={(event) => setTeamId(event.target.value)}
-                    />
                     <div className={s.dates}>
                         <span>Планируемые сроки выполнения</span>
                         <div className={s.date}>
@@ -235,6 +224,17 @@ const EditForm = ({id, setFormType, setShowModal}) => {
                             />
                         </div>
                     </div>
+                    <Select
+                        label="Тег Команды"
+                        icon={<Project/>}
+                        defaultValue={taskId.task && taskId.task.team_id}
+                        options={options.map(opt => ({value: opt.id, name: opt.name}))}
+                        onChange={(event) => setTeamId(event.target.value)}
+                    />
+                    <InputDate1
+                        defaultValue={taskId.task && taskId.task.deadline}
+                        onChange={(event) => setDeadline(event.target.value)}
+                    />
                 </div>
                 <div className={s.description}>
                     <TextArea

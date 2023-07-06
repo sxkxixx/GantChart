@@ -1,7 +1,7 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import s from './ViewForm.module.css'
 import {useRecoilState, useRecoilValue, useSetRecoilState} from "recoil";
-import {projectsList, taskIdState, tasksState, teamsList} from "../../../store/atom";
+import {projectsList, taskIdState, tasksState, teamsList, timer, timerState} from "../../../store/atom";
 import {createTask, deleteIdTask, getAllTask, getIdTask} from "../../../services/task";
 import Text from "../UI/Text";
 import Select from "../UI/Select";
@@ -16,6 +16,7 @@ const ViewForm = ({id, setFormType, setShowModal}) => {
     const setTaskId = useSetRecoilState(taskIdState)
     const setTasks = useSetRecoilState(tasksState)
     const tasks = useRecoilValue(tasksState)
+    const [timer, setTimer] = useRecoilState(timerState);
 
     const options = [
         {id: 1, name: 'Название проекта'},
@@ -23,6 +24,50 @@ const ViewForm = ({id, setFormType, setShowModal}) => {
         {id: 22, name: 'ЛК Гант'},
         {id: 23, name: 'ЛК Канбан'}
     ];
+
+    const formatTime = (totalSeconds) => {
+        const hours = Math.floor(totalSeconds / 3600).toString().padStart(2, '0');
+        const minutes = Math.floor((totalSeconds % 3600) / 60).toString().padStart(2, '0');
+        const seconds = (totalSeconds % 60).toString().padStart(2, '0');
+        return `${hours}:${minutes}:${seconds}`;
+    };
+
+    const startTimer = () => {
+        if (!timer.isRunning) {
+            const timerId = setInterval(() => {
+                setTimer((prevTimer) => ({
+                    ...prevTimer,
+                    time: prevTimer.time + 1,
+                }));
+            }, 1000);
+
+            setTimer((prevTimer) => ({
+                ...prevTimer,
+                isRunning: true,
+                timerId,
+            }));
+        }
+    };
+
+    const stopTimer = () => {
+        if (timer.isRunning) {
+            clearInterval(timer.timerId);
+            setTimer((prevTimer) => ({
+                ...prevTimer,
+                isRunning: false,
+            }));
+        }
+    };
+
+    const resetTimer = () => {
+        clearInterval(timer.timerId);
+        setTimer({
+            time: 0,
+            isRunning: false,
+            timerId: null,
+        });
+    };
+
 
     useEffect(() => {
         getIdTask(id.id)
@@ -34,7 +79,6 @@ const ViewForm = ({id, setFormType, setShowModal}) => {
             })
     }, [setTaskId])
 
-
     const Delete = async () => {
         try {
 
@@ -43,7 +87,7 @@ const ViewForm = ({id, setFormType, setShowModal}) => {
             if (taskChild.children.length !== 0 && taskChild.children.length > 0) {
                 toast.error('Невозможно удалить задачу с подзадачами!', {
                     position: "top-right",
-                    autoClose: 2000,
+                    autoClose: 1000,
                     hideProgressBar: false,
                     closeOnClick: true,
                     pauseOnHover: true,
@@ -60,7 +104,7 @@ const ViewForm = ({id, setFormType, setShowModal}) => {
             setTasks(updatedTasks);
             toast.success('Задача удалена!', {
                 position: "top-right",
-                autoClose: 2000,
+                autoClose: 1000,
                 hideProgressBar: false,
                 closeOnClick: true,
                 pauseOnHover: true,
@@ -102,124 +146,131 @@ const ViewForm = ({id, setFormType, setShowModal}) => {
                         </span>
                     </span>
                 </div>
-                <div className={s.project}>
-                    <Select
-                        label="Проекты"
-                        icon={<Project/>}
-                        options={options.map(opt => ({value: opt.id, name: opt.name}))}
-                        value={taskId.task && taskId.task.project_id}
-                        disabled
-                    />
-                </div>
-                <div className={s.elements}>
-                    <InputDate1
-                        value={taskId.task && taskId.task.deadline}
-                        disabled
-                    />
-                    <Select
-                        label="Тег Команды"
-                        icon={<Project/>}
-                        options={options.map(opt => ({value: opt.id, name: opt.name}))}
-                        value={taskId.task && taskId.task.team_id}
-                        disabled
-                    />
-                    <div className={s.dates}>
-                        <span>Планируемые сроки выполнения</span>
-                        <div className={s.date}>
-                            <input
-                                disabled
-                                type="date"
-                                value={taskId.task && taskId.task.planned_start_date}
-                            />
-                            <span> - </span>
-                            <input
-                                disabled
-                                type="date"
-                                value={taskId.task && taskId.task.planned_final_date}
-                            />
+                <div className={s.info}>
+                    <div className={s.project}>
+                        <Select
+                            label="Проекты"
+                            icon={<Project/>}
+                            options={options.map(opt => ({value: opt.id, name: opt.name}))}
+                            value={taskId.task && taskId.task.project_id}
+                            disabled
+                        />
+                    </div>
+                    <div className={s.elements}>
+                        <div className={s.dates}>
+                            <span>Планируемые сроки выполнения</span>
+                            <div className={s.date}>
+                                <input
+                                    disabled
+                                    type="date"
+                                    value={taskId.task && taskId.task.planned_start_date}
+                                />
+                                <span> - </span>
+                                <input
+                                    disabled
+                                    type="date"
+                                    value={taskId.task && taskId.task.planned_final_date}
+                                />
+                            </div>
+                        </div>
+                        <Select
+                            label="Тег Команды"
+                            icon={<Project/>}
+                            options={options.map(opt => ({value: opt.id, name: opt.name}))}
+                            value={taskId.task && taskId.task.team_id}
+                            disabled
+                        />
+                        <InputDate1
+                            value={taskId.task && taskId.task.deadline}
+                            disabled
+                        />
+                    </div>
+                    <div className={s.description}>
+                        <TextArea
+                            value={taskId.task && taskId.task.description}
+                            width={"606px"}
+                            height={"128px"}
+                            disabled
+                        />
+                    </div>
+                    <div className={s.important}>
+                        <Select
+                            label="Постановщик"
+                            icon={<Project/>}
+                            options={options}
+                            disabled
+                        />
+                        <Select
+                            label="Ответственный"
+                            icon={<Project/>}
+                            options={options.map(opt => ({value: opt.id, name: opt.name}))}
+                            value={taskId.executor && taskId.executor[0].user_id}
+                            disabled
+                        />
+                    </div>
+                    <div className={s.unimportant}>
+                        <div className={s.unimportantTop}>
+                            <span>Исполнители</span>
+                        </div>
+                        <div className={s.unimportantLists}>
+                            {/*{taskId.executor.map((performer, index) => (*/}
+                            {/*    <div className={s.unimportantList} key={index}>*/}
+                            {/*        <Select disabled options={options} selectedValue={'1'} onChange={() => {*/}
+                            {/*        }}/>*/}
+                            {/*    </div>*/}
+                            {/*))}*/}
                         </div>
                     </div>
-                </div>
-                <div className={s.description}>
-                    <TextArea
-                        value={taskId.task && taskId.task.description}
-                        width={"606px"}
-                        height={"128px"}
-                        disabled
-                    />
-                </div>
-                <div className={s.important}>
-                    <Select
-                        label="Постановщик"
-                        icon={<Project/>}
-                        options={options}
-                        disabled
-                    />
-                    <Select
-                        label="Ответственный"
-                        icon={<Project/>}
-                        options={options.map(opt => ({value: opt.id, name: opt.name}))}
-                        value={taskId.executor && taskId.executor[0].user_id}
-                        disabled
-                    />
-                </div>
-                <div className={s.unimportant}>
-                    <div className={s.unimportantTop}>
-                        <span>Исполнители</span>
-                    </div>
-                    <div className={s.unimportantLists}>
-                        {/*{taskId.executor.map((performer, index) => (*/}
-                        {/*    <div className={s.unimportantList} key={index}>*/}
-                        {/*        <Select disabled options={options} selectedValue={'1'} onChange={() => {*/}
-                        {/*        }}/>*/}
-                        {/*    </div>*/}
-                        {/*))}*/}
-                    </div>
-                </div>
-                { taskId.stages?.length === 0 ? null :
-                    <div className={s.checklist}>
-                        <div className={s.checklistTop}>
-                            <span>Чек-лист</span>
+                    { taskId.stages?.length === 0 ? null :
+                        <div className={s.checklist}>
+                            <div className={s.checklistTop}>
+                                <span>Чек-лист</span>
+                            </div>
+                            <div className={s.checkLists}>
+                                {taskId.stages && taskId.stages.map((stage, index) => (
+                                    <div className={s.checkList} key={index}>
+                                        <input type="checkbox" checked={stage.is_ready}/>
+                                        <Text width={"60%"} height={"21px"} value={stage.description} disabled/>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
-                        <div className={s.checkLists}>
-                            {taskId.stages && taskId.stages.map((stage, index) => (
-                                <div className={s.checkList} key={index}>
-                                    <input type="checkbox" checked={stage.is_ready}/>
-                                    <Text width={"60%"} height={"21px"} value={stage.description} disabled/>
+                    }
+                    <div className={s.time}>
+                        <div className={s.timer}>
+                            <span>Таймер</span>
+                            <div className={s.timerelements}>
+                                <div className={s.timeElements}>
+                                    <div>
+                                        <span>{formatTime(timer.time)}</span>
+                                    </div>
                                 </div>
-                            ))}
+                                <div className={s.buttonsform}>
+                                    <ButtonForm onClick={timer.isRunning  ? stopTimer : startTimer} width={32} height={32}>
+                                        {timer.isRunning  ? 'О' : 'В'}
+                                    </ButtonForm>
+                                    <ButtonForm>Сохранить</ButtonForm>
+                                    <ButtonForm onClick={resetTimer} status='notActive' width={32} height={32}>С</ButtonForm>
+                                </div>
+                            </div>
+                        </div>
+                        <div className={s.timeSpent}>
+                            <span>Затраченное время</span>
+                            <div className={s.timeSpentElements}>
+                                <span>00:00:00</span>
+                                <div>
+                                    <span>ФИО</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                }
-                {/*<div className={s.time}>*/}
-                {/*    <div className={s.timer}>*/}
-                {/*        <span>Таймер</span>*/}
-                {/*        <div className={s.timeElements}>*/}
-                {/*            <div>*/}
-                {/*                <span>00:00:00</span>*/}
-                {/*            </div>*/}
-                {/*        </div>*/}
-                {/*        <div>*/}
-                {/*            <ButtonForm>Play</ButtonForm>*/}
-                {/*            <ButtonForm>Сохранить</ButtonForm>*/}
-                {/*            <ButtonForm status='notActive'>Delete</ButtonForm>*/}
-                {/*        </div>*/}
-                {/*    </div>*/}
-                {/*    <div className={s.timeSpent}>*/}
-                {/*        <span>Затраченное время</span>*/}
-                {/*        <div className={s.timeSpentElements}>*/}
-                {/*            <span>00:00:00</span>*/}
-                {/*            <div>*/}
-                {/*                <span>ФИО</span>*/}
-                {/*            </div>*/}
-                {/*        </div>*/}
-                {/*    </div>*/}
-                {/*</div>*/}
-                <div className={s.buttons}>
-                    <ButtonForm width={147} height={32} onClick={() => setFormType('edit')}>Редактировать</ButtonForm>
-                    <ButtonForm width={179} height={32}  onClick={() => setFormType('create')}>Создать подзадачу</ButtonForm>
-                    <ButtonForm width={170} height={32}  status='notActive' onClick={Delete}>Удалить задачу</ButtonForm>
+                    <div className={s.buttons}>
+                        <ButtonForm width={147} height={32} onClick={() => setFormType('edit')}>Редактировать</ButtonForm>
+                        <ButtonForm width={179} height={32}  onClick={() => setFormType('create')}>Создать подзадачу</ButtonForm>
+                        <ButtonForm width={170} height={32}  status='notActive' onClick={Delete}>Удалить задачу</ButtonForm>
+                    </div>
                 </div>
+
             </form>
         </div>
     );

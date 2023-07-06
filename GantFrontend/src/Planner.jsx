@@ -5,9 +5,11 @@ import Main from "./pages/main/main";
 import {ThemeProvider} from "styled-components";
 import GlobalStyles from "./styles/GlobalStyles";
 import {RecoilRoot} from "recoil";
+import {BrowserRouter} from "react-router-dom";
 
-const Gant = () => {
+const Planner = () => {
     return (
+        <BrowserRouter>
         <RecoilRoot>
         <ThemeProvider theme={theme}>
             <GlobalStyles />
@@ -15,7 +17,8 @@ const Gant = () => {
             <ToastContainer/>
         </ThemeProvider>
         </RecoilRoot>
+        </BrowserRouter>
     )
 }
 
-export default Gant
+export default Planner

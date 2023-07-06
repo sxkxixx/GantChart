@@ -27,3 +27,12 @@ export const teamsList = atom({
     key: 'usersList',
     default: []
 })
+
+export const timerState = atom({
+    key: 'timerState',
+    default: {
+        time: 0,
+        isRunning: false,
+        timerId: null,
+    },
+});

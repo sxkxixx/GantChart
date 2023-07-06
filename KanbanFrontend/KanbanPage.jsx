@@ -1,7 +1,6 @@
 import { useRef, useState } from "react";
 import { CSSTransition } from "react-transition-group";
 import styled from "styled-components";
-import { useAppSelector } from "../../shared/src/store/Hooks";
 import { Board } from "./components/Board";
 import { KanbanHeader } from "./components/KanbanHeader";
 import { TaskCreate } from "./components/TaskCreate/TaskCreate";
@@ -12,6 +11,7 @@ import { BaseStatuses } from "./data/Status";
 import { kanbanApiContainer } from "./store/Api";
 import { selectFilteredShortTasks } from "./store/FilteredTaskSelector";
 import { useFullTask } from "./store/useFullTask";
+import {useAppSelector} from "./shared";
 
 const Container = styled.div`
     padding-top: 32px;

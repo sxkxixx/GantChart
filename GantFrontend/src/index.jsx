@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import Gant from './Gant';
+import Planner from './Planner';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-        <Gant/>
+        <Planner/>
 );
 

@@ -1,9 +1,9 @@
 import styled from 'styled-components';
 
-export const StyledTaskRow = styled.tr`
+export const StyledTaskRow = styled.div`
   display: block;
   height: 42px;
-  width: 100%;
+  width: 400px;
   border-right: 1px solid #AFBAC3;
   border-left: 1px solid #AFBAC3;
   border-bottom: 1px solid #AFBAC3;

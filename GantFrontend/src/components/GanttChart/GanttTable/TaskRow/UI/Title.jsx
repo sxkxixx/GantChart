@@ -5,7 +5,11 @@ export const Title = styled.div`
   flex-direction: row;
   align-items: center;
   width: 50%;
+
   & span {
     padding-left: 8px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
 `;

@@ -42,7 +42,7 @@ export const Values = styled.div`
     }
 `;
 
-export const StyledSelect = styled.div<{ active: boolean }>`
+export const StyledSelect = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;

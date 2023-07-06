@@ -6,7 +6,7 @@ const StyledInput = styled.input`
   align-items: center;
   padding: 0 8px;
   gap: 8px;
-  width: 184px;
+  width: 160px;
   height: 32px;
   border-radius: 5px;
   border: 1px solid var(--basic-grey, #AFBAC3);

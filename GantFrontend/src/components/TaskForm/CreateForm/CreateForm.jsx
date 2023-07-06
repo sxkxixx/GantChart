@@ -168,7 +168,7 @@ const CreateForm = ({parentId, setShowModal}) => {
             setTasks(updatedTasks);
             toast.success('Задача создана!', {
                 position: "top-right",
-                autoClose: 2000,
+                autoClose: 1000,
                 hideProgressBar: false,
                 closeOnClick: true,
                 pauseOnHover: true,
@@ -202,15 +202,6 @@ const CreateForm = ({parentId, setShowModal}) => {
                     />
                 </div>
                 <div className={s.elements}>
-                    <InputDate1
-                        onChange={(event) => setDeadline(event.target.value)}
-                    />
-                    <Select
-                        label="Тег Команды"
-                        icon={<Project/>}
-                        options={options.map(opt => ({value: opt.id, name: opt.name}))}
-                        onChange={(event) => setTeamId(event.target.value)}
-                    />
                     <div className={s.dates}>
                         <span>Планируемые сроки выполнения</span>
                         <div className={s.date}>
@@ -223,6 +214,15 @@ const CreateForm = ({parentId, setShowModal}) => {
                                    onChange={(event) => setFinalDate(event.target.value)} />
                         </div>
                     </div>
+                    <Select
+                        label="Тег Команды"
+                        icon={<Project/>}
+                        options={options.map(opt => ({value: opt.id, name: opt.name}))}
+                        onChange={(event) => setTeamId(event.target.value)}
+                    />
+                    <InputDate1
+                        onChange={(event) => setDeadline(event.target.value)}
+                    />
                 </div>
                 <div className={s.description}>
                     <TextArea

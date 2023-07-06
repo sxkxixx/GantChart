@@ -1,8 +1,8 @@
-import { useHover } from "@kanban/hooks/useHover";
 import { CalendarIcon, PersonIcon, PlayIcon, TrashIcon } from "@kanban/ui/icons";
 import { useRef, useState } from "react";
 import { DndPlaceholder } from "../DndPlaceholder";
 import * as S from "./Task.styled";
+import {useHover} from "../../hooks/useHover";
 
 export function Task(props) {
     const [taskRef, isHovered] = useHover();
