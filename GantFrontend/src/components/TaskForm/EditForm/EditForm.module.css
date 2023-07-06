@@ -1,7 +1,7 @@
 .container{
     display: flex;
     width: 90%;
-    height: 80%;
+    height: 100%;
 }
 
 .title{
@@ -127,7 +127,6 @@
 }
 
 .buttons{
-    position: absolute;
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
@@ -169,4 +168,40 @@
     width: 224px;
     height: 32px;
     font-size: 14px;
+}
+
+.timeSpent{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.timeSpentElements{
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+}
+
+
+.info{
+    display: flex;
+    flex-direction: column;
+    overflow-y: scroll;
+    width: 100%;
+    height: 100%;
+    padding-bottom: 10px;
+    gap: 20px;
+}
+
+.info::-webkit-scrollbar {
+    width: 8px; /* Ширина полосы прокрутки */
+}
+
+.info::-webkit-scrollbar-thumb {
+    background-color: transparent; /* Цвет полосы прокрутки */
+    border-radius: 4px; /* Скругление углов полосы прокрутки */
+}
+
+.info:hover {
+    overflow: auto;
 }

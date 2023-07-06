@@ -198,120 +198,131 @@ const EditForm = ({id, setFormType, setShowModal}) => {
                         </span>
                     </span>
                 </div>
-                <div className={s.project}>
-                    <Select
-                        label="Проекты"
-                        icon={<Project/>}
-                        defaultValue={taskId.task && taskId.task.project_id}
-                        options={options.map(opt => ({value: opt.id, name: opt.name}))}
-                        onChange={(event) => setProjectId(event.target.value)}
-                    />
-                </div>
-                <div className={s.elements}>
-                    <div className={s.dates}>
-                        <span>Планируемые сроки выполнения</span>
-                        <div className={s.date}>
-                            <input
-                                type="date"
-                                defaultValue={taskId.task && taskId.task.planned_start_date}
-                                onChange={(event) => setStartDate(event.target.value)}
-                            />
-                            <span> - </span>
-                            <input
-                                type="date"
-                                defaultValue={taskId.task && taskId.task.planned_final_date}
-                                onChange={(event) => setFinalDate(event.target.value)}
-                            />
+                <div className={s.info}>
+                    <div className={s.project}>
+                        <Select
+                            label="Проекты"
+                            icon={<Project/>}
+                            defaultValue={taskId.task && taskId.task.project_id}
+                            options={options.map(opt => ({value: opt.id, name: opt.name}))}
+                            onChange={(event) => setProjectId(event.target.value)}
+                        />
+                    </div>
+                    <div className={s.elements}>
+                        <div className={s.dates}>
+                            <span>Планируемые сроки выполнения</span>
+                            <div className={s.date}>
+                                <input
+                                    type="date"
+                                    defaultValue={taskId.task && taskId.task.planned_start_date}
+                                    onChange={(event) => setStartDate(event.target.value)}
+                                />
+                                <span> - </span>
+                                <input
+                                    type="date"
+                                    defaultValue={taskId.task && taskId.task.planned_final_date}
+                                    onChange={(event) => setFinalDate(event.target.value)}
+                                />
+                            </div>
+                        </div>
+                        <Select
+                            label="Тег Команды"
+                            icon={<Project/>}
+                            defaultValue={taskId.task && taskId.task.team_id}
+                            options={options.map(opt => ({value: opt.id, name: opt.name}))}
+                            onChange={(event) => setTeamId(event.target.value)}
+                        />
+                        <InputDate1
+                            defaultValue={taskId.task && taskId.task.deadline}
+                            onChange={(event) => setDeadline(event.target.value)}
+                        />
+                    </div>
+                    <div className={s.description}>
+                        <TextArea
+                            width={"606px"}
+                            height={"128px"}
+                            placeholder="Введите комментарий..."
+                            defaultValue={taskId.task && taskId.task.description}
+                            onChange={(event) => setDescription(event.target.value)}
+                        />
+                    </div>
+                    <div className={s.important}>
+                        <Select
+                            label="Постановщик"
+                            icon={<Project/>}
+                            options={options.map(opt => ({value: opt.id, name: opt.name}))}
+                            onChange={(e) => console.log(e.target.value)}
+                        />
+                        <Select
+                            label="Ответственный"
+                            icon={<Project/>}
+                            disabled
+                            defaultValue={taskId.executor && taskId.executor[0].user_id}
+                            options={options.map(opt => ({value: opt.id, name: opt.name}))}
+                            onChange={(event) => setExecutorId(event.target.value)}
+                        />
+                    </div>
+                    <div className={s.unimportant}>
+                        <div className={s.unimportantTop}>
+                            <span>Исполнители</span>
+                            <button type="button"  onClick={handleAddPerformer}>
+                                <Add />
+                            </button>
+                        </div>
+                        <div className={s.unimportantLists}>
+                            {performers.map((performer, index) => (
+                                <div className={s.unimportantList} key={index}>
+                                    <Select  options={options.map(opt => ({value: opt.id, name: opt.name}))}/>
+                                    <button type="button" onClick={() => handleDeletePerformer(index)}>
+                                        <Del />
+                                    </button>
+                                </div>
+                            ))}
                         </div>
                     </div>
-                    <Select
-                        label="Тег Команды"
-                        icon={<Project/>}
-                        defaultValue={taskId.task && taskId.task.team_id}
-                        options={options.map(opt => ({value: opt.id, name: opt.name}))}
-                        onChange={(event) => setTeamId(event.target.value)}
-                    />
-                    <InputDate1
-                        defaultValue={taskId.task && taskId.task.deadline}
-                        onChange={(event) => setDeadline(event.target.value)}
-                    />
-                </div>
-                <div className={s.description}>
-                    <TextArea
-                        width={"606px"}
-                        height={"128px"}
-                        placeholder="Введите комментарий..."
-                        defaultValue={taskId.task && taskId.task.description}
-                        onChange={(event) => setDescription(event.target.value)}
-                    />
-                </div>
-                <div className={s.important}>
-                    <Select
-                        label="Постановщик"
-                        icon={<Project/>}
-                        options={options.map(opt => ({value: opt.id, name: opt.name}))}
-                        onChange={(e) => console.log(e.target.value)}
-                    />
-                    <Select
-                        label="Ответственный"
-                        icon={<Project/>}
-                        disabled
-                        defaultValue={taskId.executor && taskId.executor[0].user_id}
-                        options={options.map(opt => ({value: opt.id, name: opt.name}))}
-                        onChange={(event) => setExecutorId(event.target.value)}
-                    />
-                </div>
-                <div className={s.unimportant}>
-                    <div className={s.unimportantTop}>
-                        <span>Исполнители</span>
-                        <button type="button"  onClick={handleAddPerformer}>
-                            <Add />
-                        </button>
+                    <div className={s.checklist}>
+                        <div className={s.checklistTop}>
+                            <span>Чек-лист</span>
+                            <button type="button"  onClick={() => handleAddStages('')}>
+                                <Add />
+                            </button>
+                        </div>
+                        <div className={s.checkLists}>
+                            {taskId.stages && taskId.stages.map((stage, index) => (
+                                <div className={s.checkList} key={index}>
+                                    <input type="checkbox" defaultChecked={stage.is_ready}/>
+                                    <Text
+                                        width={"60%"}
+                                        height={"21px"}
+                                        defaultValue={stage.description}
+                                        onChange={(event) =>
+                                            handleStageDescriptionChange(
+                                                index,
+                                                event.target.value
+                                            )
+                                        }
+                                    />
+                                    <button type="button" onClick={() => handleDeleteStages(index)}>
+                                        <Del />
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
                     </div>
-                    <div className={s.unimportantLists}>
-                        {performers.map((performer, index) => (
-                            <div className={s.unimportantList} key={index}>
-                                <Select  options={options.map(opt => ({value: opt.id, name: opt.name}))}/>
-                                <button type="button" onClick={() => handleDeletePerformer(index)}>
-                                    <Del />
-                                </button>
+                    <div className={s.timeSpent}>
+                        <span>Затраченное время</span>
+                        <div className={s.timeSpentElements}>
+                            <span>00:00:00</span>
+                            <div>
+                                <span>ФИО</span>
                             </div>
-                        ))}
+                        </div>
                     </div>
-                </div>
-                <div className={s.checklist}>
-                    <div className={s.checklistTop}>
-                        <span>Чек-лист</span>
-                        <button type="button"  onClick={() => handleAddStages('')}>
-                            <Add />
-                        </button>
+                    <div className={s.buttons}>
+                        <ButtonForm type="submit">Сохранить</ButtonForm>
+                        <ButtonForm width={179} height={32}  onClick={() => setFormType('create')}>Создать подзадачу</ButtonForm>
+                        <ButtonForm width={170} height={32}  status='notActive' onClick={Delete}>Удалить задачу</ButtonForm>
                     </div>
-                    <div className={s.checkLists}>
-                        {taskId.stages && taskId.stages.map((stage, index) => (
-                            <div className={s.checkList} key={index}>
-                                <input type="checkbox" defaultChecked={stage.is_ready}/>
-                                <Text
-                                    width={"60%"}
-                                    height={"21px"}
-                                    defaultValue={stage.description}
-                                    onChange={(event) =>
-                                        handleStageDescriptionChange(
-                                            index,
-                                            event.target.value
-                                        )
-                                    }
-                                />
-                                <button type="button" onClick={() => handleDeleteStages(index)}>
-                                    <Del />
-                                </button>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-                <div className={s.buttons}>
-                    <ButtonForm type="submit">Сохранить</ButtonForm>
-                    <ButtonForm width={179} height={32}  onClick={() => setFormType('create')}>Создать подзадачу</ButtonForm>
-                    <ButtonForm width={170} height={32}  status='notActive' onClick={Delete}>Удалить задачу</ButtonForm>
                 </div>
             </form>
         </div>
