@@ -314,6 +314,7 @@ const ViewForm = ({id, setFormType, setShowModal}) => {
                                         placeholder="Введите комментарий..."
                                         width={"574px"}
                                         height={"100%"}
+                                        disabled
                                     />
                                 </div>
                             ))}
