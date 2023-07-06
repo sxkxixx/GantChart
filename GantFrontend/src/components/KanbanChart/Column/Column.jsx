@@ -1,60 +1,50 @@
-import React, {useState} from 'react';
-import s from './Column.module.css'
+import React, { useState } from 'react';
+import s from './Column.module.css';
 import Card from "../Card/Card";
 
-const Column = ({boards, setBoards}) => {
-
-    const [currentBoard, setCurrentBoard] = useState(null)
-    const [currentItem, setCurrentItem] = useState(null)
+const Column = ({ boards, setBoards }) => {
+    const [currentBoard, setCurrentBoard] = useState(null);
+    const [currentItem, setCurrentItem] = useState(null);
 
     function dragOverHandler(e) {
-        e.preventDefault()
-
-    }
-
-    function dragLeaveHandler(e) {
-
+        e.preventDefault();
     }
 
     function dragStartHandler(e, board, items) {
-        setCurrentBoard(board)
-        setCurrentItem(items)
-    }
-
-    function dragEndHandler(e) {
-
+        setCurrentBoard(board);
+        setCurrentItem(items);
     }
 
     function dropHandler(e, board, items) {
-        e.preventDefault()
-        const currentIndex = currentBoard.items.indexOf(currentItem)
-        currentBoard.items.splice(currentIndex, 1)
-        const dropIndex = board.items.indexOf(items)
-        board.items.splice(dropIndex + 1, 0, currentItem)
-        setBoards(boards.map(b =>{
-            if(b.id === board.id){
-                return board
+        e.preventDefault();
+        const currentIndex = currentBoard.items.indexOf(currentItem);
+        currentBoard.items.splice(currentIndex, 1);
+        const dropIndex = board.items.indexOf(items);
+        board.items.splice(dropIndex + 1, 0, currentItem);
+        setBoards(boards.map(b => {
+            if (b.id === board.id) {
+                return board;
             }
-            if(b.id === currentBoard.id){
-                return currentBoard
+            if (b.id === currentBoard.id) {
+                return currentBoard;
             }
-            return b
-        }))
+            return b;
+        }));
     }
 
     function dropCardHandler(e, board) {
-        board.items.push(currentItem)
-        const currentIndex = currentBoard.items.indexOf(currentItem)
-        currentBoard.items.splice(currentIndex, 1)
-        setBoards(boards.map(b =>{
-            if(b.id === board.id){
-                return board
+        board.items.push(currentItem);
+        const currentIndex = currentBoard.items.indexOf(currentItem);
+        currentBoard.items.splice(currentIndex, 1);
+        setBoards(boards.map(b => {
+            if (b.id === board.id) {
+                return board;
             }
-            if(b.id === currentBoard.id){
-                return currentBoard
+            if (b.id === currentBoard.id) {
+                return currentBoard;
             }
-            return b
-        }))
+            return b;
+        }));
     }
 
     return (
@@ -73,10 +63,9 @@ const Column = ({boards, setBoards}) => {
                             key={item.id}
                             board={board}
                             dragOverHandler={dragOverHandler}
-                            dragLeaveHandler={dragLeaveHandler}
                             dragStartHandler={dragStartHandler}
-                            dragEndHandler={dragEndHandler}
                             dropHandler={dropHandler}
+                            className={s.item}
                         />
                     ))}
                 </div>
