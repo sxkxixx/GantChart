@@ -27,13 +27,13 @@ const TextAreaField = styled.textarea`
   // `}
 `;
 
-const TextArea = ({ value, onChange ,width, height, disabled = false, ...rest }) => (
+const TextArea = ({ placeholder, value, onChange ,width, height, disabled = false, ...rest }) => (
     <TextAreaField
         width={width}
         height={height}
         disabled={disabled}
         {...rest}
-        placeholder="Введите описание"
+        placeholder={placeholder}
         value={value}
         onChange={onChange}
     />

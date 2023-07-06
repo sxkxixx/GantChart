@@ -240,6 +240,7 @@ const EditForm = ({id, setFormType, setShowModal}) => {
                     <TextArea
                         width={"606px"}
                         height={"128px"}
+                        placeholder="Введите комментарий..."
                         defaultValue={taskId.task && taskId.task.description}
                         onChange={(event) => setDescription(event.target.value)}
                     />

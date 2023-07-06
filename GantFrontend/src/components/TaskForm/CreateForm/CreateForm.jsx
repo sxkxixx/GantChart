@@ -226,6 +226,7 @@ const CreateForm = ({parentId, setShowModal}) => {
                 </div>
                 <div className={s.description}>
                     <TextArea
+                        placeholder="Введите комментарий..."
                         width={"606px"}
                         height={"128px"}
                         onChange={(event) => setDescription(event.target.value)}

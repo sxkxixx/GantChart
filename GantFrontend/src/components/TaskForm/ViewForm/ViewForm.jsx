@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import s from './ViewForm.module.css'
 import {useRecoilState, useRecoilValue, useSetRecoilState} from "recoil";
-import {projectsList, taskIdState, tasksState, teamsList, timer, timerState} from "../../../store/atom";
+import {commentsState, projectsList, taskIdState, tasksState, teamsList, timer, timerState} from "../../../store/atom";
 import {createTask, deleteIdTask, getAllTask, getIdTask} from "../../../services/task";
 import Text from "../UI/Text";
 import Select from "../UI/Select";
@@ -17,6 +17,8 @@ const ViewForm = ({id, setFormType, setShowModal}) => {
     const setTasks = useSetRecoilState(tasksState)
     const tasks = useRecoilValue(tasksState)
     const [timer, setTimer] = useRecoilState(timerState);
+    const [comment, setComment] = useState('')
+    const [comments, setComments] = useRecoilState(commentsState)
 
     const options = [
         {id: 1, name: 'Название проекта'},
@@ -24,6 +26,16 @@ const ViewForm = ({id, setFormType, setShowModal}) => {
         {id: 22, name: 'ЛК Гант'},
         {id: 23, name: 'ЛК Канбан'}
     ];
+    const addComments = () => {
+        const newComment = {
+            name: 'Имя пользователя',
+            text: comment,
+        };
+
+        setComments((prevComments) => [...prevComments, newComment]);
+
+        setComment('');
+    };
 
     const formatTime = (totalSeconds) => {
         const hours = Math.floor(totalSeconds / 3600).toString().padStart(2, '0');
@@ -117,7 +129,7 @@ const ViewForm = ({id, setFormType, setShowModal}) => {
         }
     }
 
-    const findTaskById = (tasks, taskId) =>{
+    const findTaskById = (tasks, taskId) => {
         for (let i = 0; i < tasks.length; i++) {
             const task = tasks[i];
             if (task.id === taskId) {
@@ -140,7 +152,7 @@ const ViewForm = ({id, setFormType, setShowModal}) => {
                     <Text width={"606px"} height={"36px"} value={taskId.task && taskId.task.name} disabled/>
                     <span>
                         Базовая задача:
-                        <span style={{textDecoration:'underline'}}>
+                        <span style={{textDecoration: 'underline'}}>
                         {taskId.task && taskId.task.parent_id !== null ?
                             findTaskById(tasks, taskId.task.parent_id)?.name : "Отсутствует"}
                         </span>
@@ -188,6 +200,7 @@ const ViewForm = ({id, setFormType, setShowModal}) => {
                     <div className={s.description}>
                         <TextArea
                             value={taskId.task && taskId.task.description}
+                            placeholder="Введите комментарий..."
                             width={"606px"}
                             height={"128px"}
                             disabled
@@ -221,7 +234,7 @@ const ViewForm = ({id, setFormType, setShowModal}) => {
                             {/*))}*/}
                         </div>
                     </div>
-                    { taskId.stages?.length === 0 ? null :
+                    {taskId.stages?.length === 0 ? null :
                         <div className={s.checklist}>
                             <div className={s.checklistTop}>
                                 <span>Чек-лист</span>
@@ -246,11 +259,13 @@ const ViewForm = ({id, setFormType, setShowModal}) => {
                                     </div>
                                 </div>
                                 <div className={s.buttonsform}>
-                                    <ButtonForm onClick={timer.isRunning  ? stopTimer : startTimer} width={32} height={32}>
-                                        {timer.isRunning  ? 'О' : 'В'}
+                                    <ButtonForm onClick={timer.isRunning ? stopTimer : startTimer} width={32}
+                                                height={32}>
+                                        {timer.isRunning ? 'О' : 'В'}
                                     </ButtonForm>
                                     <ButtonForm>Сохранить</ButtonForm>
-                                    <ButtonForm onClick={resetTimer} status='notActive' width={32} height={32}>С</ButtonForm>
+                                    <ButtonForm onClick={resetTimer} status='notActive' width={32}
+                                                height={32}>С</ButtonForm>
                                 </div>
                             </div>
                         </div>
@@ -265,9 +280,44 @@ const ViewForm = ({id, setFormType, setShowModal}) => {
                         </div>
                     </div>
                     <div className={s.buttons}>
-                        <ButtonForm width={147} height={32} onClick={() => setFormType('edit')}>Редактировать</ButtonForm>
-                        <ButtonForm width={179} height={32}  onClick={() => setFormType('create')}>Создать подзадачу</ButtonForm>
-                        <ButtonForm width={170} height={32}  status='notActive' onClick={Delete}>Удалить задачу</ButtonForm>
+                        <ButtonForm width={147} height={32}
+                                    onClick={() => setFormType('edit')}>Редактировать</ButtonForm>
+                        <ButtonForm width={179} height={32} onClick={() => setFormType('create')}>Создать
+                            подзадачу</ButtonForm>
+                        <ButtonForm width={170} height={32} status='notActive' onClick={Delete}>Удалить
+                            задачу</ButtonForm>
+                    </div>
+                    <div className={s.comments}>
+                        <div className={s.commentsInput}>
+                            <span>Комментарии</span>
+                            <div className={s.commentsInputElements}>
+                                <TextArea
+                                    value={comment}
+                                    onChange={(event) => setComment(event.target.value)}
+                                    placeholder="Введите комментарий..."
+                                    width={"530px"}
+                                    height={"42px"}
+                                />
+                                <ButtonForm width={100} height={42} onClick={addComments}>Отправить</ButtonForm>
+                            </div>
+                        </div>
+                        <div className={s.commentsOutput}>
+                            {comments.map((comment, index) => (
+                                <div className={s.commentsOutputItem} key={index}>
+                                    <div className={s.commentsOutputTitle}>
+                                        <p className={s.commentsOutputName}>{comment.name}</p>
+                                    </div>
+                                    {/*<p className={s.commentsOutputText}>{comment.text}</p>*/}
+                                    <TextArea
+                                        value={comment.text}
+                                        onChange={(event) => setComment(event.target.value)}
+                                        placeholder="Введите комментарий..."
+                                        width={"574px"}
+                                        height={"100%"}
+                                    />
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 </div>
 

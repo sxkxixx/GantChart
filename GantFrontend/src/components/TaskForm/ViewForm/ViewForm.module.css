@@ -20,7 +20,21 @@
     overflow-y: scroll;
     width: 100%;
     height: 100%;
+    padding-bottom: 10px;
     gap: 20px;
+}
+
+.info::-webkit-scrollbar {
+    width: 8px; /* Ширина полосы прокрутки */
+}
+
+.info::-webkit-scrollbar-thumb {
+    background-color: transparent; /* Цвет полосы прокрутки */
+    border-radius: 4px; /* Скругление углов полосы прокрутки */
+}
+
+.info:hover {
+    overflow: auto;
 }
 
 .project{
@@ -230,3 +244,46 @@
     flex-direction: row;
     gap: 8px;
 }
+
+.comments{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    gap: 20px;
+}
+
+.commentsInput{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.commentsInputElements{
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    align-items: center;
+}
+
+.commentsOutput{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    width: 100%;
+    height: 100%;
+}
+
+.commentsOutputItem{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.commentsOutputTitle{}
+
+.commentsOutputName{}
+
+
