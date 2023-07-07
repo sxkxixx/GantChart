@@ -56,7 +56,7 @@ const Column = ({ boards, setBoards }) => {
                     onDragOver={(e) => dragOverHandler(e)}
                     onDrop={(e) => dropCardHandler(e, board)}
                 >
-                    <div className={s.boardTitle}>{board.title}</div>
+                    <div className={`${s.boardTitle} ${s[board.status]}`}>{board.title}</div>
                     <div className={s.boardItems}>
                         <div className={s.itemsWrapper}>
                             {board.items.map(item => (

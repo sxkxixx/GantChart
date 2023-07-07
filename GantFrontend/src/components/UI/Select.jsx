@@ -15,8 +15,9 @@ const StyledSelect = styled.select`
 `;
 
 
-const Select = ({ options = [], onChange , onClick}) => (
+const Select = ({ options = [], onChange , onClick, dis}) => (
     <StyledSelect onChange={onChange} onClick={onClick}>
+        <option selected disabled>{dis}</option>
         {options.map((option) => (
             <option key={option.value} value={option.value}>
                 {option.name}
