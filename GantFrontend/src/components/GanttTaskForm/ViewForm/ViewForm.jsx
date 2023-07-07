@@ -50,6 +50,7 @@ const ViewForm = ({id, setFormType, setShowModal}) => {
                 setTimer((prevTimer) => ({
                     ...prevTimer,
                     time: prevTimer.time + 1,
+                    taskId: id.id
                 }));
             }, 1000);
 
@@ -57,8 +58,11 @@ const ViewForm = ({id, setFormType, setShowModal}) => {
                 ...prevTimer,
                 isRunning: true,
                 timerId,
+                taskId: id.id,
+                taskName: id.name
             }));
         }
+        console.log(timer)
     };
 
     const stopTimer = () => {
@@ -67,18 +71,25 @@ const ViewForm = ({id, setFormType, setShowModal}) => {
             setTimer((prevTimer) => ({
                 ...prevTimer,
                 isRunning: false,
+                taskId: id.id,
+                taskName: id.name
             }));
         }
     };
 
     const resetTimer = () => {
         clearInterval(timer.timerId);
-        setTimer({
+        setTimer((prevTimer) => ({
+            ...prevTimer,
             time: 0,
             isRunning: false,
             timerId: null,
-        });
+        }));
     };
+
+    const saveTimer = () =>{
+
+    }
 
 
     useEffect(() => {

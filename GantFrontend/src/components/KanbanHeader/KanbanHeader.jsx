@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import Select from "../UI/Select";
 import Button from "../UI/Button";
 import s from './KanbanHeader.module.css'
@@ -10,7 +10,7 @@ const KanbanHeader = () => {
             <div className={s.elements}>
                 <div className={s.selects}>
                     <Select dis={"Мои задачи"}/>
-                    <Select dis={"Название проекта"}/>
+                    <Select dis={"Команда"}/>
                 </div>
                 <div className={s.buttons}>
                     <Button children={"Убрать завершенные задачи"} width={250}/>

@@ -84,6 +84,13 @@
     gap: 33px;
 }
 
+.buttonInfo{
+    width: 114px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
 .time span{
     display: flex;
     flex-direction: row;
@@ -139,6 +146,10 @@
     font-weight: 500;
     font-size: 18px;
     line-height: 20px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    width: 200px;
 }
 
 .taskInfo_left button{

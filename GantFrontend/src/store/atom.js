@@ -34,6 +34,8 @@ export const timerState = atom({
         time: 0,
         isRunning: false,
         timerId: null,
+        taskId: null,
+        taskName: ''
     },
 });
 

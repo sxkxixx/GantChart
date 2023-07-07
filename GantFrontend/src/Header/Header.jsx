@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import s from './Header.module.css';
-import { useNavigate } from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 import {useRecoilState} from "recoil";
 import {timerState} from "../store/atom";
 
@@ -71,7 +71,7 @@ const Header = () => {
         <div className={s.container}>
             <div className={s.left}>
                 <p className={s.logo}>
-                    <h1 style={{ fontSize: '24px', display: 'flex', flexDirection: 'row' }}>Л.К. Стажера</h1>
+                    <h1 style={{fontSize: '24px', display: 'flex', flexDirection: 'row'}}>Л.К. Стажера</h1>
                 </p>
                 <button className={s.profile}> Личный кабинет</button>
                 <div className={s.category}>
@@ -90,34 +90,37 @@ const Header = () => {
                 </div>
             </div>
             <div className={s.right}>
-                <div className={s.time}>
-                    <button onClick={handleTaskClick}>Название задачи</button>
-                    {showTaskInfo && (
-                        <div className={s.taskInfo}>
-                            <div className={s.taskInfo_left}>
-                                <span>Название задачи</span>
-                                <button>Информация о задаче</button>
-                            </div>
-                            <div className={s.taskInfo_right}>
+                {timer.taskId !== null?
+                    <div className={s.time}>
+                        <button className={s.buttonInfo} onClick={handleTaskClick}>{timer.taskName}</button>
+                        {showTaskInfo && (
+                            <div className={s.taskInfo}>
+                                <div className={s.taskInfo_left}>
+                                    <span>{timer.taskName}</span>
+                                    <button>Информация о задаче</button>
+                                </div>
+                                <div className={s.taskInfo_right}>
                 <span>
                   <p>{formatTime(timer.time)}</p>
                 </span>
-                                <div className={s.taskInfo_time}>
-                                    <button onClick={timer.isRunning ? stopTimer : startTimer}  className={s.play}>
-                                        {timer.isRunning ? 'О' : 'В'}
-                                    </button>
-                                    <button className={s.save}>Сохранить</button>
-                                    <button onClick={resetTimer} className={s.trash}>
-                                        С
-                                    </button>
+                                    <div className={s.taskInfo_time}>
+                                        <button onClick={timer.isRunning ? stopTimer : startTimer} className={s.play}>
+                                            {timer.isRunning ? 'О' : 'В'}
+                                        </button>
+                                        <button className={s.save}>Сохранить</button>
+                                        <button onClick={resetTimer} className={s.trash}>
+                                            С
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    )}
-                    <span>
+                        )}
+                        <span>
             <p>{formatTime(timer.time)}</p>
           </span>
-                </div>
+                    </div>
+                    : null
+                }
                 <button className={s.exit}>Выход</button>
             </div>
         </div>
