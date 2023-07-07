@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {ReactComponent as Add} from '../../../../assets/img/addButton.svg'
 import {ReactComponent as Path} from '../../../../assets/img/path.svg'
 import {ReactComponent as Vector} from '../../../../assets/img/vector.svg'
-import Modal from "../../../TaskForm/Modal/Modal";
+import Modal from "../../../GanttTaskForm/Modal/Modal";
 import {kanbanView} from "../../../../services/task";
 import {useRecoilState, useRecoilValue} from "recoil";
 import {tasksState} from "../../../../store/atom";

@@ -9,8 +9,8 @@ const KanbanHeader = () => {
         <div className={s.container}>
             <div className={s.elements}>
                 <div className={s.selects}>
-                    <Select/>
-                    <Select/>
+                    <Select dis={"Мои задачи"}/>
+                    <Select dis={"Название проекта"}/>
                 </div>
                 <div className={s.buttons}>
                     <Button children={"Убрать завершенные задачи"} width={250}/>

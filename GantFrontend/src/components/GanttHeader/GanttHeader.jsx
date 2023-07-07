@@ -5,7 +5,7 @@ import Button from "../UI/Button";
 import {useRecoilValue, useSetRecoilState} from "recoil";
 import {projectsList, tasksState, teamsList} from "../../store/atom";
 import {getAllProjects, getAllTeams} from "../../services/list";
-import Modal from "../TaskForm/Modal/Modal";
+import Modal from "../GanttTaskForm/Modal/Modal";
 import {getAllTask, getAllTaskFilter} from "../../services/task";
 
 const GanttHeader = () => {
@@ -76,12 +76,12 @@ const GanttHeader = () => {
         <div className={s.container}>
             <div className={s.elements}>
                 <div className={s.selects}>
-                    <Select options={projectList}/>
+                    <Select options={projectList} dis={"Мои задачи"}/>
                     {/*<Select*/}
                     {/*    options={options.map(opt => ({value: opt.id, name: opt.name}))}*/}
                     {/*    onChange={(event) => setProjectId(event.target.value)}*/}
                     {/*/>*/}
-                    <Select options={teamList}/>
+                    <Select options={teamList} dis={"Команда"}/>
                 </div>
                 <div className={s.buttons}>
                     <Button children={"Создать задачу"} onClick={()=>openForm('create')}/>
