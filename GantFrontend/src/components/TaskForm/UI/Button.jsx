@@ -18,6 +18,7 @@ const ButtonForm = ({children, type = "button", onClick, status = "default", wid
     const colors = {
         default: "#004CE3",
         notActive: "#AFBAC3",
+        deleteTask: "#EB5757",
     };
 
     return (

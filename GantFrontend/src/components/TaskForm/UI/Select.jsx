@@ -1,11 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
+import shape from "../../../assets/img/shape.svg"
 
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 3px;
+  gap: 4px;
 `;
 
 // const IconWrapper = styled.div`
@@ -26,7 +27,7 @@ const SelectItem = styled.select`
   border: 1px solid #AFBAC3;
   background: #FFFFFF;
   border-radius: 5px;
-  padding: 0 5px;
+  padding: 0 8px;
   font-size: 14px;
   text-overflow: ellipsis;
 `;

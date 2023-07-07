@@ -4,12 +4,15 @@ import styled from 'styled-components';
 const InputField = styled.input`
   width: ${props => props.width ? props.width : '100%'};
   height: ${props => props.height ? props.height : '40px'};
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 16px;
-  background: #FFFFFF;
-  
+  padding: ${props => props.padding ? props.padding : '0px'};;
+  border: ${props => props.border ? props.border : 'none'};
+  background: ${props => props.background ? props.background : 'none'};
+  // font-size: 20px;
+  // font-weight: 700;
+  font-size: ${props => props.fontSize ? props.fontSize : '14px'};
+  font-weight: ${props => props.fontWeight ? props.fontWeight : '500'};
+  border-radius: 5px;
+
   &::placeholder{
     text-align: left;
     vertical-align: top;
@@ -23,10 +26,15 @@ const InputField = styled.input`
   
 `;
 
-const Text = ({ value, onChange ,width, height, disabled = false, ...rest }) => (
+const Text = ({ value, onChange, width, height, padding, border, background, fontSize, fontWeight, disabled = false, ...rest }) => (
     <InputField
         width={width}
         height={height}
+        padding={padding}
+        border={border}
+        background={background}
+        fontSize={fontSize}
+        fontWeight={fontWeight}
         disabled={disabled}
         {...rest}
         placeholder="Название задачи"

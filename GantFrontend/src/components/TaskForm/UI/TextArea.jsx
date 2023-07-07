@@ -4,7 +4,7 @@ import styled from 'styled-components';
 const TextAreaField = styled.textarea`
   width: ${props => props.width ? props.width : '100%'};
   height: ${props => props.height ? props.height : '80px'};
-  padding: 10px;
+  padding: 10px 16px;
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 16px;

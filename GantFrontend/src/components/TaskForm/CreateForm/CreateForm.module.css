@@ -11,27 +11,59 @@
     align-items: flex-start;
     gap: 5px;
     width: 100%;
-    height: 10%;
+    /* height: 10%; */
 }
 
 .project{
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    align-items: center;
+    align-items: start;
     gap: 5px;
     width: 184px;
-    height: 10%;
 }
 
 .elements{
     display: flex;
     flex-direction: row;
-    justify-content: flex-start;
-    align-items: center;
-    width: 100%;
+    align-items: end;
+    padding: 0px;
     gap: 8px;
-    height: 10%;
+    width: 100%;
+}
+
+.element {
+    display: flex;
+    width: 30%;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0px;
+    gap: 4px;
+}
+
+.deadlines {
+    flex-grow: 1;
+}
+
+.element span {
+    color: #000;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.element select{
+    background: url(../../../assets/img/shape.svg) no-repeat center left #FFFFFF;
+    background-size: 16px;
+    background-position-x: 10px;
+    padding-left: 24px;
+    /* width: 100%; */
+}
+
+.project select{
+    background: url(../../../assets/img/projects.svg) no-repeat center left #FFFFFF;
+    background-size: 16px;
+    background-position-x: 10px;
+    padding-left: 28px;
 }
 
 .description{
@@ -84,8 +116,16 @@
 .unimportantList{
     display: flex;
     flex-direction: row;
-    gap: 5px;
+    gap: 8px;
     align-items: center;
+}
+
+.deleteButton {
+    height: 45%;
+}
+
+.checklist .deleteButton {
+    height: 55%;
 }
 
 .checklist{
@@ -166,7 +206,8 @@
     border: 1px solid #AFBAC3;
     background: #FFF;
     align-items: center;
-    width: 224px;
+    /* width: 224px; */
+    width: 100%;
     height: 32px;
     font-size: 14px;
 }

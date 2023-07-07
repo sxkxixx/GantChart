@@ -10,6 +10,8 @@ import InputDate1 from "../UI/InputDate1";
 import ButtonForm from "../UI/Button";
 import TextArea from "../UI/TextArea";
 import {toast} from "react-toastify";
+import { Right } from '../../GanttChart/GanttTable/TaskRow/UI/Right';
+import {ReactComponent as Clock} from  '../../../assets/img/clock.svg'
 
 const ViewForm = ({id, setFormType, setShowModal}) => {
     const taskId = useRecoilValue(taskIdState)
@@ -149,9 +151,10 @@ const ViewForm = ({id, setFormType, setShowModal}) => {
         <div className={s.container}>
             <form className={s.form}>
                 <div className={s.title}>
-                    <Text width={"606px"} height={"36px"} value={taskId.task && taskId.task.name} disabled/>
-                    <span>
+                <Text width={"606px"} height={"36px"} fontSize={"20px"} fontWeight={"700"} value={taskId.task && taskId.task.name} disabled/>
+                    <span style={{padding:'0px 4px'}}>
                         Базовая задача:
+                        <span>&nbsp;</span>
                         <span style={{textDecoration: 'underline'}}>
                         {taskId.task && taskId.task.parent_id !== null ?
                             findTaskById(tasks, taskId.task.parent_id)?.name : "Отсутствует"}
@@ -159,44 +162,65 @@ const ViewForm = ({id, setFormType, setShowModal}) => {
                     </span>
                 </div>
                 <div className={s.info}>
-                    <div className={s.project}>
-                        <Select
-                            label="Проекты"
-                            icon={<Project/>}
-                            options={options.map(opt => ({value: opt.id, name: opt.name}))}
-                            value={taskId.task && taskId.task.project_id}
-                            disabled
-                        />
-                    </div>
                     <div className={s.elements}>
-                        <div className={s.dates}>
-                            <span>Планируемые сроки выполнения</span>
-                            <div className={s.date}>
-                                <input
-                                    disabled
-                                    type="date"
-                                    value={taskId.task && taskId.task.planned_start_date}
-                                />
-                                <span> - </span>
-                                <input
-                                    disabled
-                                    type="date"
-                                    value={taskId.task && taskId.task.planned_final_date}
-                                />
-                            </div>
+                        <div className={s.project}>
+                            <Select
+                                label="Проект"
+                                // icon={<Project/>}
+                                options={options.map(opt => ({value: opt.id, name: opt.name}))}
+                                value={taskId.task && taskId.task.project_id}
+                                disabled
+                            />
                         </div>
-                        <Select
-                            label="Тег Команды"
-                            icon={<Project/>}
-                            options={options.map(opt => ({value: opt.id, name: opt.name}))}
-                            value={taskId.task && taskId.task.team_id}
-                            disabled
-                        />
-                        <InputDate1
-                            value={taskId.task && taskId.task.deadline}
-                            disabled
-                        />
+                        <div className={s.element}>
+                            <Select
+                                label="Тег команды"
+                                // icon={<Project/>}
+                                options={options.map(opt => ({value: opt.id, name: opt.name}))}
+                                value={taskId.task && taskId.task.team_id}
+                                disabled
+                            />
+                        </div>
+                        <div className={s.element}>
+                            <span>Дедлайн</span>
+                            <InputDate1 
+                                value={taskId.task && taskId.task.deadline}
+                                disabled
+                                icon={<Clock/>}
+                            />
+                        </div>
                     </div>
+                <div className={s.elements}>
+                    <div className={`${s.element} ${s.deadlines}`}>
+                        <span>Планируемые сроки выполнения</span>
+                        <div className={s.elements}>
+                            <InputDate1
+                                    value={taskId.task && taskId.task.planned_start_date}
+                                    disabled
+                                    icon={<Clock/>}
+                                />
+                            <span style={{alignSelf:'center'}}>-</span>
+                            <InputDate1
+                                    value={taskId.task && taskId.task.planned_final_date}
+                                    disabled
+                                    icon={<Clock/>}
+                                />
+                        </div>
+                        {/* <div className={s.date}>
+                            <input
+                                disabled
+                                type="date"
+                                value={taskId.task && taskId.task.planned_start_date}
+                            />
+                            <span> - </span>
+                            <input
+                                disabled
+                                type="date"
+                                value={taskId.task && taskId.task.planned_final_date}
+                            />
+                        </div> */}
+                    </div>
+                </div>
                     <div className={s.description}>
                         <TextArea
                             value={taskId.task && taskId.task.description}
@@ -242,8 +266,16 @@ const ViewForm = ({id, setFormType, setShowModal}) => {
                             <div className={s.checkLists}>
                                 {taskId.stages && taskId.stages.map((stage, index) => (
                                     <div className={s.checkList} key={index}>
-                                        <input type="checkbox" checked={stage.is_ready}/>
-                                        <Text width={"60%"} height={"21px"} value={stage.description} disabled/>
+                                        <Right>
+                                            <input type="checkbox" checked={stage.is_ready}/>
+                                        </Right>
+                                        <Text 
+                                        width={"60%"}
+                                        height={"21px"} 
+                                        padding={"10px"}
+                                        border={"1px solid #ccc"} 
+                                        background={"#FFFFFF"} 
+                                        value={stage.description} disabled/>
                                     </div>
                                 ))}
                             </div>
@@ -284,7 +316,7 @@ const ViewForm = ({id, setFormType, setShowModal}) => {
                                     onClick={() => setFormType('edit')}>Редактировать</ButtonForm>
                         <ButtonForm width={179} height={32} onClick={() => setFormType('create')}>Создать
                             подзадачу</ButtonForm>
-                        <ButtonForm width={170} height={32} status='notActive' onClick={Delete}>Удалить
+                        <ButtonForm width={170} height={32} status='deleteTask' onClick={Delete}>Удалить
                             задачу</ButtonForm>
                     </div>
                     <div className={s.comments}>
@@ -321,7 +353,6 @@ const ViewForm = ({id, setFormType, setShowModal}) => {
                         </div>
                     </div>
                 </div>
-
             </form>
         </div>
     );

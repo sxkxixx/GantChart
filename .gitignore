@@ -7,3 +7,4 @@ dir1
 .gitignore
 ocenka.txt
 views
+GantBackend/venv
