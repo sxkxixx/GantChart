@@ -1,13 +1,22 @@
 import React, {useState} from 'react';
 import s from './Header.module.css';
 import {useNavigate} from 'react-router-dom';
-import {useRecoilState} from "recoil";
-import {timerState} from "../store/atom";
+import {useRecoilState, useRecoilValue} from "recoil";
+import {taskIdState, timerState} from "../store/atom";
+import Modal from "../components/GanttTaskForm/Modal/Modal";
 
 const Header = () => {
     const [showTaskInfo, setShowTaskInfo] = useState(false);
     const [activeCategory, setActiveCategory] = useState('kanban');
     const [timer, setTimer] = useRecoilState(timerState);
+    const taskId = useRecoilValue(taskIdState)
+    const [formType, setFormType] = useState('')
+    const [showModal, setShowModal] = useState(false)
+
+    const openForm = (type) => {
+        setFormType(type);
+        setShowModal(true);
+    };
 
     const formatTime = (totalSeconds) => {
         const hours = Math.floor(totalSeconds / 3600).toString().padStart(2, '0');
@@ -28,7 +37,7 @@ const Header = () => {
             setTimer((prevTimer) => ({
                 ...prevTimer,
                 isRunning: true,
-                timerId,
+                timerId
             }));
         }
     };
@@ -45,11 +54,12 @@ const Header = () => {
 
     const resetTimer = () => {
         clearInterval(timer.timerId);
-        setTimer({
+        setTimer((prevTimer) => ({
+            ...prevTimer,
             time: 0,
             isRunning: false,
             timerId: null,
-        });
+        }));
     };
 
     const handleTaskClick = () => {
@@ -97,7 +107,7 @@ const Header = () => {
                             <div className={s.taskInfo}>
                                 <div className={s.taskInfo_left}>
                                     <span>{timer.taskName}</span>
-                                    <button>Информация о задаче</button>
+                                    <button onClick={()=>openForm('view')}>Информация о задаче</button>
                                 </div>
                                 <div className={s.taskInfo_right}>
                 <span>
@@ -123,7 +133,7 @@ const Header = () => {
                 }
                 <button className={s.exit}>Выход</button>
             </div>
-        </div>
+            <Modal id={timer.task} showModal={showModal} setShowModal={setShowModal} formType={formType} setFormType={setFormType}/>        </div>
     );
 };
 

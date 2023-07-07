@@ -59,7 +59,8 @@ const ViewForm = ({id, setFormType, setShowModal}) => {
                 isRunning: true,
                 timerId,
                 taskId: id.id,
-                taskName: id.name
+                taskName: id.name,
+                task: id,
             }));
         }
         console.log(timer)
