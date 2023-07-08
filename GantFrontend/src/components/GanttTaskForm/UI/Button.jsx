@@ -9,11 +9,11 @@ const StyledButton = styled.button`
   background: ${(props) => props.colors[props.status]};
   border-radius: 5px;
   width: ${props => props.width ? props.width : 'fit-content'};
-  height: 32px;
+  height: ${props => props.height ? props.height : '32px'};;
   color: white;
 `;
 
-const ButtonForm = ({children, type = "button", onClick, status = "default", width = 125, height = 32, padding}) => {
+const ButtonForm = ({children, type = "button", onClick, status = "default", width = 125, height, padding}) => {
 
     const colors = {
         default: "#004CE3",

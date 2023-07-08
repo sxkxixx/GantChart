@@ -122,6 +122,8 @@
 }
 
 .deleteButton {
+    display: flex;
+    align-items: center;
     height: 45%;
 }
 

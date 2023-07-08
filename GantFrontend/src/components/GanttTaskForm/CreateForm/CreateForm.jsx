@@ -87,9 +87,8 @@ const CreateForm = ({parentId, setShowModal}) => {
     };
 
 
-    const handleDeleteStages = (index) => {
-        const newData = [...stages];
-        newData.splice(index, 1);
+    const handleDeleteStages = (id) => {
+        const newData = stages.filter(stage => stage.id !== id);
         setStages(newData);
     };
 
@@ -221,7 +220,7 @@ const CreateForm = ({parentId, setShowModal}) => {
                         />
                     </div>
                 </div>
-                    
+
                 <div className={s.elements}>
                     <div className={`${s.element} ${s.deadlines}`}>
                         <span>Планируемые сроки выполнения</span>
@@ -234,7 +233,7 @@ const CreateForm = ({parentId, setShowModal}) => {
                                 <span style={{alignSelf:'center'}}>-</span>
                             <InputDate1
                                     value={finalDate}
-                                    onChange={(event) => setFinalDate(event.target.value)} 
+                                    onChange={(event) => setFinalDate(event.target.value)}
                                     icon={<Clock/>}
                                 />
                         </div>
@@ -283,7 +282,7 @@ const CreateForm = ({parentId, setShowModal}) => {
                             <div className={s.unimportantList} key={index}>
                                 <Select  options={options.map(opt => ({value: opt.id, name: opt.name}))}/>
                                 <button className={s.deleteButton} type="button" onClick={() => handleDeletePerformer(index)}>
-                                    <Del />
+                                    <Del style={{width: "16px", height: "16px"}} />
                                 </button>
                             </div>
                         ))}
@@ -306,7 +305,7 @@ const CreateForm = ({parentId, setShowModal}) => {
                                     width={"60%"}
                                     height={"21px"}
                                     padding={"10px"}
-                                    border={"1px solid #ccc"} 
+                                    border={"1px solid #ccc"}
                                     background={"#FFFFFF"}
                                     onChange={(event) => {
                                         const newData = [...stages];
@@ -314,8 +313,8 @@ const CreateForm = ({parentId, setShowModal}) => {
                                         setStages(newData);
                                     }}
                                 />
-                                <button className={s.deleteButton} type="button" onClick={() => handleDeleteStages(index, stage.description)}>
-                                    <Del />
+                                <button className={s.deleteButton} type="button" onClick={() => handleDeleteStages(stage.id)}>
+                                    <Del style={{width: "16px", height: "16px"}}/>
                                 </button>
                             </div>
                         ))}

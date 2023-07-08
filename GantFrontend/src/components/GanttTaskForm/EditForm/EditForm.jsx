@@ -299,8 +299,8 @@ const EditForm = ({id, setFormType, setShowModal}) => {
                             {performers.map((performer, index) => (
                                 <div className={s.unimportantList} key={index}>
                                     <Select  options={options.map(opt => ({value: opt.id, name: opt.name}))}/>
-                                    <button type="button" onClick={() => handleDeletePerformer(index)}>
-                                        <Del />
+                                    <button className={s.deleteButton}  onClick={() => handleDeletePerformer(index)}>
+                                        <Del style={{width: "16px", height: "16px"}} />
                                     </button>
                                 </div>
                             ))}
@@ -323,7 +323,7 @@ const EditForm = ({id, setFormType, setShowModal}) => {
                                         width={"60%"}
                                         height={"21px"}
                                         padding={"10px"}
-                                        border={"1px solid #ccc"} 
+                                        border={"1px solid #ccc"}
                                         background={"#FFFFFF"}
                                         defaultValue={stage.description}
                                         onChange={(event) =>
@@ -334,7 +334,7 @@ const EditForm = ({id, setFormType, setShowModal}) => {
                                         }
                                     />
                                     <button className={s.deleteButton} type="button" onClick={() => handleDeleteStages(index)}>
-                                        <Del />
+                                        <Del style={{width: "16px", height: "16px"}} />
                                     </button>
                                 </div>
                             ))}
@@ -346,10 +346,10 @@ const EditForm = ({id, setFormType, setShowModal}) => {
                                 <span>00:00:00</span>
                                 <Text
                                 width={"fit-content"}
-                                height={"32px"} 
+                                height={"32px"}
                                 padding={"4px 8px"}
-                                border={"1px solid #ccc"} 
-                                background={"#FFFFFF"} 
+                                border={"1px solid #ccc"}
+                                background={"#FFFFFF"}
                                 value={'ФИО'} disabled/>
                             </div>
                     </div>

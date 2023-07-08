@@ -292,9 +292,8 @@ const ViewForm = ({id, setFormType, setShowModal}) => {
                                         width={"60%"}
                                         height={"21px"}
                                         padding={"10px"}
-                                        border={"1px solid #ccc"}
-                                        background={"#FFFFFF"}
-                                        value={stage.description} disabled/>
+                                        value={stage.description}
+                                        disabled/>
                                     </div>
                                 ))}
                             </div>
@@ -349,9 +348,9 @@ const ViewForm = ({id, setFormType, setShowModal}) => {
                                     value={comment}
                                     onChange={(event) => setComment(event.target.value)}
                                     placeholder="Введите комментарий..."
-                                    height={"32px"}
+                                    height={"40px"}
                                 />
-                                <ButtonForm onClick={addComments}>Отправить</ButtonForm>
+                                <ButtonForm height={"40px"} onClick={addComments}>Отправить</ButtonForm>
                             </div>
                         </div>
                         <div className={s.commentsOutput}>
