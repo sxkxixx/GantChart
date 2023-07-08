@@ -85,6 +85,18 @@ const GlobalStyles = createGlobalStyle`
     font-weight: ${props => props.theme.fontWeight.regular};
   }
 
+  ::-webkit-calendar-picker-indicator { 
+    cursor: pointer;
+    border-radius: 4px;
+    margin-right: 12px;
+    opacity: 0.7;
+    margin-left: -16px;
+  }
+
+  ::-webkit-calendar-picker-indicator:hover {
+    opacity: 1
+  }
+
 `
 
 export default GlobalStyles

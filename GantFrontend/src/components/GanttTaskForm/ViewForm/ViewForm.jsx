@@ -10,6 +10,13 @@ import InputDate1 from "../UI/InputDate1";
 import ButtonForm from "../UI/Button";
 import TextArea from "../UI/TextArea";
 import {toast} from "react-toastify";
+import { Right } from '../../GanttChart/GanttTable/TaskRow/UI/Right';
+import {ReactComponent as Clock} from  '../../../assets/img/clock.svg';
+import {ReactComponent as Timer} from  '../../../assets/img/timer.svg';
+import {ReactComponent as StartTimerButton} from  '../../../assets/img/startTimerButton.svg';
+import {ReactComponent as TrashTimerButton} from  '../../../assets/img/trashButton.svg';
+import {ReactComponent as PauseTimerButton} from  '../../../assets/img/pauseTimerButton.svg';
+
 
 const ViewForm = ({id, setFormType, setShowModal}) => {
     const taskId = useRecoilValue(taskIdState)
@@ -163,9 +170,10 @@ const ViewForm = ({id, setFormType, setShowModal}) => {
         <div className={s.container}>
             <form className={s.form}>
                 <div className={s.title}>
-                    <Text width={"606px"} height={"36px"} value={taskId.task && taskId.task.name} disabled/>
-                    <span>
+                <Text width={"606px"} height={"36px"} fontSize={"20px"} fontWeight={"700"} value={taskId.task && taskId.task.name} disabled/>
+                    <span style={{padding:'0px 4px'}}>
                         Базовая задача:
+                        <span>&nbsp;</span>
                         <span style={{textDecoration: 'underline'}}>
                         {taskId.task && taskId.task.parent_id !== null ?
                             findTaskById(tasks, taskId.task.parent_id)?.name : "Отсутствует"}
@@ -173,44 +181,65 @@ const ViewForm = ({id, setFormType, setShowModal}) => {
                     </span>
                 </div>
                 <div className={s.info}>
-                    <div className={s.project}>
-                        <Select
-                            label="Проекты"
-                            icon={<Project/>}
-                            options={options.map(opt => ({value: opt.id, name: opt.name}))}
-                            value={taskId.task && taskId.task.project_id}
-                            disabled
-                        />
-                    </div>
                     <div className={s.elements}>
-                        <div className={s.dates}>
-                            <span>Планируемые сроки выполнения</span>
-                            <div className={s.date}>
-                                <input
-                                    disabled
-                                    type="date"
-                                    value={taskId.task && taskId.task.planned_start_date}
-                                />
-                                <span> - </span>
-                                <input
-                                    disabled
-                                    type="date"
-                                    value={taskId.task && taskId.task.planned_final_date}
-                                />
-                            </div>
+                        <div className={s.project}>
+                            <Select
+                                label="Проект"
+                                // icon={<Project/>}
+                                options={options.map(opt => ({value: opt.id, name: opt.name}))}
+                                value={taskId.task && taskId.task.project_id}
+                                disabled
+                            />
                         </div>
-                        <Select
-                            label="Тег Команды"
-                            icon={<Project/>}
-                            options={options.map(opt => ({value: opt.id, name: opt.name}))}
-                            value={taskId.task && taskId.task.team_id}
-                            disabled
-                        />
-                        <InputDate1
-                            value={taskId.task && taskId.task.deadline}
-                            disabled
-                        />
+                        <div className={s.element}>
+                            <Select
+                                label="Тег команды"
+                                // icon={<Project/>}
+                                options={options.map(opt => ({value: opt.id, name: opt.name}))}
+                                value={taskId.task && taskId.task.team_id}
+                                disabled
+                            />
+                        </div>
+                        <div className={s.element}>
+                            <span>Дедлайн</span>
+                            <InputDate1
+                                value={taskId.task && taskId.task.deadline}
+                                disabled
+                                icon={<Clock/>}
+                            />
+                        </div>
                     </div>
+                <div className={s.elements}>
+                    <div className={`${s.element} ${s.deadlines}`}>
+                        <span>Планируемые сроки выполнения</span>
+                        <div className={s.elements}>
+                            <InputDate1
+                                    value={taskId.task && taskId.task.planned_start_date}
+                                    disabled
+                                    icon={<Clock/>}
+                                />
+                            <span style={{alignSelf:'center'}}>-</span>
+                            <InputDate1
+                                    value={taskId.task && taskId.task.planned_final_date}
+                                    disabled
+                                    icon={<Clock/>}
+                                />
+                        </div>
+                        {/* <div className={s.date}>
+                            <input
+                                disabled
+                                type="date"
+                                value={taskId.task && taskId.task.planned_start_date}
+                            />
+                            <span> - </span>
+                            <input
+                                disabled
+                                type="date"
+                                value={taskId.task && taskId.task.planned_final_date}
+                            />
+                        </div> */}
+                    </div>
+                </div>
                     <div className={s.description}>
                         <TextArea
                             value={taskId.task && taskId.task.description}
@@ -237,7 +266,7 @@ const ViewForm = ({id, setFormType, setShowModal}) => {
                     </div>
                     <div className={s.unimportant}>
                         <div className={s.unimportantTop}>
-                            <span>Исполнители</span>
+                            <span className={s.label}>Исполнители</span>
                         </div>
                         <div className={s.unimportantLists}>
                             {/*{taskId.executor.map((performer, index) => (*/}
@@ -251,13 +280,21 @@ const ViewForm = ({id, setFormType, setShowModal}) => {
                     {taskId.stages?.length === 0 ? null :
                         <div className={s.checklist}>
                             <div className={s.checklistTop}>
-                                <span>Чек-лист</span>
+                                <span className={s.label}>Чек-лист</span>
                             </div>
                             <div className={s.checkLists}>
                                 {taskId.stages && taskId.stages.map((stage, index) => (
                                     <div className={s.checkList} key={index}>
-                                        <input type="checkbox" checked={stage.is_ready}/>
-                                        <Text width={"60%"} height={"21px"} value={stage.description} disabled/>
+                                        <Right>
+                                            <input type="checkbox" checked={stage.is_ready}/>
+                                        </Right>
+                                        <Text
+                                        width={"60%"}
+                                        height={"21px"}
+                                        padding={"10px"}
+                                        border={"1px solid #ccc"}
+                                        background={"#FFFFFF"}
+                                        value={stage.description} disabled/>
                                     </div>
                                 ))}
                             </div>
@@ -265,53 +302,56 @@ const ViewForm = ({id, setFormType, setShowModal}) => {
                     }
                     <div className={s.time}>
                         <div className={s.timer}>
-                            <span>Таймер</span>
-                            <div className={s.timerelements}>
+                        <span className={s.label}>Таймер</span>
+                            <div className={s.timerElements}>
                                 <div className={s.timeElements}>
-                                    <div>
-                                        <span>{timer.taskId === id.id ? formatTime(timer.time) : "00:00:00"}</span>
+                                    <div className={s.timeContainer}>
+                                        <span className={s.timerIcon}><Timer/></span>
+                                        <span className={s.timeValue}>{timer.taskId === id.id ? formatTime(timer.time) : "00:00:00"}</span>
                                     </div>
-                                </div>
-                                <div className={s.buttonsform}>
-                                    <ButtonForm onClick={timer.isRunning ? stopTimer : startTimer} width={32} height={32}>
-                                        {timer.isRunning && timer.taskId === id.id ? 'О' : 'В'}
-                                    </ButtonForm>
-                                    <ButtonForm>Сохранить</ButtonForm>
-                                    <ButtonForm onClick={resetTimer} status='notActive' width={32}
-                                                height={32}>С</ButtonForm>
+                                    <div className={s.timerButtonsContainer}>
+                                        <ButtonForm onClick={timer.isRunning ? stopTimer : startTimer} padding={'0 8px'} width={'32px'}>
+                                            {timer.isRunning && timer.taskId  ? <PauseTimerButton/> : <StartTimerButton/>}
+                                        </ButtonForm>
+                                        <ButtonForm>Сохранить</ButtonForm>
+                                        <ButtonForm onClick={resetTimer} status='notActive' padding={'0 8px'}><TrashTimerButton/></ButtonForm>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <div className={s.timeSpent}>
-                            <span>Затраченное время</span>
+                            <span className={s.label}>Затраченное время</span>
                             <div className={s.timeSpentElements}>
                                 <span>00:00:00</span>
-                                <div>
-                                    <span>ФИО</span>
-                                </div>
+                                <Text
+                                width={"fit-content"}
+                                height={"32px"}
+                                padding={"4px 8px"}
+                                border={"1px solid #ccc"}
+                                background={"#FFFFFF"}
+                                value={'ФИО'} disabled/>
                             </div>
                         </div>
                     </div>
                     <div className={s.buttons}>
-                        <ButtonForm width={147} height={32}
+                        <ButtonForm
                                     onClick={() => setFormType('edit')}>Редактировать</ButtonForm>
-                        <ButtonForm width={179} height={32} onClick={() => setFormType('create')}>Создать
+                        <ButtonForm onClick={() => setFormType('create')}>Создать
                             подзадачу</ButtonForm>
-                        <ButtonForm width={170} height={32} status='notActive' onClick={Delete}>Удалить
+                        <ButtonForm status='deleteTask' onClick={Delete}>Удалить
                             задачу</ButtonForm>
                     </div>
                     <div className={s.comments}>
                         <div className={s.commentsInput}>
-                            <span>Комментарии</span>
+                            <span className={s.label}>Комментарии</span>
                             <div className={s.commentsInputElements}>
                                 <TextArea
                                     value={comment}
                                     onChange={(event) => setComment(event.target.value)}
                                     placeholder="Введите комментарий..."
-                                    width={"530px"}
-                                    height={"42px"}
+                                    height={"32px"}
                                 />
-                                <ButtonForm width={100} height={42} onClick={addComments}>Отправить</ButtonForm>
+                                <ButtonForm onClick={addComments}>Отправить</ButtonForm>
                             </div>
                         </div>
                         <div className={s.commentsOutput}>
@@ -324,9 +364,7 @@ const ViewForm = ({id, setFormType, setShowModal}) => {
                                     <TextArea
                                         value={comment.text}
                                         onChange={(event) => setComment(event.target.value)}
-                                        placeholder="Введите комментарий..."
-                                        width={"574px"}
-                                        height={"100%"}
+                                        height={"auto"}
                                         disabled
                                     />
                                 </div>
@@ -334,7 +372,6 @@ const ViewForm = ({id, setFormType, setShowModal}) => {
                         </div>
                     </div>
                 </div>
-
             </form>
         </div>
     );

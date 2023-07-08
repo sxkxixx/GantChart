@@ -8,10 +8,13 @@ import Select from "../UI/Select";
 import {ReactComponent as Project} from  '../../../assets/img/projects.svg'
 import {ReactComponent as Add} from  '../../../assets/img/addButtForm.svg'
 import {ReactComponent as Del} from  '../../../assets/img/delButtForm.svg'
+import {ReactComponent as Clock} from  '../../../assets/img/clock.svg'
 import InputDate1 from "../UI/InputDate1";
 import ButtonForm from "../UI/Button";
 import TextArea from "../UI/TextArea";
 import {toast} from "react-toastify";
+import { Right } from '../../GanttChart/GanttTable/TaskRow/UI/Right';
+
 
 const EditForm = ({id, setFormType, setShowModal}) => {
     // const [projectId, setProjectId] = useRecoilState(projectsList)
@@ -189,59 +192,82 @@ const EditForm = ({id, setFormType, setShowModal}) => {
         <div className={s.container}>
             <form className={s.form} onSubmit={handleSubmit}>
                 <div className={s.title}>
-                    <Text defaultValue={taskId.task && taskId.task.name}  optional={true} width={"606px"} height={"36px"} onChange={(event) => setName(event.target.value)}/>
-                    <span>
+                    <Text defaultValue={taskId.task && taskId.task.name}  optional={true} width={"606px"} height={"36px"} padding={"10px"} border={"1px solid #ccc"} background={"#FFFFFF"} fontSize={"20px"} fontWeight={"700"} onChange={(event) => setName(event.target.value)}/>
+                    <span style={{padding:'0px 4px'}}>
                         Базовая задача:
+                        <span>&nbsp;</span>
                         <span style={{textDecoration:'underline'}}>
                         {taskId.task && taskId.task.parent_id !== null ?
                             findTaskById(tasks, taskId.task.parent_id)?.name : "Отсутствует"}
                         </span>
                     </span>
                 </div>
+                {/* <div className={s.info}> */}
                 <div className={s.info}>
-                    <div className={s.project}>
-                        <Select
-                            label="Проекты"
-                            icon={<Project/>}
-                            defaultValue={taskId.task && taskId.task.project_id}
-                            options={options.map(opt => ({value: opt.id, name: opt.name}))}
-                            onChange={(event) => setProjectId(event.target.value)}
-                        />
+                    <div className={s.elements}>
+                        <div className={s.project}>
+                            <Select
+                                label="Проект"
+                                // icon={<Project/>}
+                                defaultValue={taskId.task && taskId.task.project_id}
+                                options={options.map(opt => ({value: opt.id, name: opt.name}))}
+                                onChange={(event) => setProjectId(event.target.value)}
+                            />
+                        </div>
+                        <div className={s.element}>
+                            <Select
+                                label="Тег команды"
+                                // icon={<Project/>}
+                                defaultValue={taskId.task && taskId.task.team_id}
+                                options={options.map(opt => ({value: opt.id, name: opt.name}))}
+                                onChange={(event) => setTeamId(event.target.value)}
+                            />
+                        </div>
+                        <div className={s.element}>
+                            <span>Дедлайн</span>
+                                <InputDate1
+                                    defaultValue={taskId.task && taskId.task.deadline}
+                                    onChange={(event) => setDeadline(event.target.value)}
+                                    icon={<Clock/>}
+                                />
+                        </div>
                     </div>
                     <div className={s.elements}>
-                        <div className={s.dates}>
+                        <div className={`${s.element} ${s.deadlines}`}>
                             <span>Планируемые сроки выполнения</span>
-                            <div className={s.date}>
+                            <div className={s.elements}>
+                                <InputDate1
+                                        defaultValue={taskId.task && taskId.task.planned_start_date}
+                                        onChange={(event) => setStartDate(event.target.value)}
+                                        icon={<Clock/>}
+                                    />
+                                    <span style={{alignSelf:'center'}}>-</span>
+                                <InputDate1
+                                        defaultValue={taskId.task && taskId.task.planned_final_date}
+                                        onChange={(event) => setFinalDate(event.target.value)}
+                                        icon={<Clock/>}
+                                    />
+                            </div>
+                            {/* <div className={s.date}>
                                 <input
                                     type="date"
                                     defaultValue={taskId.task && taskId.task.planned_start_date}
                                     onChange={(event) => setStartDate(event.target.value)}
                                 />
-                                <span> - </span>
+                                <span>- </span>
                                 <input
                                     type="date"
                                     defaultValue={taskId.task && taskId.task.planned_final_date}
                                     onChange={(event) => setFinalDate(event.target.value)}
                                 />
-                            </div>
+                            </div> */}
                         </div>
-                        <Select
-                            label="Тег Команды"
-                            icon={<Project/>}
-                            defaultValue={taskId.task && taskId.task.team_id}
-                            options={options.map(opt => ({value: opt.id, name: opt.name}))}
-                            onChange={(event) => setTeamId(event.target.value)}
-                        />
-                        <InputDate1
-                            defaultValue={taskId.task && taskId.task.deadline}
-                            onChange={(event) => setDeadline(event.target.value)}
-                        />
                     </div>
                     <div className={s.description}>
                         <TextArea
                             width={"606px"}
                             height={"128px"}
-                            placeholder="Введите комментарий..."
+                            placeholder="Введите описание..."
                             defaultValue={taskId.task && taskId.task.description}
                             onChange={(event) => setDescription(event.target.value)}
                         />
@@ -264,7 +290,7 @@ const EditForm = ({id, setFormType, setShowModal}) => {
                     </div>
                     <div className={s.unimportant}>
                         <div className={s.unimportantTop}>
-                            <span>Исполнители</span>
+                            <span className={s.label}>Исполнители</span>
                             <button type="button"  onClick={handleAddPerformer}>
                                 <Add />
                             </button>
@@ -282,7 +308,7 @@ const EditForm = ({id, setFormType, setShowModal}) => {
                     </div>
                     <div className={s.checklist}>
                         <div className={s.checklistTop}>
-                            <span>Чек-лист</span>
+                            <span className={s.label}>Чек-лист</span>
                             <button type="button"  onClick={() => handleAddStages('')}>
                                 <Add />
                             </button>
@@ -290,10 +316,15 @@ const EditForm = ({id, setFormType, setShowModal}) => {
                         <div className={s.checkLists}>
                             {taskId.stages && taskId.stages.map((stage, index) => (
                                 <div className={s.checkList} key={index}>
-                                    <input type="checkbox" defaultChecked={stage.is_ready}/>
+                                    <Right>
+                                        <input type="checkbox" defaultChecked={stage.is_ready}/>
+                                    </Right>
                                     <Text
                                         width={"60%"}
                                         height={"21px"}
+                                        padding={"10px"}
+                                        border={"1px solid #ccc"} 
+                                        background={"#FFFFFF"}
                                         defaultValue={stage.description}
                                         onChange={(event) =>
                                             handleStageDescriptionChange(
@@ -302,7 +333,7 @@ const EditForm = ({id, setFormType, setShowModal}) => {
                                             )
                                         }
                                     />
-                                    <button type="button" onClick={() => handleDeleteStages(index)}>
+                                    <button className={s.deleteButton} type="button" onClick={() => handleDeleteStages(index)}>
                                         <Del />
                                     </button>
                                 </div>
@@ -310,18 +341,22 @@ const EditForm = ({id, setFormType, setShowModal}) => {
                         </div>
                     </div>
                     <div className={s.timeSpent}>
-                        <span>Затраченное время</span>
+                        <span className={s.label}>Затраченное время</span>
                         <div className={s.timeSpentElements}>
-                            <span>00:00:00</span>
-                            <div>
-                                <span>ФИО</span>
+                                <span>00:00:00</span>
+                                <Text
+                                width={"fit-content"}
+                                height={"32px"} 
+                                padding={"4px 8px"}
+                                border={"1px solid #ccc"} 
+                                background={"#FFFFFF"} 
+                                value={'ФИО'} disabled/>
                             </div>
-                        </div>
                     </div>
                     <div className={s.buttons}>
                         <ButtonForm type="submit">Сохранить</ButtonForm>
-                        <ButtonForm width={179} height={32}  onClick={() => setFormType('create')}>Создать подзадачу</ButtonForm>
-                        <ButtonForm width={170} height={32}  status='notActive' onClick={Delete}>Удалить задачу</ButtonForm>
+                        <ButtonForm onClick={() => setFormType('create')}>Создать подзадачу</ButtonForm>
+                        <ButtonForm status='deleteTask' onClick={Delete}>Удалить задачу</ButtonForm>
                     </div>
                 </div>
             </form>

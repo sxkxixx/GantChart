@@ -1,11 +1,15 @@
 import styled from 'styled-components';
 import Check from '../../../../../assets/img/check.svg'
+
 export const Right = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: flex-end;
-  width: 50%;
+  // justify-content: flex-end;
+  justify-content: ${(props) => props.place};
+
+  // width: 200px;
+  width: ${(props) => props.width};
   gap: 8px;
   height: 42px;
   //padding-right: 20px;
@@ -38,6 +42,7 @@ export const Right = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+    margin-left: 3px;
   }
 
   input[type="checkbox"]:checked {

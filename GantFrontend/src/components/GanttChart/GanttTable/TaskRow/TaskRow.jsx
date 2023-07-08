@@ -77,7 +77,7 @@ const TaskRow = ({
                         )}
                         <span style={{cursor: "pointer"}} onClick={()=>openForm('view')}>{task.name}</span>
                     </Title>
-                    <Right>
+                    <Right place = 'flex-end' width = '200px'>
                         {!hasChildren && (
                             <div style={{position: 'relative'}}>
                                 <input

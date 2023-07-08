@@ -13,6 +13,8 @@ import ButtonForm from "../UI/Button";
 import TextArea from "../UI/TextArea";
 import {toast} from "react-toastify";
 import {getAllProjects, getAllTeams, getAllUsers} from "../../../services/list";
+import { Right } from '../../GanttChart/GanttTable/TaskRow/UI/Right';
+import {ReactComponent as Clock} from  '../../../assets/img/clock.svg'
 
 const CreateForm = ({parentId, setShowModal}) => {
     // const [projectId, setProjectId] = useRecoilState(projectsList)
@@ -120,7 +122,7 @@ const CreateForm = ({parentId, setShowModal}) => {
             missingData.push('Проект');
         }
         if (!teamId) {
-            missingData.push('Тег Команды');
+            missingData.push('Тег команды');
         }
         if (!startDate) {
             missingData.push('Дата начала');
@@ -185,26 +187,58 @@ const CreateForm = ({parentId, setShowModal}) => {
         <div className={s.container}>
             <form className={s.form} onSubmit={handleSubmit}>
                 <div className={s.title}>
-                    <Text optional={true} width={"606px"} height={"36px"} onChange={(event) => setName(event.target.value)}/>
-                    <span>
+                    <Text optional={true} width={"606px"} height={"36px"} padding={"10px"} border={"1px solid #ccc"} background={"#FFFFFF"} fontSize={"20px"} fontWeight={"700"} onChange={(event) => setName(event.target.value)}/>
+                    <span style={{padding:'0px 4px'}}>
                         Базовая задача:
+                        <span>&nbsp;</span>
                         <span style={{textDecoration:'underline'}}>
                             {parentId !== null ? parentId.name : "Отсутствует"}
                         </span>
                     </span>
                 </div>
-                <div className={s.project}>
-                    <Select
-                        label="Проекты"
+                <div className={s.elements}>
+                    <div className={s.project}>
+                        <Select
+                            label="Проект"
+                            // icon={<Project/>}
+                            options={options.map(opt => ({value: opt.id, name: opt.name}))}
+                            onChange={(event) => setProjectId(event.target.value)}
+                        />
+                    </div>
+                    <div className={s.element}>
+                        <Select
+                        label="Тег команды"
                         icon={<Project/>}
                         options={options.map(opt => ({value: opt.id, name: opt.name}))}
-                        onChange={(event) => setProjectId(event.target.value)}
-                    />
+                        onChange={(event) => setTeamId(event.target.value)}
+                        />
+                    </div>
+                    <div className={s.element}>
+                        <span>Дедлайн</span>
+                        <InputDate1
+                            onChange={(event) => setDeadline(event.target.value)}
+                            icon={<Clock/>}
+                        />
+                    </div>
                 </div>
+                    
                 <div className={s.elements}>
-                    <div className={s.dates}>
+                    <div className={`${s.element} ${s.deadlines}`}>
                         <span>Планируемые сроки выполнения</span>
-                        <div className={s.date}>
+                        <div className={s.elements}>
+                            <InputDate1
+                                    value={startDate}
+                                    onChange={(event) => setStartDate(event.target.value)}
+                                    icon={<Clock/>}
+                                />
+                                <span style={{alignSelf:'center'}}>-</span>
+                            <InputDate1
+                                    value={finalDate}
+                                    onChange={(event) => setFinalDate(event.target.value)} 
+                                    icon={<Clock/>}
+                                />
+                        </div>
+                        {/* <div className={s.date}>
                             <input type="date"
                                    value={startDate}
                                    onChange={(event) => setStartDate(event.target.value)} />
@@ -212,21 +246,12 @@ const CreateForm = ({parentId, setShowModal}) => {
                             <input type="date"
                                    value={finalDate}
                                    onChange={(event) => setFinalDate(event.target.value)} />
-                        </div>
+                        </div> */}
                     </div>
-                    <Select
-                        label="Тег Команды"
-                        icon={<Project/>}
-                        options={options.map(opt => ({value: opt.id, name: opt.name}))}
-                        onChange={(event) => setTeamId(event.target.value)}
-                    />
-                    <InputDate1
-                        onChange={(event) => setDeadline(event.target.value)}
-                    />
                 </div>
                 <div className={s.description}>
                     <TextArea
-                        placeholder="Введите комментарий..."
+                        placeholder="Введите описание..."
                         width={"606px"}
                         height={"128px"}
                         onChange={(event) => setDescription(event.target.value)}
@@ -248,7 +273,7 @@ const CreateForm = ({parentId, setShowModal}) => {
                 </div>
                 <div className={s.unimportant}>
                     <div className={s.unimportantTop}>
-                        <span>Исполнители</span>
+                        <span className={s.label}>Исполнители</span>
                         <button type="button"  onClick={handleAddPerformer}>
                             <Add />
                         </button>
@@ -257,7 +282,7 @@ const CreateForm = ({parentId, setShowModal}) => {
                         {performers.map((performer, index) => (
                             <div className={s.unimportantList} key={index}>
                                 <Select  options={options.map(opt => ({value: opt.id, name: opt.name}))}/>
-                                <button type="button" onClick={() => handleDeletePerformer(index)}>
+                                <button className={s.deleteButton} type="button" onClick={() => handleDeletePerformer(index)}>
                                     <Del />
                                 </button>
                             </div>
@@ -266,7 +291,7 @@ const CreateForm = ({parentId, setShowModal}) => {
                 </div>
                 <div className={s.checklist}>
                     <div className={s.checklistTop}>
-                        <span>Чек-лист</span>
+                        <span className={s.label}>Чек-лист</span>
                         <button type="button"  onClick={handleAddStages}>
                             <Add />
                         </button>
@@ -274,17 +299,22 @@ const CreateForm = ({parentId, setShowModal}) => {
                     <div className={s.checkLists}>
                         {stages.map((stage, index) => (
                             <div className={s.checkList} key={index}>
-                                <input type="checkbox"/>
+                                <Right>
+                                    <input type="checkbox"/>
+                                </Right>
                                 <Text
                                     width={"60%"}
                                     height={"21px"}
+                                    padding={"10px"}
+                                    border={"1px solid #ccc"} 
+                                    background={"#FFFFFF"}
                                     onChange={(event) => {
                                         const newData = [...stages];
                                         newData[index].description = event.target.value;
                                         setStages(newData);
                                     }}
                                 />
-                                <button type="button" onClick={() => handleDeleteStages(index, stage.description)}>
+                                <button className={s.deleteButton} type="button" onClick={() => handleDeleteStages(index, stage.description)}>
                                     <Del />
                                 </button>
                             </div>
