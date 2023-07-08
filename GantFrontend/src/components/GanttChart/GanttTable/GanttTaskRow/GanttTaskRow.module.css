@@ -11,27 +11,27 @@
     align-items: center;
     justify-content: center;
     background-color: white;
-    border-right: 1px solid #AFBAC3;
-    border-bottom: 1px solid #AFBAC3;
+    border-right: 1px solid #afbac3;
+    border-bottom: 1px solid #afbac3;
 }
 
-.cell {
-    height: 34px;
-    width: 100px;
+.activeCellWrapper {
+    height: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
+    border-radius: 6px;
+    position: absolute;
+    top: 2px;
+}
+
+.emptyCell {
+    background-color: white;
 }
 
 .isActiveCellOverlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
     z-index: 3;
 }
-
 
 .cellColor1 {
     background-color: #4f89ff;
@@ -43,18 +43,4 @@
 
 .ganttDateCell {
     font-weight: bold;
-}
-
-.startCell {
-    border-top-left-radius: 6px;
-    border-bottom-left-radius: 6px;
-}
-
-.endCell {
-    border-top-right-radius: 6px;
-    border-bottom-right-radius: 6px;
-}
-
-.middleCell {
-    border-radius: 0;
 }
