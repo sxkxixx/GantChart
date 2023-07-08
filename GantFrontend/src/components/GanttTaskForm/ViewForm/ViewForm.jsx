@@ -16,7 +16,7 @@ const ViewForm = ({id, setFormType, setShowModal}) => {
     const setTaskId = useSetRecoilState(taskIdState)
     const setTasks = useSetRecoilState(tasksState)
     const tasks = useRecoilValue(tasksState)
-    const [timer, setTimer] = useRecoilState(timerState);
+    const [timer, setTimer] = useRecoilState(timerState)
     const [comment, setComment] = useState('')
     const [comments, setComments] = useRecoilState(commentsState)
 
@@ -45,7 +45,7 @@ const ViewForm = ({id, setFormType, setShowModal}) => {
     };
 
     const startTimer = () => {
-        if (!timer.isRunning) {
+        if (!timer.isRunning && timer.taskId === null || !timer.isRunning && timer.taskId === id.id) {
             const timerId = setInterval(() => {
                 setTimer((prevTimer) => ({
                     ...prevTimer,
@@ -63,11 +63,11 @@ const ViewForm = ({id, setFormType, setShowModal}) => {
                 task: id,
             }));
         }
-        console.log(timer)
     };
 
+
     const stopTimer = () => {
-        if (timer.isRunning) {
+        if (timer.isRunning && timer.taskId === id.id) {
             clearInterval(timer.timerId);
             setTimer((prevTimer) => ({
                 ...prevTimer,
@@ -85,6 +85,7 @@ const ViewForm = ({id, setFormType, setShowModal}) => {
             time: 0,
             isRunning: false,
             timerId: null,
+            taskId: null
         }));
     };
 
@@ -267,13 +268,12 @@ const ViewForm = ({id, setFormType, setShowModal}) => {
                             <div className={s.timerelements}>
                                 <div className={s.timeElements}>
                                     <div>
-                                        <span>{formatTime(timer.time)}</span>
+                                        <span>{timer.taskId === id.id ? formatTime(timer.time) : "00:00:00"}</span>
                                     </div>
                                 </div>
                                 <div className={s.buttonsform}>
-                                    <ButtonForm onClick={timer.isRunning ? stopTimer : startTimer} width={32}
-                                                height={32}>
-                                        {timer.isRunning ? 'О' : 'В'}
+                                    <ButtonForm onClick={timer.isRunning ? stopTimer : startTimer} width={32} height={32}>
+                                        {timer.isRunning && timer.taskId === id.id ? 'О' : 'В'}
                                     </ButtonForm>
                                     <ButtonForm>Сохранить</ButtonForm>
                                     <ButtonForm onClick={resetTimer} status='notActive' width={32}
