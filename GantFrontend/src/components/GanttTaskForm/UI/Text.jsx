@@ -2,9 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 
 const InputField = styled.input`
-  width: ${props => props.width ? props.width : '100%'};
+  width: ${props => props.width ? props.width : 'fit-content'};
   height: ${props => props.height ? props.height : '40px'};
-  padding: ${props => props.padding ? props.padding : '0px'};;
+  padding: ${props => props.padding ? props.padding : '0px'};
   border: ${props => props.border ? props.border : 'none'};
   background: ${props => props.background ? props.background : 'none'};
   // font-size: 20px;

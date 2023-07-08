@@ -290,7 +290,7 @@ const EditForm = ({id, setFormType, setShowModal}) => {
                     </div>
                     <div className={s.unimportant}>
                         <div className={s.unimportantTop}>
-                            <span>Исполнители</span>
+                            <span className={s.label}>Исполнители</span>
                             <button type="button"  onClick={handleAddPerformer}>
                                 <Add />
                             </button>
@@ -308,7 +308,7 @@ const EditForm = ({id, setFormType, setShowModal}) => {
                     </div>
                     <div className={s.checklist}>
                         <div className={s.checklistTop}>
-                            <span>Чек-лист</span>
+                            <span className={s.label}>Чек-лист</span>
                             <button type="button"  onClick={() => handleAddStages('')}>
                                 <Add />
                             </button>
@@ -341,18 +341,22 @@ const EditForm = ({id, setFormType, setShowModal}) => {
                         </div>
                     </div>
                     <div className={s.timeSpent}>
-                        <span>Затраченное время</span>
+                        <span className={s.label}>Затраченное время</span>
                         <div className={s.timeSpentElements}>
-                            <span>00:00:00</span>
-                            <div>
-                                <span>ФИО</span>
+                                <span>00:00:00</span>
+                                <Text
+                                width={"fit-content"}
+                                height={"32px"} 
+                                padding={"4px 8px"}
+                                border={"1px solid #ccc"} 
+                                background={"#FFFFFF"} 
+                                value={'ФИО'} disabled/>
                             </div>
-                        </div>
                     </div>
                     <div className={s.buttons}>
                         <ButtonForm type="submit">Сохранить</ButtonForm>
-                        <ButtonForm width={179} height={32}  onClick={() => setFormType('create')}>Создать подзадачу</ButtonForm>
-                        <ButtonForm width={170} height={32}  status='deleteTask' onClick={Delete}>Удалить задачу</ButtonForm>
+                        <ButtonForm onClick={() => setFormType('create')}>Создать подзадачу</ButtonForm>
+                        <ButtonForm status='deleteTask' onClick={Delete}>Удалить задачу</ButtonForm>
                     </div>
                 </div>
             </form>

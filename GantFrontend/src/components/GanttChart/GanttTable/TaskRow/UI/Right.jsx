@@ -42,6 +42,7 @@ export const Right = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+    margin-left: 3px;
   }
 
   input[type="checkbox"]:checked {

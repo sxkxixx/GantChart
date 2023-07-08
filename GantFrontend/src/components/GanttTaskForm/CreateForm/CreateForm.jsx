@@ -273,7 +273,7 @@ const CreateForm = ({parentId, setShowModal}) => {
                 </div>
                 <div className={s.unimportant}>
                     <div className={s.unimportantTop}>
-                        <span>Исполнители</span>
+                        <span className={s.label}>Исполнители</span>
                         <button type="button"  onClick={handleAddPerformer}>
                             <Add />
                         </button>
@@ -291,7 +291,7 @@ const CreateForm = ({parentId, setShowModal}) => {
                 </div>
                 <div className={s.checklist}>
                     <div className={s.checklistTop}>
-                        <span>Чек-лист</span>
+                        <span className={s.label}>Чек-лист</span>
                         <button type="button"  onClick={handleAddStages}>
                             <Add />
                         </button>
