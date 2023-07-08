@@ -16,13 +16,13 @@
 }
 
 .activeCellWrapper {
-    height: 36px;
+    height: 32px;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 6px;
     position: absolute;
-    top: 2px;
+    top: 4px;
 }
 
 .emptyCell {
@@ -43,4 +43,21 @@
 
 .ganttDateCell {
     font-weight: bold;
+}
+
+
+.startDate{
+    background: transparent;
+    position: absolute;
+    height: 42px;
+    cursor: move;
+    z-index: 60;
+}
+
+.endDate{
+    background: transparent;
+    position: absolute;
+    height: 42px;
+    cursor: move;
+    z-index: 60;
 }

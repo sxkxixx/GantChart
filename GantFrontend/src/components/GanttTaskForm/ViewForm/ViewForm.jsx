@@ -79,14 +79,15 @@ const ViewForm = ({id, setFormType, setShowModal}) => {
     };
 
     const resetTimer = () => {
-        clearInterval(timer.timerId);
-        setTimer((prevTimer) => ({
-            ...prevTimer,
-            time: 0,
-            isRunning: false,
-            timerId: null,
-            taskId: null
-        }));
+        if (!timer.isRunning && timer.taskId === id.id){
+            clearInterval(timer.timerId);
+            setTimer((prevTimer) => ({
+                ...prevTimer,
+                time: 0,
+                isRunning: false,
+                timerId: null,
+            }));
+        }
     };
 
     const saveTimer = () =>{

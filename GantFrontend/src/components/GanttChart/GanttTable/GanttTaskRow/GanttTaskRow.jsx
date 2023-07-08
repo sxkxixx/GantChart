@@ -49,10 +49,20 @@ const GanttTaskRow = ({
 
     const renderActiveCell = (start, end) => {
         return (
-            <div
-                className={`${s.activeCellWrapper} ${getCellStyle(currentIndentLevel)}`}
-                style={{ left: `${start * 100}px`, width: `${(end - start + 1) * 100}px` }}
-            />
+            <>
+                <div
+                    className={s.startDate}
+                    style={{ left: `${start * 100}px`, width: `100px` }}
+                />
+                <div
+                    className={`${s.activeCellWrapper} ${getCellStyle(currentIndentLevel)}`}
+                    style={{ left: `${start * 100}px`, width: `${(end - start + 1) * 100}px` }}
+                />
+                <div
+                    className={s.endDate}
+                    style={{ left: `${end * 100}px`, width: `100px` }}
+                />
+            </>
         );
     };
 
