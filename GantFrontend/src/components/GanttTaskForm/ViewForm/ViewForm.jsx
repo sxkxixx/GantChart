@@ -52,7 +52,7 @@ const ViewForm = ({id, setFormType, setShowModal}) => {
     };
 
     const startTimer = () => {
-        if (!timer.isRunning && timer.taskId === null || !timer.isRunning && timer.taskId === id.id) {
+        if (!timer.isRunning && timer.taskId === null || !timer.isRunning && timer.taskId === id.id || !timer.isRunning && timer.taskId !== id.id && timer.timerId === null) {
             const timerId = setInterval(() => {
                 setTimer((prevTimer) => ({
                     ...prevTimer,

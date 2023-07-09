@@ -57,7 +57,6 @@ export const Right = styled.div`
     align-items: center;
     border-radius: 5px;
     width: 18px;
-    height: 18px;
     color: #fff;
     background-color: #56C568;
     background-position: center;

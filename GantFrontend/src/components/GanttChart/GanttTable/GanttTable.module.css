@@ -20,6 +20,7 @@
 
 .titleRow{
     position: sticky;
+    position: relative;
     top: 0;
     background-color: white;
     height: 80px;
@@ -28,6 +29,17 @@
     justify-content: center;
     align-items: center;
     border: 1px solid #AFBAC3;
+}
+
+.titleRow span{
+    position: absolute;
+    left: 26px;
+    top: 31px;
+    color: #31393C;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: bold;
+    line-height: normal;
 }
 
 .row {
@@ -58,15 +70,22 @@
 .tableHeader {
     display: flex;
     align-items: center;
-    justify-content: space-between;
     height: 40px;
-    padding: 0 10px;
     background-color: white;
     border-top: 1px solid #AFBAC3;
 }
 
 .tableMonth {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    border-right: 1px solid #AFBAC3;
+    color: #31393C;
+    font-size: 16px;
+    font-style: normal;
     font-weight: bold;
+    line-height: normal;
 }
 
 .tableBody {
@@ -86,6 +105,11 @@
     width: 100px;
     height: 100%;
     border-right: 1px solid #AFBAC3;
+    color: #31393C;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: bold;
+    line-height: normal;
 }
 
 .tasksContainer {

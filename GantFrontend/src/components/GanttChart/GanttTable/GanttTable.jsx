@@ -39,6 +39,11 @@ const GanttTable = ({
     const monthArrays = Object.keys(groupedDates).map(
         (month) => groupedDates[month]
     );
+
+    const numDays = projectDurationInDays || 0;
+    const dayCellWidth = 100;
+    const tableWrapperWidth = numDays * dayCellWidth;
+
     return (
         <div className={s.container}>
             <div className={s.table}>
@@ -62,10 +67,10 @@ const GanttTable = ({
             </div>
 
             <div className={`${s.row} ${s.ganttTable}`}>
-                <div className={s.tableWrapper}>
+                <div className={s.tableWrapper} style={{ width: `${tableWrapperWidth}px` }}>
                     <div className={s.tableHeader}>
                         {monthArrays.map((monthArray, index) => (
-                            <div className={s.tableMonth} key={index}>
+                            <div className={s.tableMonth} style={{ width: `${monthArray.length * dayCellWidth}px` }} key={index}>
                                 {monthArray[0].toLocaleString('default', {
                                     month: 'long',
                                 })}{' '}
