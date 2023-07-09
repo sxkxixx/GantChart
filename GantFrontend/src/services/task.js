@@ -109,15 +109,17 @@ export const kanbanView = async (id) => {
     }
 }
 
-export const editDates = async (id, task) =>{
+
+export const editDates = async (id, task) => {
     const data = {
         planned_start_date: task.planned_start_date,
         planned_final_date: task.planned_final_date,
-        deadline: task.deadline
+        deadline: task.deadline,
     };
     try {
-        await api.post(`http://127.0.0.1:8000/api/v1/gant/task/${id}/edit_dates`, data)
-    }catch (e) {
-        console.log(e)
+        await api.post(`http://127.0.0.1:8000/api/v1/gant/task/${id}/edit_dates`, data);
+    } catch (e) {
+        console.log(e);
+        throw e
     }
-}
+};

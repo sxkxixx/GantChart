@@ -1,6 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import s from './GanttTaskRow.module.css';
-import {editDates} from "../../../../services/task";
+import {editDates, getAllTask} from "../../../../services/task";
+import {useSetRecoilState} from "recoil";
+import {tasksState} from "../../../../store/atom";
+import {toast} from "react-toastify";
 
 const GanttTaskRow = ({
                           task,
@@ -19,6 +22,7 @@ const GanttTaskRow = ({
 
     const isCollapsed = collapsedTasks.includes(id);
     const currentIndentLevel = indentLevel;
+    const setTasks = useSetRecoilState(tasksState);
 
     const [startIndex, setStartIndex] = useState(
         Math.round((new Date(taskStartDate) - startDate) / (1000 * 60 * 60 * 24))
@@ -26,9 +30,11 @@ const GanttTaskRow = ({
     const [endIndex, setEndIndex] = useState(
         Math.round((new Date(taskEndDate) - startDate) / (1000 * 60 * 60 * 24))
     );
-    const [isDragged, setIsDragged] = useState(false); // New state variable
+    const [newStartIndex, setNewStartIndex] = useState(0);
+    const [newEndIndex, setNewEndIndex] = useState(0);
+    const [isDragged, setIsDragged] = useState(false);
 
-    const handleStartEndIndexesChange = () => {
+    const handleStartEndIndexesChange = async () => {
         const newStartDate = new Date(startDate);
         newStartDate.setDate(newStartDate.getDate() + startIndex);
         const newEndDate = new Date(startDate);
@@ -44,29 +50,51 @@ const GanttTaskRow = ({
             deadline: deadTask,
         };
 
-        editDates(id, updatedTask);
+        try {
+            await editDates(id, updatedTask);
+            setNewStartIndex(0)
+            setNewEndIndex(0)
+            const updatedTasks = await getAllTask();
+            setTasks(updatedTasks);
+            toast.success('Дата изменена!', {
+                position: "top-right",
+                autoClose: 1000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+        } catch (error) {
+            console.log(error);
+            setStartIndex(
+                Math.round((new Date(taskStartDate) - startDate) / (1000 * 60 * 60 * 24))
+            );
+            setEndIndex(
+                Math.round((new Date(taskEndDate) - startDate) / (1000 * 60 * 60 * 24))
+            );
+            setIsDragged(false);
+            setNewStartIndex(0)
+            setNewEndIndex(0)
+            toast.error('Дата не изменилась!', {
+                position: "top-right",
+                autoClose: 1000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
+        }
     };
 
     useEffect(() => {
-        if (isDragged) {
-            const debounceTimer = setTimeout(handleStartEndIndexesChange, 250);
-
-            return () => {
-                clearTimeout(debounceTimer);
-            };
+        if (newStartIndex !== 0 || newEndIndex !== 0) {
+            handleStartEndIndexesChange();
         }
-    }, [startIndex, endIndex, isDragged]);
-
-    const getCellStyle = (indentLevel) => {
-        let colorClass;
-        if (indentLevel === 0 || indentLevel === 1) {
-            colorClass = s.cellColor1;
-        } else {
-            colorClass = s.cellColor2;
-        }
-
-        return `${colorClass}`;
-    };
+    }, [newStartIndex, newEndIndex]);
 
     const handleStartDateDragStart = (event) => {
         const initialX = event.clientX;
@@ -77,14 +105,15 @@ const GanttTaskRow = ({
 
             if (newStartIndex >= 0 && newStartIndex <= endIndex) {
                 setStartIndex(newStartIndex);
-                setIsDragged(true); // Set the dragged state to true
+                setIsDragged(true);
             }
         };
 
         const handleMouseUp = () => {
             document.removeEventListener('mousemove', handleMouseMove);
             document.removeEventListener('mouseup', handleMouseUp);
-            setIsDragged(false); // Reset the dragged state to false
+            setIsDragged(false);
+            setNewStartIndex(startIndex)
         };
 
         document.addEventListener('mousemove', handleMouseMove);
@@ -97,21 +126,32 @@ const GanttTaskRow = ({
         const handleMouseMove = (event) => {
             const diff = Math.round((event.clientX - initialX) / 100);
             const newEndIndex = endIndex + diff;
-
             if (newEndIndex >= startIndex && newEndIndex < projectDurationInDays) {
                 setEndIndex(newEndIndex);
-                setIsDragged(true); // Set the dragged state to true
+                setIsDragged(true);
             }
         };
 
         const handleMouseUp = () => {
             document.removeEventListener('mousemove', handleMouseMove);
             document.removeEventListener('mouseup', handleMouseUp);
-            setIsDragged(false); // Reset the dragged state to false
+            setIsDragged(false)
+            setNewEndIndex(endIndex)
         };
 
         document.addEventListener('mousemove', handleMouseMove);
         document.addEventListener('mouseup', handleMouseUp);
+    };
+
+    const getCellStyle = (indentLevel) => {
+        let colorClass;
+        if (indentLevel === 0 || indentLevel === 1) {
+            colorClass = s.cellColor1;
+        } else {
+            colorClass = s.cellColor2;
+        }
+
+        return `${colorClass}`;
     };
 
     const renderEmptyCells = (start, end) => {
