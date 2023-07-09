@@ -66,18 +66,17 @@ const CreateForm = ({parentId, setShowModal}) => {
     //         })
     // }, [])
 
-    const handleAddPerformer = (selectedOption) => {
+    const handleAddPerformer = () => {
         const newPerformer = {
-            id: selectedOption.value,
-            name: selectedOption.name
+            id: performers.length > 0 ? performers[performers.length - 1].id + 1 : 1,
+            name: options.id === 1?.name
         };
         setPerformers([...performers, newPerformer]);
     };
 
 
-    const handleDeletePerformer = (index) => {
-        const newData = [...performers];
-        newData.splice(index, 1);
+    const handleDeletePerformer = (id) => {
+        const newData = performers.filter(stage => stage.id !== id);
         setPerformers(newData);
     };
 
@@ -288,9 +287,14 @@ const CreateForm = ({parentId, setShowModal}) => {
                             <div className={s.unimportantList} key={index}>
                                 <Select
                                     options={options.map(opt => ({value: opt.id, name: opt.name}))}
-                                    onChange={(selectedOption) => handleAddPerformer(selectedOption)}
+                                    value={performer.name}
+                                    onChange={(event) => {
+                                        const newData = [...performers];
+                                        newData[index].name = event.target.value;
+                                        setPerformers(newData);
+                                    }}
                                 />
-                                <button className={s.deleteButton} type="button" onClick={() => handleDeletePerformer(index)}>
+                                <button className={s.deleteButton} type="button" onClick={() => handleDeletePerformer(performer.id)}>
                                     <Del style={{width: "16px", height: "16px"}} />
                                 </button>
                             </div>
