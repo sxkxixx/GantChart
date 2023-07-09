@@ -50,19 +50,20 @@ const EditForm = ({id, setFormType, setShowModal}) => {
         setPerformers(newData);
     };
 
-    const handleAddStages = (description) => {
+    const handleAddStages = () => {
         const newStage = {
-            id: (taskId.stages?.length ?? 0) + 1,
+            id: taskId.stages.length > 0 ? taskId.stages[taskId.stages.length - 1].id + 1 : 1,
             checked: false,
-            description: description
+            description: ''
         };
         const updatedStages = [...(taskId.stages ?? []), newStage];
         setTaskId({ ...taskId, stages: updatedStages });
     };
 
-    const handleDeleteStages = (index) => {
-        const newData = [...taskId.stages];
-        newData.splice(index, 1);
+    const handleDeleteStages = (id) => {
+        const newData = taskId.stages.filter(stage => stage.id !== id);
+        // const newData = [...taskId.stages];
+        // newData.splice(index, 1);
         setTaskId({ ...taskId, stages: newData });
     };
 
@@ -325,7 +326,7 @@ const EditForm = ({id, setFormType, setShowModal}) => {
                                         padding={"10px"}
                                         border={"1px solid #ccc"}
                                         background={"#FFFFFF"}
-                                        defaultValue={stage.description}
+                                        value={stage.description}
                                         onChange={(event) =>
                                             handleStageDescriptionChange(
                                                 index,
@@ -333,7 +334,7 @@ const EditForm = ({id, setFormType, setShowModal}) => {
                                             )
                                         }
                                     />
-                                    <button className={s.deleteButton} type="button" onClick={() => handleDeleteStages(index)}>
+                                    <button className={s.deleteButton} type="button" onClick={() => handleDeleteStages(stage.id)}>
                                         <Del style={{width: "16px", height: "16px"}} />
                                     </button>
                                 </div>

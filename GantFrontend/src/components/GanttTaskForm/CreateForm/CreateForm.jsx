@@ -66,9 +66,14 @@ const CreateForm = ({parentId, setShowModal}) => {
     //         })
     // }, [])
 
-    const handleAddPerformer = () => {
-        setPerformers([...performers, options])
+    const handleAddPerformer = (selectedOption) => {
+        const newPerformer = {
+            id: selectedOption.value,
+            name: selectedOption.name
+        };
+        setPerformers([...performers, newPerformer]);
     };
+
 
     const handleDeletePerformer = (index) => {
         const newData = [...performers];
@@ -76,15 +81,16 @@ const CreateForm = ({parentId, setShowModal}) => {
         setPerformers(newData);
     };
 
-    const handleAddStages = (description) => {
+    const handleAddStages = () => {
         const newStage = {
-            id: stages.length + 1,
+            id: stages.length > 0 ? stages[stages.length - 1].id + 1 : 1,
             checked: false,
-            description: description
+            description: ''
         };
         const updatedStages = [...stages, newStage];
         setStages(updatedStages);
     };
+
 
 
     const handleDeleteStages = (id) => {
@@ -280,7 +286,10 @@ const CreateForm = ({parentId, setShowModal}) => {
                     <div className={s.unimportantLists}>
                         {performers.map((performer, index) => (
                             <div className={s.unimportantList} key={index}>
-                                <Select  options={options.map(opt => ({value: opt.id, name: opt.name}))}/>
+                                <Select
+                                    options={options.map(opt => ({value: opt.id, name: opt.name}))}
+                                    onChange={(selectedOption) => handleAddPerformer(selectedOption)}
+                                />
                                 <button className={s.deleteButton} type="button" onClick={() => handleDeletePerformer(index)}>
                                     <Del style={{width: "16px", height: "16px"}} />
                                 </button>
@@ -307,6 +316,7 @@ const CreateForm = ({parentId, setShowModal}) => {
                                     padding={"10px"}
                                     border={"1px solid #ccc"}
                                     background={"#FFFFFF"}
+                                    value={stage.description}
                                     onChange={(event) => {
                                         const newData = [...stages];
                                         newData[index].description = event.target.value;

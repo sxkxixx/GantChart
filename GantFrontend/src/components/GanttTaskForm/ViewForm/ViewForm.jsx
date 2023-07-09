@@ -310,7 +310,7 @@ const ViewForm = ({id, setFormType, setShowModal}) => {
                                     </div>
                                     <div className={s.timerButtonsContainer}>
                                         <ButtonForm onClick={timer.isRunning ? stopTimer : startTimer} padding={'0 8px'} width={'32px'}>
-                                            {timer.isRunning && timer.taskId  ? <PauseTimerButton/> : <StartTimerButton/>}
+                                            {timer.isRunning && timer.taskId === id.id  ? <PauseTimerButton/> : <StartTimerButton/>}
                                         </ButtonForm>
                                         <ButtonForm>Сохранить</ButtonForm>
                                         <ButtonForm onClick={resetTimer} status='notActive' padding={'0 8px'}><TrashTimerButton/></ButtonForm>
