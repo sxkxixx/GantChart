@@ -1,17 +1,19 @@
 import React, {useEffect, useState} from 'react';
 import s from './GanttTaskRow.module.css';
 import {editDates, getAllTask} from "../../../../services/task";
-import {useSetRecoilState} from "recoil";
+import {useRecoilValue, useSetRecoilState} from "recoil";
 import {tasksState} from "../../../../store/atom";
 import {toast} from "react-toastify";
 
 const GanttTaskRow = ({
-                          task,
+                          task: initialTask,
                           projectDurationInDays,
                           startDate,
                           collapsedTasks,
                           indentLevel = 0,
                       }) => {
+    const [task, setTask] = useState(initialTask);
+
     const {
         id,
         planned_start_date: taskStartDate,
@@ -22,6 +24,7 @@ const GanttTaskRow = ({
 
     const isCollapsed = collapsedTasks.includes(id);
     const currentIndentLevel = indentLevel;
+
     const setTasks = useSetRecoilState(tasksState);
 
     const [startIndex, setStartIndex] = useState(
@@ -32,7 +35,6 @@ const GanttTaskRow = ({
     );
     const [newStartIndex, setNewStartIndex] = useState(0);
     const [newEndIndex, setNewEndIndex] = useState(0);
-    const [isDragged, setIsDragged] = useState(false);
 
     const handleStartEndIndexesChange = async () => {
         const newStartDate = new Date(startDate);
@@ -74,7 +76,6 @@ const GanttTaskRow = ({
             setEndIndex(
                 Math.round((new Date(taskEndDate) - startDate) / (1000 * 60 * 60 * 24))
             );
-            setIsDragged(false);
             setNewStartIndex(0)
             setNewEndIndex(0)
             toast.error('Дата не изменилась!', {
@@ -96,6 +97,16 @@ const GanttTaskRow = ({
         }
     }, [newStartIndex, newEndIndex]);
 
+    useEffect(() => {
+        setTask(initialTask);
+        setStartIndex(
+            Math.round((new Date(initialTask.planned_start_date) - startDate) / (1000 * 60 * 60 * 24))
+        );
+        setEndIndex(
+            Math.round((new Date(initialTask.planned_final_date) - startDate) / (1000 * 60 * 60 * 24))
+        );
+    }, [initialTask, startDate]);
+
     const handleStartDateDragStart = (event) => {
         const initialX = event.clientX;
 
@@ -105,14 +116,12 @@ const GanttTaskRow = ({
 
             if (newStartIndex >= 0 && newStartIndex <= endIndex) {
                 setStartIndex(newStartIndex);
-                setIsDragged(true);
             }
         };
 
         const handleMouseUp = () => {
             document.removeEventListener('mousemove', handleMouseMove);
             document.removeEventListener('mouseup', handleMouseUp);
-            setIsDragged(false);
             setNewStartIndex(startIndex)
         };
 
@@ -128,14 +137,12 @@ const GanttTaskRow = ({
             const newEndIndex = endIndex + diff;
             if (newEndIndex >= startIndex && newEndIndex < projectDurationInDays) {
                 setEndIndex(newEndIndex);
-                setIsDragged(true);
             }
         };
 
         const handleMouseUp = () => {
             document.removeEventListener('mousemove', handleMouseMove);
             document.removeEventListener('mouseup', handleMouseUp);
-            setIsDragged(false)
             setNewEndIndex(endIndex)
         };
 

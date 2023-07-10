@@ -5,7 +5,6 @@ import {useRecoilValue, useSetRecoilState} from 'recoil';
 import {tasksState} from '../../store/atom';
 import {getAllTask} from '../../services/task';
 import TasksZero from "./TasksZero/TasksZero";
-import {getItem, setItem} from "../../utils/storage";
 
 const GanttChart = () => {
     const [collapsedTasks, setCollapsedTasks] = useState([]);
@@ -17,12 +16,12 @@ const GanttChart = () => {
         getAllTask()
             .then((response) => {
                 setTasks(response);
+                console.log(response)
             })
             .catch((error) => {
                 console.log(error);
             });
     }, [setTasks]);
-
 
     const toggleTaskCollapse = (taskId) => {
         setCollapsedTasks((prevCollapsedTasks) =>
@@ -42,7 +41,6 @@ const GanttChart = () => {
                 tasks={tasks}
                 collapsedTasks={collapsedTasks}
                 toggleTaskCollapse={toggleTaskCollapse}
-                setTasks={setTasks}
             />
         </div>
     );

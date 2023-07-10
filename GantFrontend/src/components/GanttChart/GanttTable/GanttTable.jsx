@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import TaskRow from './TaskRow/TaskRow';
 import s from './GanttTable.module.css';
 import GanttTaskRow from './GanttTaskRow/GanttTaskRow';

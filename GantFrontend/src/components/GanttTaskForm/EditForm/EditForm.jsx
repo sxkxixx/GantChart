@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import s from './EditForm.module.css'
 import {useRecoilState, useRecoilValue, useSetRecoilState} from "recoil";
 import {projectsList, taskIdState, tasksState, teamsList} from "../../../store/atom";
@@ -62,8 +62,6 @@ const EditForm = ({id, setFormType, setShowModal}) => {
 
     const handleDeleteStages = (id) => {
         const newData = taskId.stages.filter(stage => stage.id !== id);
-        // const newData = [...taskId.stages];
-        // newData.splice(index, 1);
         setTaskId({ ...taskId, stages: newData });
     };
 
@@ -118,8 +116,13 @@ const EditForm = ({id, setFormType, setShowModal}) => {
         try {
             await updateIdTask(id.id, taskList, stagesList);
             setShowModal(false);
-            const updatedTasks = await getAllTask();
-            setTasks(updatedTasks);
+            getAllTask()
+                .then((response) => {
+                    setTasks(response);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
             toast.success('Задача изменена!', {
                 position: "top-right",
                 autoClose: 1000,
