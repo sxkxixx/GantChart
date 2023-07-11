@@ -11,6 +11,10 @@ const StyledButton = styled.button`
   width: ${(props) => props.width}px;
   height: ${(props) => props.height}px;
   color: white;
+
+  &:hover {
+    box-shadow: 0px 0px 12px 0px rgba(40, 112, 255, 0.40);
+  }
 `;
 
 const Button = ({children, type = "button", onClick, width = 248, height = 32}) => (

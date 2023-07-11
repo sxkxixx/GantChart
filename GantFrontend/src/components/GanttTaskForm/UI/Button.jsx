@@ -11,6 +11,10 @@ const StyledButton = styled.button`
   width: ${props => props.width ? props.width : 'fit-content'};
   height: 32px;
   color: white;
+
+  &:hover {
+    box-shadow: 0px 0px 12px 0px rgba(40, 112, 255, 0.40);
+  }
 `;
 
 const ButtonForm = ({children, type = "button", onClick, status = "default", width = 125, height = 32, padding}) => {
